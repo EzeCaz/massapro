@@ -333,12 +333,14 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
                   <Label htmlFor="companyUrl">Company URL</Label>
                   <Input
                     id="companyUrl"
-                    type="url"
+                    type="text"
                     value={formData.companyUrl}
                     onChange={(e) => handleChange('companyUrl', e.target.value)}
-                    placeholder="https://example.com"
+                    placeholder="www.example.com or https://example.com"
+                    pattern="^(https?://)?([\w-]+\.)+[\w-]+(/.*)?$"
                     className="border-purple-200 focus:border-purple-500"
                   />
+                  <p className="text-xs text-gray-400">e.g. www.site.com or https://www.site.com</p>
                 </div>
               </div>
               <div className="mt-4 space-y-2">
@@ -447,35 +449,26 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Appointment Date</Label>
-                  <div className="flex gap-2">
-                    <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                      <PopoverTrigger asChild>
-                        <Button
-                          variant="outline"
-                          className="flex-1 justify-start text-left font-normal border-purple-200 hover:border-purple-500 hover:bg-purple-50"
-                        >
-                          <CalendarIcon className="w-4 h-4 mr-2 text-purple-500" />
-                          {calendarDate ? calendarDate.toLocaleDateString('en-US') : 'Pick a date'}
-                        </Button>
-                      </PopoverTrigger>
-                      <PopoverContent className="w-auto p-0" align="start">
-                        <Calendar
-                          mode="single"
-                          selected={calendarDate}
-                          onSelect={handleCalendarSelect}
-                          disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                          initialFocus
-                        />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <Input
-                    value={formData.appointmentDate}
-                    onChange={(e) => handleChange('appointmentDate', e.target.value)}
-                    placeholder="MM/DD/YYYY"
-                    className="border-purple-200 focus:border-purple-500 text-sm"
-                  />
-                  <p className="text-xs text-gray-400">Use the calendar or type manually (MM/DD/YYYY)</p>
+                  <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="w-full justify-start text-left font-normal border-purple-200 hover:border-purple-500 hover:bg-purple-50"
+                      >
+                        <CalendarIcon className="w-4 h-4 mr-2 text-purple-500" />
+                        {calendarDate ? calendarDate.toLocaleDateString('en-US') : 'Pick a date'}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={calendarDate}
+                        onSelect={handleCalendarSelect}
+                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                        initialFocus
+                      />
+                    </PopoverContent>
+                  </Popover>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="appointmentTime">Appointment Time</Label>

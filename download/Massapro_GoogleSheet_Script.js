@@ -1,23 +1,43 @@
 /**
  * MassaPro Lead Form — Google Apps Script
+ * 
+ * This script writes form submissions to the "Site" tab of your Google Sheet.
  *
  * HOW TO DEPLOY:
  * 1. Open your Google Sheet: https://docs.google.com/spreadsheets/d/1Pzm2p-QrgqYY-98SIQDWIvY8igF1ex22qdQ6BnEvleQ/edit
- * 2. Go to Extensions > Apps Script
- * 3. Delete any existing code in the script editor
- * 4. Paste this entire script
- * 5. Click Deploy > New deployment
- * 6. Select type: "Web app"
- * 7. Set "Execute as" to "Me"
- * 8. Set "Who has access" to "Anyone"
- * 9. Click Deploy
- * 10. Copy the Web App URL
- * 11. Add it to your .env file as: GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/YOUR_ID/exec
- * 12. Restart the dev server
+ * 2. Make sure there is a tab/sheet named exactly "Site" (create one if it doesn't exist)
+ * 3. Go to Extensions > Apps Script
+ * 4. Delete any existing code in the script editor
+ * 5. Paste this entire script
+ * 6. Click Deploy > New deployment
+ * 7. Select type: "Web app"
+ * 8. Set "Execute as" to "Me"
+ * 9. Set "Who has access" to "Anyone"
+ * 10. Click Deploy
+ * 11. Copy the Web App URL
+ * 12. Add it to your .env file as: GOOGLE_SCRIPT_URL=https://script.google.com/macros/s/YOUR_ID/exec
+ * 13. Restart the dev server
+ *
+ * IMPORTANT: The script writes to the sheet named "Site".
+ *           If that sheet doesn't exist, it will be created automatically.
  */
 
+var SHEET_NAME = 'Site';
+
+function getOrCreateSheet() {
+  var ss = SpreadsheetApp.getActiveSpreadsheet();
+  var sheet = ss.getSheetByName(SHEET_NAME);
+  
+  // If the "Site" sheet doesn't exist, create it
+  if (!sheet) {
+    sheet = ss.insertSheet(SHEET_NAME);
+  }
+  
+  return sheet;
+}
+
 function initializeSheet() {
-  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var sheet = getOrCreateSheet();
 
   // Set header row
   var headers = [
@@ -59,7 +79,7 @@ function initializeSheet() {
 
 function doPost(e) {
   try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+    var sheet = getOrCreateSheet();
 
     // If headers aren't set yet, initialize
     if (sheet.getRange(1, 1).getValue() === '') {
@@ -68,7 +88,7 @@ function doPost(e) {
 
     var data = JSON.parse(e.postData.contents);
 
-    // Append the data as a new row
+    // Append the data as a new row to the "Site" sheet
     sheet.appendRow([
       data.firstName || '',
       data.lastName || '',
@@ -89,7 +109,7 @@ function doPost(e) {
     ]);
 
     return ContentService
-      .createTextOutput(JSON.stringify({ success: true, message: 'Lead added successfully' }))
+      .createTextOutput(JSON.stringify({ success: true, message: 'Lead added successfully to Site tab' }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -101,6 +121,6 @@ function doPost(e) {
 
 function doGet() {
   return ContentService
-    .createTextOutput(JSON.stringify({ status: 'ok', service: 'MassaPro Lead Form' }))
+    .createTextOutput(JSON.stringify({ status: 'ok', service: 'MassaPro Lead Form', sheet: SHEET_NAME }))
     .setMimeType(ContentService.MimeType.JSON);
 }
