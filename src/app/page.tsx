@@ -909,21 +909,21 @@ function TestimonialsSection() {
         "MassaPro's AI receptionist has transformed our salon. We never miss a booking anymore, and our clients love the instant confirmation and reminders. Our no-show rate dropped by 45%!",
       name: 'Sarah Mitchell',
       role: 'Owner, Luxe Hair Studio',
-      avatar: 'SM',
+      photo: '/testimonial-1.png',
     },
     {
       quote:
         "As a busy veterinary clinic, we needed 24/7 coverage. MassaPro handles emergency triage, appointment scheduling, and follow-ups flawlessly. It's like having three extra staff members.",
       name: 'Dr. James Rodriguez',
       role: 'Director, Paws & Claws Vet',
-      avatar: 'JR',
+      photo: '/testimonial-2.png',
     },
     {
       quote:
         'The multi-channel support is incredible. Our clients reach us on WhatsApp, Instagram, phone — and MassaPro handles it all seamlessly. Best investment we made this year.',
       name: 'Lisa Chen',
       role: 'Manager, Glow Beauty Bar',
-      avatar: 'LC',
+      photo: '/testimonial-3.png',
     },
   ]
 
@@ -944,22 +944,26 @@ function TestimonialsSection() {
             <FadeIn key={t.name} delay={i * 0.1}>
               <Card className="h-full border-purple-100 hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-300">
                 <CardHeader>
-                  <div className="flex items-center gap-1 mb-2">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className="w-4 h-4 fill-purple-500 text-purple-500" />
-                    ))}
+                  <div className="flex items-center gap-3 mb-2">
+                    <Image
+                      src={t.photo}
+                      alt={t.name}
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 rounded-full object-cover border-2 border-purple-200"
+                    />
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star key={s} className="w-4 h-4 fill-purple-500 text-purple-500" />
+                      ))}
+                    </div>
                   </div>
                   <p className="text-gray-700 leading-relaxed italic">&ldquo;{t.quote}&rdquo;</p>
                 </CardHeader>
                 <CardFooter>
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full purple-gradient flex items-center justify-center text-white text-sm font-bold">
-                      {t.avatar}
-                    </div>
-                    <div>
-                      <p className="font-semibold text-sm">{t.name}</p>
-                      <p className="text-xs text-gray-500">{t.role}</p>
-                    </div>
+                  <div>
+                    <p className="font-semibold text-sm">{t.name}</p>
+                    <p className="text-xs text-gray-500">{t.role}</p>
                   </div>
                 </CardFooter>
               </Card>
