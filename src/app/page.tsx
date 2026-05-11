@@ -109,7 +109,7 @@ function Navbar() {
           {/* Logo */}
           <a href="#" className="flex items-center gap-2">
             <Image
-              src="/massapro-logo.png"
+              src="/massapro-logo-v2.png"
               alt="MassaPro Logo"
               width={160}
               height={48}
@@ -285,7 +285,7 @@ function HeroSection() {
               {/* Main image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
                 <Image
-                  src="/hero-secretary.png"
+                  src="/hero-secretary-v2.png"
                   alt="Professional AI Receptionist"
                   width={864}
                   height={1152}
@@ -373,7 +373,7 @@ function PositionsSection() {
         'Your front-line AI that answers calls, responds to messages, and routes inquiries — 24/7. Never miss a customer again with an AI receptionist that sounds natural, understands context, and handles multiple conversations simultaneously across all your channels.',
       icon: Phone,
       features: ['Answer inbound calls 24/7', 'Route messages intelligently', 'Greet customers by name', 'Transfer to human when needed'],
-      image: '/vet-receptionist.png',
+      image: '/vet-receptionist-v2.png',
     },
     {
       title: 'AI Secretary / Virtual Assistant',
@@ -381,7 +381,7 @@ function PositionsSection() {
         'A full-featured AI secretary that manages your calendar, books appointments, sends reminders, and handles administrative tasks. Think of it as having a dedicated assistant who works around the clock without breaks, ensuring nothing falls through the cracks.',
       icon: Calendar,
       features: ['Manage appointments & calendar', 'Send confirmations & reminders', 'Handle rescheduling instantly', 'Process payments & deposits'],
-      image: '/team-secretaries.png',
+      image: '/team-secretaries-v2.png',
     },
     {
       title: 'AI Concierge',
@@ -389,7 +389,7 @@ function PositionsSection() {
         'Premium full-service AI that goes beyond basic tasks. Your AI Concierge provides personalized customer experiences, proactive outreach, loyalty management, and multi-language support — the ultimate white-glove service for discerning businesses.',
       icon: Star,
       features: ['Multi-language support (5+)', 'Proactive outreach campaigns', 'Personalized customer experiences', 'White-glove VIP service'],
-      image: '/ai-assistant-salon.png',
+      image: '/ai-assistant-salon-v2.png',
     },
   ]
 
@@ -622,7 +622,7 @@ function FlowsSection() {
         {/* Industry customization callout */}
         <FadeIn delay={0.3}>
           <div className="mt-12 rounded-2xl purple-gradient p-8 lg:p-12 text-white text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/salon-interior.png')] bg-cover bg-center opacity-10" />
+            <div className="absolute inset-0 bg-[url('/salon-interior-v2.png')] bg-cover bg-center opacity-10" />
             <div className="relative">
               <Sparkles className="w-8 h-8 mx-auto mb-4 text-purple-200" />
               <h3 className="text-2xl sm:text-3xl font-bold mb-4">Industry-Customized Flows</h3>
@@ -883,7 +883,7 @@ function StatsSection() {
 
   return (
     <section className="py-16 purple-gradient relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/multi-channel.png')] bg-cover bg-center opacity-5" />
+      <div className="absolute inset-0 bg-[url('/multi-channel-v2.png')] bg-cover bg-center opacity-5" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
           {stats.map((stat, i) => (
@@ -909,21 +909,21 @@ function TestimonialsSection() {
         "MassaPro's AI receptionist has transformed our salon. We never miss a booking anymore, and our clients love the instant confirmation and reminders. Our no-show rate dropped by 45%!",
       name: 'Sarah Mitchell',
       role: 'Owner, Luxe Hair Studio',
-      photo: '/testimonial-1.png',
+      photo: '/testimonial-1-v2.png',
     },
     {
       quote:
         "As a busy veterinary clinic, we needed 24/7 coverage. MassaPro handles emergency triage, appointment scheduling, and follow-ups flawlessly. It's like having three extra staff members.",
       name: 'Dr. James Rodriguez',
       role: 'Director, Paws & Claws Vet',
-      photo: '/testimonial-2.png',
+      photo: '/testimonial-2-v2.png',
     },
     {
       quote:
         'The multi-channel support is incredible. Our clients reach us on WhatsApp, Instagram, phone — and MassaPro handles it all seamlessly. Best investment we made this year.',
       name: 'Lisa Chen',
       role: 'Manager, Glow Beauty Bar',
-      photo: '/testimonial-3.png',
+      photo: '/testimonial-3-v2.png',
     },
   ]
 
@@ -982,7 +982,7 @@ function CTASection() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="relative rounded-3xl purple-gradient overflow-hidden shadow-2xl shadow-purple-300/30">
-            <div className="absolute inset-0 bg-[url('/salon-interior.png')] bg-cover bg-center opacity-10" />
+            <div className="absolute inset-0 bg-[url('/salon-interior-v2.png')] bg-cover bg-center opacity-10" />
             <div className="relative px-8 py-16 lg:px-16 lg:py-20 text-center">
               <FadeIn>
                 <Badge className="bg-white/20 text-white hover:bg-white/20 mb-4 border-0">Get Started Today</Badge>
@@ -1066,7 +1066,7 @@ function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Image
-              src="/massapro-logo.png"
+              src="/massapro-logo-v2.png"
               alt="MassaPro Logo"
               width={160}
               height={48}
