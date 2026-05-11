@@ -1014,7 +1014,7 @@ function CTASection() {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-white/30 text-white hover:bg-white/10 text-base px-8 py-6"
+                    className="bg-white text-purple-700 hover:bg-purple-50 border-white/30 text-base px-8 py-6 font-semibold"
                     asChild
                   >
                     <a href="#pricing">
