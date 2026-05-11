@@ -389,7 +389,7 @@ function PositionsSection() {
         'Premium full-service AI that goes beyond basic tasks. Your AI Concierge provides personalized customer experiences, proactive outreach, loyalty management, and multi-language support — the ultimate white-glove service for discerning businesses.',
       icon: Star,
       features: ['Multi-language support (5+)', 'Proactive outreach campaigns', 'Personalized customer experiences', 'White-glove VIP service'],
-      image: '/ai-assistant-salon-v2.png',
+      image: '/ai-assistant-salon-v3.png',
     },
   ]
 
