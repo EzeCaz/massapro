@@ -376,7 +376,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'A full-featured AI secretary that manages your calendar, books appointments, sends reminders, and handles administrative tasks. Think of it as having a dedicated assistant who works around the clock without breaks, ensuring nothing falls through the cracks.',
       icon: Calendar,
       features: ['Manage appointments & calendar', 'Send confirmations & reminders', 'Handle rescheduling instantly', 'Process payments & deposits'],
-      image: '/team-secretaries-v2.png',
+      image: '/team-secretaries-v3.png',
     },
     {
       title: 'AI Concierge',
