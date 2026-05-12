@@ -92,6 +92,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
     { label: 'Services', href: '#services' },
     { label: 'Skills', href: '#skills' },
     { label: 'Flows', href: '#flows' },
+    { label: 'Industries', href: '#industries' },
     { label: 'Pricing', href: '#pricing' },
   ]
 
@@ -966,6 +967,302 @@ function TestimonialsSection() {
   )
 }
 
+/* ──────────────────── Industries Section ──────────────────── */
+function IndustriesSection() {
+  const industries = [
+    {
+      name: 'Hair Salons',
+      image: '/industry-hair-salon.png',
+      description:
+        'MassaPro transforms hair salons by handling the full appointment lifecycle — from booking and confirmation to reminders and follow-ups. Your AI receptionist answers calls, responds to texts, and manages your calendar so your stylists can focus on what they do best: creating beautiful hair.',
+      advantages: [
+        'Reduce no-shows by up to 40% with automated SMS reminders',
+        'Handle color consultation requests and pre-appointment questions',
+        'Manage rebooking and loyalty campaigns automatically',
+        'Process deposit payments and cancellation fees seamlessly',
+      ],
+      services: ['Appointment Booking & Reminders', 'Color Consultation Intake', 'Deposit & Payment Handling', 'Post-Visit Follow-up & Reviews', 'Rebooking & Loyalty Campaigns'],
+      reviews: [
+        {
+          quote: 'Our no-show rate dropped from 30% to under 10%. The AI handles all appointment calls and texts so my stylists never have to stop mid-cut to answer the phone.',
+          name: 'Jessica Torres',
+          role: 'Owner, Luxe Hair Studio',
+          photo: '/review-hair-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'I used to miss 15+ calls a day during peak hours. Now MassaPro books appointments while I focus on my clients. Revenue is up 25% in just two months.',
+          name: 'Amanda Chen',
+          role: 'Manager, Style & Co. Salon',
+          photo: '/review-hair-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The deposit handling alone saved us thousands. No more wasted time slots from no-shows. Clients love the instant confirmation and reminder texts.',
+          name: 'Rachel Morrison',
+          role: 'Founder, The Hair Lounge',
+          photo: '/review-hair-3.png',
+          stars: 5,
+        },
+      ],
+    },
+    {
+      name: 'Nail Studios',
+      image: '/industry-nail-studio.png',
+      description:
+        'Nail studios thrive on repeat bookings and walk-in traffic. MassaPro captures every call and message, books appointments around your technicians\' availability, and keeps your chairs full. From gel manicures to intricate nail art consultations, your AI handles it all with a personal touch.',
+      advantages: [
+        'Capture every walk-in inquiry even during busy hours',
+        'Automate appointment confirmations and same-day reminders',
+        'Handle nail art consultation requests with pre-set Q&A',
+        'Run seasonal promotion campaigns automatically',
+      ],
+      services: ['Appointment Booking & Reminders', 'Walk-In Inquiry Handling', 'Service & Pricing FAQ', 'Promotion & Seasonal Campaigns', 'Post-Service Follow-up'],
+      reviews: [
+        {
+          quote: 'We get so many texts asking about availability and pricing. MassaPro handles all of them instantly and books appointments directly into our calendar. It\'s like having a 24/7 front desk.',
+          name: 'Sophia Williams',
+          role: 'Owner, Diamond Nails',
+          photo: '/review-nail-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Our seasonal promotions used to require manual texting to hundreds of clients. Now MassaPro sends personalized offers automatically, and our rebooking rate jumped 35%.',
+          name: 'Mia Johnson',
+          role: 'Manager, Pink Petals Studio',
+          photo: '/review-nail-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'Clients love that they can book at midnight after seeing our Instagram posts. MassaPro captures those late-night inquiries that we used to lose completely.',
+          name: 'Emily Park',
+          role: 'Founder, Nail Artistry Co.',
+          photo: '/review-nail-3.png',
+          stars: 5,
+        },
+      ],
+    },
+    {
+      name: 'Beauty Shops',
+      image: '/industry-beauty-shop.png',
+      description:
+        'Beauty shops and spas juggle multiple services, varied appointment durations, and a clientele that expects premium communication. MassaPro\'s AI Concierge handles complex booking scenarios, package deals, and VIP client management — delivering the white-glove experience your brand promises.',
+      advantages: [
+        'Manage multi-service bookings with correct time slots',
+        'Handle VIP and loyalty program inquiries automatically',
+        'Send personalized post-treatment care instructions',
+        'Coordinate multi-stylist bookings for bridal and group packages',
+      ],
+      services: ['Multi-Service Booking', 'VIP & Loyalty Management', 'Package & Gift Card Sales', 'Post-Treatment Follow-up', 'Bridal & Group Booking Coordination'],
+      reviews: [
+        {
+          quote: 'Managing bridal party bookings used to be a nightmare of back-and-forth calls. MassaPro coordinates the entire group — multiple services, multiple stylists, one seamless booking experience.',
+          name: 'Olivia Grant',
+          role: 'Owner, Glow Beauty Bar',
+          photo: '/review-beauty-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Our VIP clients expect instant responses. MassaPro recognizes them by name, knows their preferences, and books their favorite treatments without any friction. It\'s luxury service at scale.',
+          name: 'Isabella Martinez',
+          role: 'Director, Serene Spa & Beauty',
+          photo: '/review-beauty-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The post-treatment follow-ups with care instructions and rebooking prompts have been a game-changer. Our client retention went from 45% to over 70% in three months.',
+          name: 'Hannah Brooks',
+          role: 'Founder, Aura Aesthetics',
+          photo: '/review-beauty-3.png',
+          stars: 5,
+        },
+      ],
+    },
+    {
+      name: 'Veterinary Clinics',
+      image: '/industry-vet-clinic.png',
+      description:
+        'Veterinary clinics face unique challenges — emergency triage, vaccination schedules, and worried pet owners who need reassurance at all hours. MassaPro\'s AI handles emergency call routing, appointment scheduling, and prescription refill requests, ensuring no pet owner is left waiting when it matters most.',
+      advantages: [
+        'Triage emergency calls and route to on-call vets immediately',
+        'Automate vaccination reminders and annual checkup scheduling',
+        'Handle prescription refill requests without staff intervention',
+        'Send pre-appointment preparation instructions to pet owners',
+      ],
+      services: ['Emergency Triage & Routing', 'Vaccination & Checkup Reminders', 'Appointment Scheduling', 'Prescription Refill Handling', 'Pre-Visit Preparation Instructions'],
+      reviews: [
+        {
+          quote: 'Before MassaPro, emergency calls after hours went to voicemail. Now our AI triages the call, gathers critical info, and routes emergencies to the on-call vet instantly. It\'s been life-saving — literally.',
+          name: 'Dr. Marcus Webb',
+          role: 'Director, Paws & Claws Veterinary',
+          photo: '/review-vet-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Vaccination reminders alone have increased our preventive care visits by 40%. Pet owners appreciate the timely texts, and our revenue from wellness visits has grown significantly.',
+          name: 'Dr. Sarah Kim',
+          role: 'Owner, Healthy Paws Clinic',
+          photo: '/review-vet-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'We handle 200+ calls daily. MassaPro now manages the routine ones — prescription refills, appointment confirmations, and basic questions — freeing our staff for the patients in front of us.',
+          name: 'Dr. David Patel',
+          role: 'Lead Vet, Greenfield Animal Hospital',
+          photo: '/review-vet-3.png',
+          stars: 5,
+        },
+      ],
+    },
+    {
+      name: 'Wellness Centers',
+      image: '/industry-wellness.png',
+      description:
+        'Wellness centers offer diverse services — yoga classes, meditation sessions, massage therapy, and holistic treatments. MassaPro unifies all your booking channels, manages class capacities, handles waitlists, and sends personalized wellness tips to keep your community engaged between visits.',
+      advantages: [
+        'Manage class bookings with real-time capacity tracking',
+        'Automate waitlist management for popular sessions',
+        'Send personalized wellness tips and content between visits',
+        'Handle multi-practitioner scheduling seamlessly',
+      ],
+      services: ['Class & Session Booking', 'Waitlist & Capacity Management', 'Multi-Practitioner Scheduling', 'Wellness Content & Engagement', 'Membership & Package Management'],
+      reviews: [
+        {
+          quote: 'Our yoga classes used to have 30% no-show rates. Now with automated reminders and a smart waitlist that fills cancelled spots, every class runs at capacity. Revenue per class is up 45%.',
+          name: 'Lindsay Fowler',
+          role: 'Owner, ZenFlow Wellness Center',
+          photo: '/review-wellness-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Managing 8 different practitioners with varying schedules was overwhelming. MassaPro handles all the scheduling complexity — clients book the right therapist at the right time, every time.',
+          name: 'Ryan Cooper',
+          role: 'Director, Harmony Wellness Hub',
+          photo: '/review-wellness-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The personalized wellness tips between visits keep our clients engaged and coming back. It feels like we have a dedicated community manager working around the clock.',
+          name: 'Maya Thompson',
+          role: 'Founder, Bloom Holistic Center',
+          photo: '/review-wellness-3.png',
+          stars: 5,
+        },
+      ],
+    },
+  ]
+
+  return (
+    <section id="industries" className="py-20 lg:py-28 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <Badge className="bg-purple-100 text-purple-800 mb-4">Industries</Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
+              Built for <span className="purple-gradient-text">Your Industry</span>
+            </h2>
+            <p className="text-lg text-gray-500">
+              MassaPro is tailored to the unique needs of each industry. Discover how our AI receptionist, secretary, and concierge transform businesses like yours.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="space-y-28">
+          {industries.map((industry, idx) => (
+            <FadeIn key={industry.name} delay={0.1}>
+              <div>
+                {/* Industry Header with Image */}
+                <div className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 === 1 ? '' : ''}`}>
+                  <div className={idx % 2 === 1 ? 'lg:order-2' : ''}>
+                    <h3 className="text-3xl sm:text-4xl font-bold mb-4">{industry.name}</h3>
+                    <p className="text-gray-600 text-lg leading-relaxed mb-8">{industry.description}</p>
+
+                    {/* Advantages */}
+                    <div className="mb-8">
+                      <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">Key Advantages</h4>
+                      <ul className="space-y-3">
+                        {industry.advantages.map((adv) => (
+                          <li key={adv} className="flex items-start gap-3">
+                            <div className="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                              <Check className="w-3 h-3 text-purple-600" />
+                            </div>
+                            <span className="text-gray-700">{adv}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    {/* Services */}
+                    <div>
+                      <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">AI Services Included</h4>
+                      <div className="flex flex-wrap gap-2">
+                        {industry.services.map((svc) => (
+                          <Badge key={svc} variant="outline" className="border-purple-200 text-purple-700 bg-purple-50/50 hover:bg-purple-100">
+                            {svc}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
+                    <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50">
+                      <Image
+                        src={industry.image}
+                        alt={industry.name}
+                        width={1344}
+                        height={768}
+                        className="w-full h-auto object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-purple-900/10 to-transparent" />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Reviews */}
+                <div className="mt-12">
+                  <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-6 text-center">
+                    What {industry.name} Owners Say
+                  </h4>
+                  <div className="grid md:grid-cols-3 gap-6">
+                    {industry.reviews.map((review) => (
+                      <Card key={review.name} className="border-purple-100 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300">
+                        <CardHeader className="pb-2">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Image
+                              src={review.photo}
+                              alt={review.name}
+                              width={40}
+                              height={40}
+                              className="w-10 h-10 rounded-full object-cover border-2 border-purple-200"
+                            />
+                            <div>
+                              <p className="font-semibold text-sm text-gray-800">{review.name}</p>
+                              <p className="text-xs text-gray-500">{review.role}</p>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 mb-1">
+                            {Array.from({ length: review.stars }).map((_, i) => (
+                              <Star key={i} className="w-4 h-4 fill-purple-500 text-purple-500" />
+                            ))}
+                          </div>
+                        </CardHeader>
+                        <CardContent>
+                          <p className="text-gray-600 text-sm leading-relaxed italic">&ldquo;{review.quote}&rdquo;</p>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ──────────────────── CTA Section ──────────────────── */
 function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
   return (
@@ -1136,6 +1433,7 @@ export default function Home() {
         <StatsSection />
         <SkillsSection />
         <FlowsSection />
+        <IndustriesSection />
         <PricingSection onOpenForm={openForm} />
         <TestimonialsSection />
         <CTASection onOpenForm={openForm} />
