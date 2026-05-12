@@ -1471,6 +1471,111 @@ function KeyTermsBanner() {
   )
 }
 
+/* ──────────────────── FAQ Section ──────────────────── */
+function FAQSection() {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
+  const faqs = [
+    {
+      question: 'Will callers notice they are speaking with an AI?',
+      answer:
+        'Not at all. MassaPro leverages cutting-edge voice synthesis and conversational intelligence so every interaction feels warm, fluid, and genuinely human. Your clients experience a seamless, helpful dialogue — the kind they would expect from your best team member. Natural pauses, empathetic tone, and contextual awareness make the conversation indistinguishable from a real person on the other end of the line.',
+    },
+    {
+      question: 'Can the system manage intricate bookings and unusual requirements?',
+      answer:
+        'Definitely. MassaPro is purpose-built to navigate complicated reservations, last-minute modifications, bespoke service requests, and anything outside the ordinary. When a situation calls for extra clarity, the AI proactively asks follow-up questions to get every detail right. And for those truly edge-case scenarios, it smoothly hands the conversation over to a member of your staff so nothing ever slips through the cracks.',
+    },
+    {
+      question: 'How fast can my business be up and running?',
+      answer:
+        'You can go live in as little as five to ten minutes. The process is straightforward: link your existing phone number (or grab a new one), tailor MassaPro\'s responses to match your brand voice and services, and you\'re all set. If you ever need a helping hand, our support team is just a click away inside the "Help" tab of your CRM dashboard, ready to walk you through anything in real time.',
+    },
+    {
+      question: 'What happens when a conversation requires a human touch?',
+      answer:
+        'MassaPro is intelligent enough to sense when a caller\'s needs go beyond what automated assistance can provide. In those moments, it instantly and gracefully transfers the call to the right person on your team — no awkward pauses, no dropped connections. You stay in full control of the escalation rules, deciding exactly which situations get routed where, so your customers always feel taken care of.',
+    },
+    {
+      question: 'How do I connect MassaPro to my current business phone line?',
+      answer:
+        'You have two simple options. The easiest is call forwarding: just redirect your existing business number to MassaPro, and every incoming call is answered by your AI. Alternatively, you can pick a brand-new number through MassaPro and start fresh. Either way, the setup takes only a few minutes, and we walk you through every step inside the "Call Forwarding" tab of the CRM — no technical expertise required.',
+    },
+  ]
+
+  return (
+    <section id="faq" className="py-20 lg:py-28 bg-gradient-to-b from-white to-purple-50/30">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <Badge className="bg-purple-100 text-purple-800 mb-4">FAQ</Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
+              Frequently Asked <span className="purple-gradient-text">Questions</span>
+            </h2>
+            <p className="text-lg text-gray-500">
+              Everything you need to know about MassaPro. Can&apos;t find the answer you&apos;re looking for? Reach out to our team.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="space-y-4">
+          {faqs.map((faq, i) => (
+            <FadeIn key={i} delay={i * 0.08}>
+              <div
+                className={`rounded-2xl border transition-all duration-300 ${
+                  openIndex === i
+                    ? 'border-purple-300 shadow-lg shadow-purple-100/50 bg-white'
+                    : 'border-purple-100 bg-white hover:border-purple-200 hover:shadow-md hover:shadow-purple-50'
+                }`}
+              >
+                <button
+                  className="w-full flex items-center justify-between px-6 py-5 text-left"
+                  onClick={() => setOpenIndex(openIndex === i ? null : i)}
+                  aria-expanded={openIndex === i}
+                >
+                  <span className="text-base sm:text-lg font-semibold text-gray-800 pr-4">{faq.question}</span>
+                  <ChevronRight
+                    className={`w-5 h-5 text-purple-500 flex-shrink-0 transition-transform duration-300 ${
+                      openIndex === i ? 'rotate-90' : ''
+                    }`}
+                  />
+                </button>
+                <div
+                  className={`overflow-hidden transition-all duration-300 ${
+                    openIndex === i ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                  }`}
+                >
+                  <div className="px-6 pb-5 pt-0">
+                    <p className="text-gray-600 leading-relaxed">{faq.answer}</p>
+                  </div>
+                </div>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        {/* CTA under FAQ */}
+        <FadeIn delay={0.4}>
+          <div className="mt-12 text-center">
+            <p className="text-gray-500 mb-4">Still have questions?</p>
+            <Button
+              size="lg"
+              className="purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 text-base px-8 py-6"
+              onClick={() => {
+                const formOpenBtn = document.querySelector('[data-open-form]') as HTMLButtonElement | null
+                if (formOpenBtn) formOpenBtn.click()
+              }}
+            >
+              <Mail className="w-5 h-5 mr-2" />
+              Contact Our Team
+            </Button>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
 /* ──────────────────── Footer ──────────────────── */
 function Footer() {
   return (
@@ -1567,6 +1672,7 @@ export default function Home() {
         <PricingSection onOpenForm={openForm} />
         <TestimonialsSection />
         <CTASection onOpenForm={openForm} />
+        <FAQSection />
       </main>
       <Footer />
       <LeadForm open={formOpen} onOpenChange={setFormOpen} />
