@@ -360,6 +360,136 @@ function ChannelBar() {
   )
 }
 
+/* ──────────────────── Integrations Section ──────────────────── */
+function IntegrationsSection() {
+  const integrations = [
+    { name: 'Instagram', logo: '/integ-instagram.png' },
+    { name: 'Facebook', logo: '/integ-facebook.png' },
+    { name: 'Telegram', logo: '/integ-telegram.png' },
+    { name: 'Google Drive', logo: '/integ-gdrive.png' },
+    { name: 'OneDrive', logo: '/integ-onedrive.png' },
+    { name: 'Calendly', logo: '/integ-calendly.png' },
+    { name: 'Discord', logo: '/integ-discord.png' },
+    { name: 'WhatsApp', logo: '/integ-whatsapp.png' },
+    { name: 'Slack', logo: '/integ-slack.png' },
+    { name: 'Salesforce', logo: '/integ-salesforce.png' },
+    { name: 'HubSpot', logo: '/integ-hubspot.png' },
+    { name: 'Mailchimp', logo: '/integ-mailchimp.png' },
+    { name: 'Trello', logo: '/integ-trello.png' },
+    { name: 'Asana', logo: '/integ-asana.png' },
+    { name: 'Jira', logo: '/integ-jira.png' },
+    { name: 'Gmail', logo: '/integ-gmail.png' },
+    { name: 'Outlook', logo: '/integ-outlook.png' },
+    { name: 'Zoom', logo: '/integ-zoom.png' },
+    { name: 'Google Meet', logo: '/integ-gmeet.png' },
+    { name: 'Teams', logo: '/integ-teams.png' },
+    { name: 'QuickBooks', logo: '/integ-quickbooks.png' },
+    { name: 'Google Sheets', logo: '/integ-gsheets.png' },
+    { name: 'Google Docs', logo: '/integ-gdocs.png' },
+    { name: 'Excel', logo: '/integ-excel.png' },
+    { name: 'Google Forms', logo: '/integ-gforms.png' },
+    { name: 'PayPal', logo: '/integ-paypal.png' },
+    { name: 'Stripe', logo: '/integ-stripe.png' },
+    { name: 'Google Calendar', logo: '/integ-gcal.png' },
+    { name: 'DaySchedule', logo: '/integ-dayschedule.png' },
+    { name: 'Zoho Bookings', logo: '/integ-zoho.png' },
+  ]
+
+  return (
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-purple-50/30 to-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <Badge className="bg-purple-100 text-purple-800 mb-4">Integrations</Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
+              Integrates with Your <span className="purple-gradient-text">Favorite Platform</span>
+            </h2>
+            <p className="text-lg text-gray-500">
+              MassaPro connects seamlessly with the tools you already use. From calendars and CRMs to payment gateways and communication platforms — everything works together.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="relative">
+          {/* Gradient fade edges */}
+          <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-purple-50/30 to-transparent z-10 pointer-events-none" />
+          <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+          {/* Scrolling row 1 - left to right */}
+          <div className="flex gap-6 mb-6 animate-scroll-left">
+            {integrations.slice(0, 15).map((item, i) => (
+              <div
+                key={`${item.name}-1`}
+                className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
+              >
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
+                <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
+              </div>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {integrations.slice(0, 15).map((item, i) => (
+              <div
+                key={`${item.name}-1d`}
+                className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
+              >
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
+                <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Scrolling row 2 - right to left */}
+          <div className="flex gap-6 animate-scroll-right">
+            {integrations.slice(15).map((item, i) => (
+              <div
+                key={`${item.name}-2`}
+                className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
+              >
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
+                <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
+              </div>
+            ))}
+            {/* Duplicate for seamless loop */}
+            {integrations.slice(15).map((item, i) => (
+              <div
+                key={`${item.name}-2d`}
+                className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
+              >
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
+                <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ──────────────────── AI Positions Section ──────────────────── */
 function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
   const positions = [
@@ -1427,6 +1557,7 @@ export default function Home() {
       <main className="flex-grow">
         <HeroSection onOpenForm={openForm} />
         <ChannelBar />
+        <IntegrationsSection />
         <KeyTermsBanner />
         <PositionsSection onOpenForm={openForm} />
         <HowItWorks />
