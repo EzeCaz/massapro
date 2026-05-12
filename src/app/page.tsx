@@ -1031,21 +1031,21 @@ function TestimonialsSection() {
         "MassaPro's AI receptionist has transformed our salon. We never miss a booking anymore, and our clients love the instant confirmation and reminders. Our no-show rate dropped by 45%!",
       name: 'Sarah Mitchell',
       role: 'Owner, Luxe Hair Studio',
-      photo: '/testimonial-1-v2.png',
+      photo: '/testimonial-1-v3.png',
     },
     {
       quote:
         "As a busy veterinary clinic, we needed 24/7 coverage. MassaPro handles emergency triage, appointment scheduling, and follow-ups flawlessly. It's like having three extra staff members.",
       name: 'Dr. James Rodriguez',
       role: 'Director, Paws & Claws Vet',
-      photo: '/testimonial-2-v2.png',
+      photo: '/testimonial-2-v3.png',
     },
     {
       quote:
         'The multi-channel support is incredible. Our clients reach us on WhatsApp, Instagram, phone — and MassaPro handles it all seamlessly. Best investment we made this year.',
       name: 'Lisa Chen',
       role: 'Manager, Glow Beauty Bar',
-      photo: '/testimonial-3-v2.png',
+      photo: '/testimonial-3-v3.png',
     },
   ]
 
