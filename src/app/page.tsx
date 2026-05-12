@@ -1058,7 +1058,7 @@ function Footer() {
               alt="MassaPro Logo"
               width={160}
               height={48}
-              className="h-10 w-auto brightness-0 invert mb-4"
+              className="h-10 w-auto mb-4"
             />
             <p className="text-sm text-gray-400 leading-relaxed">
               Intelligent AI receptionists and secretaries for businesses that never want to miss a customer again.
@@ -1094,11 +1094,7 @@ function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-purple-400" />
-                hello@massapro.ai
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-purple-400" />
-                +1 (800) 555-0199
+                <a href="mailto:hello@massapro.com" className="hover:text-purple-400 transition-colors">hello@massapro.com</a>
               </li>
               <li className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-purple-400" />
