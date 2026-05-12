@@ -1101,7 +1101,7 @@ function IndustriesSection() {
   const industries = [
     {
       name: 'Hair Salons',
-      image: '/industry-hair-salon.png',
+      image: '/industry-hair-salon-v2.png',
       description:
         'MassaPro transforms hair salons by handling the full appointment lifecycle — from booking and confirmation to reminders and follow-ups. Your AI receptionist answers calls, responds to texts, and manages your calendar so your stylists can focus on what they do best: creating beautiful hair.',
       advantages: [
