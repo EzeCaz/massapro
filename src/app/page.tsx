@@ -1377,21 +1377,37 @@ function IndustriesSection() {
                   </div>
 
                   <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
-                    <Link href={industry.href} className="block group">
-                      <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50 group-hover:shadow-2xl group-hover:shadow-purple-200/50 transition-all duration-300">
+                    {industry.href ? (
+                      <Link href={industry.href} className="block group">
+                        <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50 group-hover:shadow-2xl group-hover:shadow-purple-200/50 transition-all duration-300">
+                          <Image
+                            src={industry.image}
+                            alt={industry.name}
+                            width={1344}
+                            height={768}
+                            className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent" />
+                          <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 text-purple-700 font-semibold text-sm group-hover:bg-purple-700 group-hover:text-white transition-all duration-300">
+                            Learn More <ArrowRight className="w-4 h-4" />
+                          </div>
+                        </div>
+                      </Link>
+                    ) : (
+                      <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50">
                         <Image
                           src={industry.image}
                           alt={industry.name}
                           width={1344}
                           height={768}
-                          className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
+                          className="w-full h-auto object-cover"
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent" />
-                        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 text-purple-700 font-semibold text-sm group-hover:bg-purple-700 group-hover:text-white transition-all duration-300">
-                          Learn More <ArrowRight className="w-4 h-4" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/10 to-transparent" />
+                        <div className="absolute bottom-4 right-4 bg-gray-400/90 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 text-white font-semibold text-sm">
+                          Coming Soon
                         </div>
                       </div>
-                    </Link>
+                    )}
                   </div>
                 </div>
 
