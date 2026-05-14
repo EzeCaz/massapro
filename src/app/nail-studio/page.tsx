@@ -594,7 +594,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'VIP recognition with preference-based booking',
         'Proactive rebooking and seasonal promotion campaigns',
       ],
-      image: '/nailstudio-concierge-v2.png',
+      image: '/nailstudio-concierge-v3.png',
     },
   ]
 
