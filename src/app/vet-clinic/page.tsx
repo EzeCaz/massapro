@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -37,6 +36,9 @@ import {
   BarChart3,
   Languages,
   Palette,
+  DollarSign,
+  TrendingUp,
+  Scissors,
 } from 'lucide-react'
 
 /* ──────────────────── Scroll Animation Hook ──────────────────── */
@@ -78,6 +80,17 @@ function FadeIn({ children, className = '', delay = 0 }: { children: React.React
   )
 }
 
+/* ──────────────────── Custom Mic Icon ──────────────────── */
+function Mic(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" x2="12" y1="19" y2="22" />
+    </svg>
+  )
+}
+
 /* ──────────────────── Navbar ──────────────────── */
 function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
   const [scrolled, setScrolled] = useState(false)
@@ -93,8 +106,8 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
     { label: 'Services', href: '#services' },
     { label: 'Skills', href: '#skills' },
     { label: 'Flows', href: '#flows' },
-    { label: 'Industries', href: '#industries' },
     { label: 'Pricing', href: '#pricing' },
+    { label: 'FAQ', href: '#faq' },
   ]
 
   return (
@@ -107,7 +120,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          {/* Logo */}
+          {/* Logo + Badge */}
           <a href="#" className="flex items-center gap-2">
             <Image
               src="/massapro-logo-v2.png"
@@ -117,6 +130,9 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
               className="h-10 w-auto lg:h-12"
               priority
             />
+            <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 text-xs font-semibold hidden sm:inline-flex">
+              Vet Clinic
+            </Badge>
           </a>
 
           {/* Desktop Nav */}
@@ -131,6 +147,14 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
                 <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all group-hover:w-full" />
               </a>
             ))}
+            <a
+              href="https://massapro.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-sm font-medium text-gray-500 hover:text-purple-700 transition-colors"
+            >
+              Main Site
+            </a>
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
@@ -142,7 +166,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
               <a href="#pricing">View Plans</a>
             </Button>
             <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={onOpenForm}>
-                Get Started <ArrowRight className="w-4 h-4 ml-1" />
+              Get Started <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
 
@@ -171,12 +195,21 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
                 {link.label}
               </a>
             ))}
+            <a
+              href="https://massapro.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileOpen(false)}
+              className="block text-sm font-medium text-gray-500 hover:text-purple-700 py-2"
+            >
+              Main Site
+            </a>
             <div className="pt-2 flex flex-col gap-2">
               <Button variant="outline" className="border-purple-300 text-purple-700 w-full" asChild>
-                <a href="#pricing">View Plans</a>
+                <a href="#pricing" onClick={() => setMobileOpen(false)}>View Plans</a>
               </Button>
               <Button className="purple-gradient text-white w-full" onClick={() => { setMobileOpen(false); onOpenForm(); }}>
-                  Get Started
+                Get Started
               </Button>
             </div>
           </div>
@@ -204,13 +237,13 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
             <FadeIn>
               <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium">
                 <Sparkles className="w-4 h-4 mr-1" />
-                AI-Powered Business Automation
+                AI-Powered Veterinary Clinic Automation
               </Badge>
             </FadeIn>
 
             <FadeIn delay={0.1}>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
-                Your{' '}
+                Your Veterinary Clinic&apos;s{' '}
                 <span className="purple-gradient-text">AI Secretary</span>
                 <br />
                 That Never Sleeps
@@ -219,8 +252,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
 
             <FadeIn delay={0.2}>
               <p className="text-lg sm:text-xl text-gray-600 max-w-xl leading-relaxed">
-                MassaPro delivers intelligent, voice + text Agentic AI receptionists and secretaries tailored for
-                hair salons, nail studios, beauty shops, veterinary clinics, and more.
+                The $18.2B US veterinary industry loses thousands every month — 35% of calls go unanswered during peak hours while vets are in exam rooms, emergency triage demands strain your staff, and after-hours booking demand is skyrocketing. MassaPro captures every call, triages emergencies, and books appointments 24/7.
               </p>
             </FadeIn>
 
@@ -231,8 +263,8 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                   className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
                   onClick={onOpenForm}
                 >
-                    Start Free Consultation
-                    <ArrowRight className="w-5 h-5 ml-2" />
+                  Start Free Consultation
+                  <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button
                   size="lg"
@@ -260,7 +292,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                       </div>
                     ))}
                   </div>
-                  <span className="text-sm text-gray-500">500+ businesses trust us</span>
+                  <span className="text-sm text-gray-500">500+ vet clinics trust us</span>
                 </div>
                 <div className="flex items-center gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
@@ -282,8 +314,8 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
               {/* Main image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
                 <Image
-                  src="/hero-secretary-v2.png"
-                  alt="Professional AI Receptionist"
+                  src="/vetclinic-hero-v2.png"
+                  alt="Professional AI Receptionist for Veterinary Clinics"
                   width={864}
                   height={1152}
                   className="w-full h-auto object-cover"
@@ -293,33 +325,64 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 via-transparent to-transparent" />
               </div>
 
-              {/* Floating card */}
+              {/* Floating card - Bookings */}
               <div className="absolute -bottom-4 -left-4 sm:bottom-8 sm:-left-8 glass-card rounded-2xl p-4 shadow-xl animate-float">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full purple-gradient flex items-center justify-center">
-                    <Phone className="w-5 h-5 text-white" />
+                    <Calendar className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">Calls Managed</p>
-                    <p className="text-xs text-purple-600 font-medium">2,847 this month</p>
+                    <p className="text-sm font-semibold text-gray-800">Bookings Captured</p>
+                    <p className="text-xs text-purple-600 font-medium">$10K+<span className="text-[0.5rem]">/month</span></p>
                   </div>
                 </div>
               </div>
 
-              {/* Floating card 2 */}
+              {/* Floating card 2 - Calls */}
               <div className="absolute -top-4 -right-4 sm:top-8 sm:-right-8 glass-card rounded-2xl p-4 shadow-xl animate-float" style={{ animationDelay: '1s' }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
-                    <Check className="w-5 h-5 text-green-600" />
+                    <Phone className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">Appointments</p>
-                    <p className="text-xs text-green-600 font-medium">98.5% booked</p>
+                    <p className="text-sm font-semibold text-gray-800">Calls Answered</p>
+                    <p className="text-xs text-green-600 font-medium">100% coverage</p>
                   </div>
                 </div>
               </div>
             </div>
           </FadeIn>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────────── Stats Banner ──────────────────── */
+function StatsBanner() {
+  const stats = [
+    { value: '$18.2B', label: 'Vet Market', icon: DollarSign },
+    { value: '35%', label: 'Calls Unanswered', icon: Phone },
+    { value: '72%', label: 'Clients Prefer Text', icon: MessageSquare },
+    { value: '40%', label: 'Bookings After Hours', icon: Clock },
+    { value: '<10s', label: 'AI Response Time', icon: Zap },
+    { value: '60%', label: 'No-Show Recovery', icon: TrendingUp },
+  ]
+
+  return (
+    <section className="py-16 purple-gradient relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/vetclinic-interior-v2.png')] bg-cover bg-center opacity-5" />
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
+          {stats.map((stat, i) => (
+            <FadeIn key={stat.label} delay={i * 0.08}>
+              <div className="text-center text-white">
+                <stat.icon className="w-8 h-8 mx-auto mb-3 text-purple-200" />
+                <div className="text-2xl sm:text-3xl font-bold mb-1">{stat.value}</div>
+                <div className="text-purple-200 text-xs sm:text-sm font-medium">{stat.label}</div>
+              </div>
+            </FadeIn>
+          ))}
         </div>
       </div>
     </section>
@@ -406,7 +469,7 @@ function IntegrationsSection() {
               Integrates with Your <span className="purple-gradient-text">Favorite Platform</span>
             </h2>
             <p className="text-lg text-gray-500">
-              MassaPro connects seamlessly with the tools you already use. From calendars and CRMs to payment gateways and communication platforms — everything works together.
+              MassaPro connects seamlessly with the tools you already use — including Covetrus, IDEXX, and eVetPractice for veterinary clinics. From practice management systems and CRMs to payment gateways and booking platforms, everything works together.
             </p>
           </div>
         </FadeIn>
@@ -491,32 +554,47 @@ function IntegrationsSection() {
   )
 }
 
-/* ──────────────────── AI Positions Section ──────────────────── */
+/* ──────────────────── AI Positions Section (Services) ──────────────────── */
 function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
   const positions = [
     {
-      title: 'AI Receptionist',
+      title: 'AI Receptionist for Vet Clinics',
       description:
-        'Your front-line AI that answers calls, responds to messages, and routes inquiries — 24/7. Never miss a customer again with an AI receptionist that sounds natural, understands context, and handles multiple conversations simultaneously across all your channels.',
+        'Your front-line AI that answers calls, responds to texts, and routes inquiries — 24/7. While your vets are in exam rooms or performing procedures, MassaPro captures every call and message. Never lose another booking to voicemail with an AI receptionist that handles emergency triage, routes urgent cases to the on-call vet, processes prescription refill requests, and manages multiple conversations simultaneously across every channel.',
       icon: Phone,
-      features: ['Answer inbound calls 24/7', 'Route messages intelligently', 'Greet customers by name', 'Transfer to human when needed'],
-      image: '/vet-receptionist-v2.png',
+      features: [
+        'Answer every call — even during peak hours and after close',
+        'Emergency triage — assess urgency and route to on-call veterinarian',
+        'Process prescription refill requests and route to pharmacy',
+        'Greet returning pet owners by name with their pet\'s history',
+      ],
+      image: '/vetclinic-receptionist-v2.png',
     },
     {
-      title: 'AI Secretary / Virtual Assistant',
+      title: 'AI Secretary for Vet Clinics',
       description:
-        'A full-featured AI secretary that manages your calendar, books appointments, sends reminders, and handles administrative tasks. Think of it as having a dedicated assistant who works around the clock without breaks, ensuring nothing falls through the cracks.',
+        'A full-featured AI secretary that manages your complex veterinary appointment calendar, handles multi-duration bookings, sends vaccination reminders, and processes deposits. Think of it as a dedicated assistant who understands that a wellness exam takes 30 minutes, a dental cleaning requires 2 hours, and surgery drop-offs need special prep instructions — and schedules accordingly without ever double-booking your vets.',
       icon: Calendar,
-      features: ['Manage appointments & calendar', 'Send confirmations & reminders', 'Handle rescheduling instantly', 'Process payments & deposits'],
-      image: '/team-secretaries-v4.png',
+      features: [
+        'Manage multi-duration appointments with smart time-slot logic',
+        'Send confirmations & reminders — reduce no-shows by up to 60%',
+        'Coordinate multi-provider schedules across veterinarians',
+        'Vaccination reminders and preventive care scheduling',
+      ],
+      image: '/vetclinic-secretary-v2.png',
     },
     {
-      title: 'AI Concierge',
+      title: 'AI Concierge for Vet Clinics',
       description:
-        'Premium full-service AI that goes beyond basic tasks. Your AI Concierge provides personalized customer experiences, proactive outreach, loyalty management, and multi-language support — the ultimate white-glove service for discerning businesses.',
+        'Premium full-service AI that delivers the white-glove experience your pet owners expect. Your AI Concierge provides proactive aftercare follow-ups, VIP pet owner management, and multi-language support — the ultimate caring experience that turns first-time visitors into lifelong clients who trust your clinic with every member of their furry family.',
       icon: Star,
-      features: ['Multi-language support (5+)', 'Proactive outreach campaigns', 'Personalized customer experiences', 'White-glove VIP service'],
-      image: '/ai-concierge-v4.png',
+      features: [
+        'Multi-language support (5+) for diverse pet owner communities',
+        'Personalized aftercare follow-ups and post-visit check-ins',
+        'VIP pet owner recognition with preference-based scheduling',
+        'Proactive wellness plan enrollment and preventive care campaigns',
+      ],
+      image: '/vetclinic-concierge-v2.png',
     },
   ]
 
@@ -530,7 +608,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
               Choose Your <span className="purple-gradient-text">AI Role</span>
             </h2>
             <p className="text-lg text-gray-500">
-              Each position is a specialized AI persona designed to handle specific business functions. Deploy one or combine them for complete coverage.
+              Each position is a specialized AI persona designed for veterinary clinic operations. Deploy one or combine them for complete coverage — from front desk to VIP concierge.
             </p>
           </div>
         </FadeIn>
@@ -562,7 +640,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
                     ))}
                   </ul>
                   <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={onOpenForm}>
-                      Get Started <ArrowRight className="w-4 h-4 ml-2" />
+                    Get Started <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
                 <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
@@ -586,58 +664,129 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
   )
 }
 
+/* ──────────────────── Advantages Section ──────────────────── */
+function AdvantagesSection() {
+  const advantages = [
+    {
+      title: 'Revenue Recovery',
+      stat: '$10K+/month',
+      description: 'Recapture missed booking revenue from the 35% of calls that go unanswered while your vets are in exam rooms or performing procedures.',
+      icon: DollarSign,
+    },
+    {
+      title: 'Lightning-Fast Response',
+      stat: '<10s',
+      description: 'AI responds to every inquiry in under 10 seconds — before your competitor even picks up the phone.',
+      icon: Zap,
+    },
+    {
+      title: 'After-Hours Booking',
+      stat: '40%',
+      description: '40% of veterinary appointments are booked outside business hours. Capture them all with 24/7 AI coverage.',
+      icon: Clock,
+    },
+    {
+      title: 'No-Show Reduction',
+      stat: '60%',
+      description: 'Recover 60% of no-shows with automated reminders and deposit handling for veterinary procedures.',
+      icon: TrendingUp,
+    },
+  ]
+
+  return (
+    <section className="py-20 lg:py-28 bg-gradient-to-b from-white to-purple-50/30">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <Badge className="bg-purple-100 text-purple-800 mb-4">Advantages</Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
+              Why Vet Clinics <span className="purple-gradient-text">Choose MassaPro</span>
+            </h2>
+            <p className="text-lg text-gray-500">
+              Every missed call is a missed wellness exam, a missed vaccination, a missed surgery booking. MassaPro stops the revenue leak.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {advantages.map((adv, i) => (
+            <FadeIn key={adv.title} delay={i * 0.1}>
+              <Card className="group h-full border-purple-100 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-300 bg-white/80 backdrop-blur-sm text-center">
+                <CardHeader>
+                  <div className="w-14 h-14 rounded-xl purple-gradient flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-200/50 group-hover:scale-110 transition-transform duration-300">
+                    <adv.icon className="w-7 h-7 text-white" />
+                  </div>
+                  <div className="text-3xl sm:text-4xl font-bold purple-gradient-text mb-1">
+                    {adv.stat.split('/').map((part, i) =>
+                      i === 0 ? part : <span key={i} className="text-base sm:text-lg">/{part}</span>
+                    )}
+                  </div>
+                  <CardTitle className="text-lg">{adv.title}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-gray-600 text-sm leading-relaxed">{adv.description}</p>
+                </CardContent>
+              </Card>
+            </FadeIn>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
 /* ──────────────────── Skills Section ──────────────────── */
 function SkillsSection() {
   const skills = [
     {
       title: 'Appointment Management',
       description:
-        'Full lifecycle appointment handling — from booking and confirmation to reminders and follow-ups. Reduce no-shows by up to 40% with automated reminders and easy rescheduling.',
+        'Full lifecycle appointment handling for veterinary services — from booking wellness exams, vaccinations, and dental cleanings to sending reminders and follow-ups. Handles multi-duration scheduling so a 30-minute wellness check never blocks a 2-hour surgery slot. Reduce no-shows by up to 60% with automated reminders.',
       icon: Calendar,
+    },
+    {
+      title: 'Emergency Triage & Routing',
+      description:
+        'AI-powered emergency assessment that evaluates the urgency of incoming calls, provides immediate guidance to pet owners, and routes critical cases to the on-call veterinarian. Your AI understands the difference between a routine question and a true emergency — ensuring every pet gets the right care at the right time.',
+      icon: Sparkles,
+    },
+    {
+      title: 'Payment & Deposit Handling',
+      description:
+        'Securely process deposits for surgical procedures, handle cancellation fees, send invoices, and manage billing inquiries. Require deposits for dental cleanings and surgeries to slash no-shows. Integrated with your preferred payment gateways for seamless transactions.',
+      icon: CreditCard,
     },
     {
       title: 'Customer Support & FAQ',
       description:
-        'Instantly answer common questions about services, pricing, hours, and policies. Your AI learns from every interaction, getting smarter and more accurate over time.',
+        'Instantly answer common pet health questions about prep instructions, post-surgery care, pricing, service durations, and policies. &ldquo;When should I get my puppy vaccinated?&rdquo; &ldquo;How do I prepare my pet for surgery?&rdquo; Your AI knows the answers and learns from every interaction.',
       icon: Headphones,
-    },
-    {
-      title: 'Payment & Billing Handling',
-      description:
-        'Securely process payments, handle deposits, send invoices, and manage billing inquiries. Integrated with your preferred payment gateways for seamless transactions.',
-      icon: CreditCard,
-    },
-    {
-      title: 'Lead Qualification & Sales',
-      description:
-        'Qualify incoming leads automatically with smart questionnaires, score them based on your criteria, and route hot leads to your team for immediate follow-up.',
-      icon: Users,
     },
     {
       title: 'Marketing & Follow-up',
       description:
-        'Automate post-service follow-ups, review requests, loyalty campaigns, and re-engagement sequences. Turn one-time visitors into loyal customers effortlessly.',
+        'Automate post-visit aftercare follow-ups, review requests, vaccination reminder campaigns, wellness plan promotions, and re-engagement sequences. Send personalized pet care tips between visits that keep pet owners loyal and coming back for preventive care.',
       icon: Megaphone,
     },
     {
       title: 'Multi-Channel Orchestration',
       description:
-        'Unify conversations across phone, SMS, WhatsApp, Telegram, social media, and web chat. One consistent AI experience across every touchpoint your customers use.',
+        'Unify conversations across phone, SMS, WhatsApp, web chat, and more. One consistent AI experience across every touchpoint your pet owners use — because 72% of them prefer texting over calling.',
       icon: Globe,
     },
   ]
 
   return (
-    <section id="skills" className="py-20 lg:py-28 bg-gradient-to-b from-white to-purple-50/50">
+    <section id="skills" className="py-20 lg:py-28 bg-gradient-to-b from-purple-50/50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="text-center max-w-3xl mx-auto mb-16">
             <Badge className="bg-purple-100 text-purple-800 mb-4">Core Skills</Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Powerful <span className="purple-gradient-text">AI Skills</span> for Your Business
+              Powerful <span className="purple-gradient-text">AI Skills</span> for Vet Clinics
             </h2>
             <p className="text-lg text-gray-500">
-              Each skill costs $500/month in the Basic tier. Mix and match to build the perfect AI assistant for your unique needs.
+              Each skill is purpose-built for veterinary clinic operations. Mix and match to build the perfect AI assistant for your unique services.
             </p>
           </div>
         </FadeIn>
@@ -668,33 +817,36 @@ function SkillsSection() {
 function FlowsSection() {
   const flowCategories = [
     {
-      category: 'Appointment Management',
+      category: 'Appointment Booking',
       icon: Calendar,
       flows: [
-        'Appointment Booking, Confirmation & Reminders',
-        'Cancellation & Rescheduling',
-        'Pre-Appointment Preparation Calls',
-        'Availability & Waitlist Management',
+        'Vaccination & Wellness Scheduling with Smart Duration',
+        'Surgery Prep & Booking with Pre-Procedure Instructions',
+        'Same-Day Urgent Care Availability & Triage',
+        'Multi-Pet Booking for Families with Multiple Animals',
+        'Boarding & Grooming Add-Ons During Wellness Visits',
       ],
     },
     {
-      category: 'Customer Engagement',
+      category: 'Pet Owner Engagement',
       icon: Heart,
       flows: [
-        'Customer Support & FAQ Handling',
-        'Post-Service Follow-up & Review Requests',
-        'No-Show Recovery',
-        'Loyalty & Promotion Campaigns',
+        'Post-Visit Aftercare Follow-up with Customized Pet Care Instructions',
+        'Emergency Triage & Guidance for After-Hours Calls',
+        'Vaccination & Prevention Reminders on Schedule',
+        'New Client Onboarding with Pet Intake Forms',
+        'Senior Pet Wellness Check Campaigns',
       ],
     },
     {
-      category: 'Business Operations',
+      category: 'Clinic Operations',
       icon: Workflow,
       flows: [
-        'Payment Processing & Deposit Confirmation',
-        'Lead Qualification',
-        'Emergency Handling (especially for vets)',
-        'Marketing & Follow-up Automation',
+        'Prescription Refill Processing & Notification',
+        'Deposit & Cancellation Handling for Procedures',
+        'Insurance & Billing Inquiries Management',
+        'Multi-Vet Schedule Coordination & Provider Matching',
+        'Review Request & Referral Automation',
       ],
     },
   ]
@@ -709,7 +861,7 @@ function FlowsSection() {
               Customizable <span className="purple-gradient-text">AI Flows</span>
             </h2>
             <p className="text-lg text-gray-500">
-              Pre-built workflows ready to deploy, or we customize flows for your industry — from hair color consultations for salons to pet vaccination reminders for veterinary clinics.
+              Pre-built workflows designed for veterinary clinic operations — from emergency triage routing to post-surgery follow-ups. Deploy as-is or we customize for your unique practice.
             </p>
           </div>
         </FadeIn>
@@ -747,13 +899,12 @@ function FlowsSection() {
         {/* Industry customization callout */}
         <FadeIn delay={0.3}>
           <div className="mt-12 rounded-2xl purple-gradient p-8 lg:p-12 text-white text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/salon-interior-v2.png')] bg-cover bg-center opacity-10" />
+            <div className="absolute inset-0 bg-[url('/vetclinic-interior-v2.png')] bg-cover bg-center opacity-5" />
             <div className="relative">
               <Sparkles className="w-8 h-8 mx-auto mb-4 text-purple-200" />
-              <h3 className="text-2xl sm:text-3xl font-bold mb-4">Industry-Customized Flows</h3>
+              <h3 className="text-2xl sm:text-3xl font-bold mb-4">Built for Vet Clinics</h3>
               <p className="text-purple-100 max-w-2xl mx-auto text-lg">
-                We customize flows for your industry — hair color consultation for salons, pet vaccination reminders
-                for vets, treatment follow-ups for beauty clinics, and more. Your AI speaks your industry&apos;s language.
+                Every flow is customized for veterinary clinic workflows — from emergency triage protocols to post-surgery aftercare reminders, from vaccination scheduling to multi-provider coordination. Your AI speaks your vet clinic&apos;s language.
               </p>
             </div>
           </div>
@@ -771,7 +922,7 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
       price: '$500',
       period: '/month',
       description:
-        'Perfect for small single-location businesses such as independent hair salons, nail studios, or small beauty shops.',
+        'Perfect for independent veterinary clinics and small practices offering wellness exams, vaccinations, and basic care with a single location.',
       features: [
         '1 Skill included',
         'Up to 3 Flows/Tasks',
@@ -784,36 +935,38 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
       badge: '',
     },
     {
-      name: 'Growth',
-      price: '$900',
+      name: 'Professional',
+      price: '$1,200',
       period: '/month',
       description:
-        'Ideal for growing businesses with moderate volume. Great for busier salons or veterinary clinics handling more daily inquiries.',
+        'Ideal for busy veterinary clinics with multiple veterinarians, surgical services, dental procedures, and higher patient volume.',
       features: [
         '2 Skills included',
         'Up to 8 Flows/Tasks',
-        '4,000 interactions/month',
+        '5,000 interactions/month',
         'Priority support',
-        'Advanced analytics',
-        'Custom AI personality tuning',
+        'Advanced analytics & no-show tracking',
+        'Custom AI personality for your brand',
+        'Emergency triage & deposit handling',
       ],
       highlight: true,
       badge: 'Most Popular',
     },
     {
-      name: 'Premium',
-      price: '$1,500',
-      period: '/month',
+      name: 'Enterprise',
+      price: 'Custom',
+      period: '',
       description:
-        'Designed for medium-sized or multi-location businesses with higher demand. White-glove service with dedicated optimization.',
+        'Designed for multi-location veterinary groups, specialty & emergency hospitals, or veterinary brands needing VIP concierge-level service.',
       features: [
-        '3 Skills included',
-        '16 Flows/Tasks',
-        '8,000 interactions/month',
-        'Dedicated AI optimization',
-        'Custom integrations',
-        'Multi-language (2 languages)',
-        'White-glove service',
+        '3+ Skills included',
+        'Unlimited Flows/Tasks',
+        '10,000+ interactions/month',
+        'Dedicated AI optimization team',
+        'Custom integrations (Covetrus, IDEXX, eVetPractice)',
+        'Multi-language support (2+ languages)',
+        'White-glove VIP concierge service',
+        'Multi-location management',
       ],
       highlight: false,
       badge: '',
@@ -879,7 +1032,7 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
                     }`}
                     onClick={onOpenForm}
                   >
-                      Get Started <ArrowRight className="w-4 h-4 ml-2" />
+                    {tier.name === 'Enterprise' ? 'Contact Sales' : 'Get Started'} <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </CardFooter>
               </Card>
@@ -924,128 +1077,29 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
   )
 }
 
-function Mic(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" x2="12" y1="19" y2="22" />
-    </svg>
-  )
-}
-
-/* ──────────────────── How It Works ──────────────────── */
-function HowItWorks() {
-  const steps = [
-    {
-      step: '01',
-      title: 'Consult & Customize',
-      description:
-        'We start with a free consultation to understand your business, customers, and workflows. Together, we choose the right AI position, skills, and flows tailored to your industry.',
-      icon: MessageSquare,
-    },
-    {
-      step: '02',
-      title: 'Deploy & Connect',
-      description:
-        'Your AI is configured and connected to your channels — phone, SMS, WhatsApp, social media, CRM, and more. We handle the technical setup so you can focus on what you do best.',
-      icon: Zap,
-    },
-    {
-      step: '03',
-      title: 'Monitor & Optimize',
-      description:
-        'Our team continuously monitors your AI performance, fine-tunes responses, and optimizes workflows. With advanced analytics, you always know how your AI is performing.',
-      icon: BarChart3,
-    },
-  ]
-
-  return (
-    <section className="py-20 lg:py-28 bg-gradient-to-b from-white to-purple-50/30">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <Badge className="bg-purple-100 text-purple-800 mb-4">How It Works</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Up and Running <span className="purple-gradient-text">in 3 Steps</span>
-            </h2>
-          </div>
-        </FadeIn>
-
-        <div className="grid md:grid-cols-3 gap-8 relative">
-          {/* Connecting line */}
-          <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-purple-200 via-purple-400 to-purple-200" />
-
-          {steps.map((step, i) => (
-            <FadeIn key={step.step} delay={i * 0.15}>
-              <div className="text-center relative">
-                <div className="w-16 h-16 rounded-2xl purple-gradient flex items-center justify-center mx-auto mb-6 shadow-xl shadow-purple-200/50 relative z-10">
-                  <step.icon className="w-7 h-7 text-white" />
-                </div>
-                <span className="text-sm font-bold text-purple-400 uppercase tracking-wider">Step {step.step}</span>
-                <h3 className="text-xl font-bold mt-2 mb-3">{step.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{step.description}</p>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ──────────────────── Stats Section ──────────────────── */
-function StatsSection() {
-  const stats = [
-    { value: '98.5%', label: 'Appointment Fill Rate', icon: Calendar },
-    { value: '40%', label: 'No-Show Reduction', icon: Clock },
-    { value: '24/7', label: 'Always Available', icon: Globe },
-    { value: '<3s', label: 'Average Response Time', icon: Zap },
-  ]
-
-  return (
-    <section className="py-16 purple-gradient relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/multi-channel-v2.png')] bg-cover bg-center opacity-5" />
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, i) => (
-            <FadeIn key={stat.label} delay={i * 0.1}>
-              <div className="text-center text-white">
-                <stat.icon className="w-8 h-8 mx-auto mb-3 text-purple-200" />
-                <div className="text-3xl sm:text-4xl font-bold mb-1">{stat.value}</div>
-                <div className="text-purple-200 text-sm font-medium">{stat.label}</div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 /* ──────────────────── Testimonials Section ──────────────────── */
 function TestimonialsSection() {
   const testimonials = [
     {
       quote:
-        "MassaPro's AI receptionist has transformed our salon. We never miss a booking anymore, and our clients love the instant confirmation and reminders. Our no-show rate dropped by 45%!",
-      name: 'Sarah Mitchell',
-      role: 'Owner, Luxe Hair Studio',
-      photo: '/testimonial-1-v3.png',
+        "We were missing 20+ calls a day during peak hours — our vets can't stop mid-exam to answer the phone. MassaPro now captures every single call, triages emergencies to our on-call vet, and books wellness exams and vaccinations on the spot. We recovered over $10K in the first month alone.",
+      name: 'Dr. Sarah Mitchell',
+      role: 'Owner, Paws & Claws Veterinary',
+      photo: '/review-nail-1.png',
     },
     {
       quote:
-        "As a busy veterinary clinic, we needed 24/7 coverage. MassaPro handles emergency triage, appointment scheduling, and follow-ups flawlessly. It's like having three extra staff members.",
-      name: 'Dr. James Rodriguez',
-      role: 'Director, Paws & Claws Vet',
-      photo: '/testimonial-2-v3.png',
+        "Our clients expect compassionate, responsive service. MassaPro recognizes them by name, knows their pet's history, and schedules follow-ups without any back-and-forth. It's caring service at scale — our client retention rate jumped from 45% to 72%.",
+      name: 'Dr. Emily Rodriguez',
+      role: 'Director, Greenfield Animal Hospital',
+      photo: '/review-nail-2.png',
     },
     {
       quote:
-        'The multi-channel support is incredible. Our clients reach us on WhatsApp, Instagram, phone — and MassaPro handles it all seamlessly. Best investment we made this year.',
-      name: 'Lisa Chen',
-      role: 'Manager, Glow Beauty Bar',
-      photo: '/testimonial-3-v3.png',
+        "The post-visit aftercare follow-ups with customized pet care instructions have been a game-changer for our surgical patients. Pet owners feel supported during recovery, and our rebooking rate for dental cleanings and wellness exams went from 30% to over 60%. Best investment we've made.",
+      name: 'Dr. Amanda Chen',
+      role: 'Founder, Willowbrook Vet Clinic',
+      photo: '/review-nail-3.png',
     },
   ]
 
@@ -1056,7 +1110,7 @@ function TestimonialsSection() {
           <div className="text-center max-w-3xl mx-auto mb-16">
             <Badge className="bg-purple-100 text-purple-800 mb-4">Testimonials</Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Loved by <span className="purple-gradient-text">Businesses</span>
+              Loved by <span className="purple-gradient-text">Vet Clinic Owners</span>
             </h2>
           </div>
         </FadeIn>
@@ -1097,348 +1151,6 @@ function TestimonialsSection() {
   )
 }
 
-/* ──────────────────── Industries Section ──────────────────── */
-function IndustriesSection() {
-  const industries = [
-    {
-      name: 'Med Spas',
-      href: '/med-spa',
-      image: '/industry-med-spa-v2.png',
-      description:
-        'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. Up to 39% of Med Spa calls go unanswered, and 85% of those callers will never call back. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds, books high-value treatments 24/7, and converts weekend traffic that your competitors lose to voicemail.',
-      advantages: [
-        'Recover $30,000+/month in missed call revenue — 85% of unanswered callers never return',
-        'Engage leads within 10 seconds — conversion drops 80% after 5 minutes of silence',
-        'Capture 68% weekend conversion rates while your staff is off — your competitors go to voicemail',
-        'Reduce no-shows from 20% to under 5% with deposit handling and intelligent re-scheduling',
-      ],
-      services: ['Instant Lead Qualification & Booking', 'Deposit & Payment Handling', 'No-Show Recovery & Slot Refilling', 'Weekend & After-Hours Call Capture', 'CRM Sync (Zenoti, Pabau, and more)', 'Upsell Add-On Treatments Automatically'],
-      reviews: [
-        {
-          quote: 'We were missing 8–10 calls a day during peak hours. At an average booking value of $350, that was over $30,000 a month in lost revenue. MassaPro now answers every single call and books them on the spot — our revenue jumped 32% in the first month.',
-          name: 'Dr. Vanessa Carter',
-          role: 'Founder, Radiance Med Spa',
-          photo: '/review-medspa-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Our weekend callers were going straight to voicemail while our competitors\' phones were silent too. Now MassaPro captures that 68% weekend conversion rate, and we\'re booking 40+ extra appointments every weekend without a single staff member on the clock.',
-          name: 'Tanya Brooks',
-          role: 'Operations Director, Glow Aesthetics Clinic',
-          photo: '/review-medspa-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'The no-show problem was killing us — 18% of slots wasted every week. MassaPro\'s deposit handling and smart re-scheduling cut that to under 4%. It doesn\'t just answer the phone; it sells. It upsells filler add-ons and secures deposits like a trained closer.',
-          name: 'Dr. Markus Lindgren',
-          role: 'Medical Director, Revive Wellness & Aesthetics',
-          photo: '/review-medspa-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
-      name: 'Hair Salons',
-      href: '/hair-salon',
-      image: '/industry-hair-salon-v2.png',
-      description:
-        'MassaPro transforms hair salons by handling the full appointment lifecycle — from booking and confirmation to reminders and follow-ups. Your AI receptionist answers calls, responds to texts, and manages your calendar so your stylists can focus on what they do best: creating beautiful hair.',
-      advantages: [
-        'Reduce no-shows by up to 40% with automated SMS reminders',
-        'Handle color consultation requests and pre-appointment questions',
-        'Manage rebooking and loyalty campaigns automatically',
-        'Process deposit payments and cancellation fees seamlessly',
-      ],
-      services: ['Appointment Booking & Reminders', 'Color Consultation Intake', 'Deposit & Payment Handling', 'Post-Visit Follow-up & Reviews', 'Rebooking & Loyalty Campaigns'],
-      reviews: [
-        {
-          quote: 'Our no-show rate dropped from 30% to under 10%. The AI handles all appointment calls and texts so my stylists never have to stop mid-cut to answer the phone.',
-          name: 'Jessica Torres',
-          role: 'Owner, Luxe Hair Studio',
-          photo: '/review-hair-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'I used to miss 15+ calls a day during peak hours. Now MassaPro books appointments while I focus on my clients. Revenue is up 25% in just two months.',
-          name: 'Amanda Chen',
-          role: 'Manager, Style & Co. Salon',
-          photo: '/review-hair-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'The deposit handling alone saved us thousands. No more wasted time slots from no-shows. Clients love the instant confirmation and reminder texts.',
-          name: 'Rachel Morrison',
-          role: 'Founder, The Hair Lounge',
-          photo: '/review-hair-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
-      name: 'Nail Studios',
-      href: '/nail-studio',
-      image: '/industry-nail-studio.png',
-      description:
-        'Nail studios thrive on repeat bookings and walk-in traffic. MassaPro captures every call and message, books appointments around your technicians\' availability, and keeps your chairs full. From gel manicures to intricate nail art consultations, your AI handles it all with a personal touch.',
-      advantages: [
-        'Capture every walk-in inquiry even during busy hours',
-        'Automate appointment confirmations and same-day reminders',
-        'Handle nail art consultation requests with pre-set Q&A',
-        'Run seasonal promotion campaigns automatically',
-      ],
-      services: ['Appointment Booking & Reminders', 'Walk-In Inquiry Handling', 'Service & Pricing FAQ', 'Promotion & Seasonal Campaigns', 'Post-Service Follow-up'],
-      reviews: [
-        {
-          quote: 'We get so many texts asking about availability and pricing. MassaPro handles all of them instantly and books appointments directly into our calendar. It\'s like having a 24/7 front desk.',
-          name: 'Sophia Williams',
-          role: 'Owner, Diamond Nails',
-          photo: '/review-nail-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Our seasonal promotions used to require manual texting to hundreds of clients. Now MassaPro sends personalized offers automatically, and our rebooking rate jumped 35%.',
-          name: 'Mia Johnson',
-          role: 'Manager, Pink Petals Studio',
-          photo: '/review-nail-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'Clients love that they can book at midnight after seeing our Instagram posts. MassaPro captures those late-night inquiries that we used to lose completely.',
-          name: 'Emily Park',
-          role: 'Founder, Nail Artistry Co.',
-          photo: '/review-nail-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
-      name: 'Beauty Shops',
-      href: '/beauty-shop',
-      image: '/industry-beauty-shop.png',
-      description:
-        'Beauty shops and spas juggle multiple services, varied appointment durations, and a clientele that expects premium communication. MassaPro\'s AI Concierge handles complex booking scenarios, package deals, and VIP client management — delivering the white-glove experience your brand promises.',
-      advantages: [
-        'Manage multi-service bookings with correct time slots',
-        'Handle VIP and loyalty program inquiries automatically',
-        'Send personalized post-treatment care instructions',
-        'Coordinate multi-stylist bookings for bridal and group packages',
-      ],
-      services: ['Multi-Service Booking', 'VIP & Loyalty Management', 'Package & Gift Card Sales', 'Post-Treatment Follow-up', 'Bridal & Group Booking Coordination'],
-      reviews: [
-        {
-          quote: 'Managing bridal party bookings used to be a nightmare of back-and-forth calls. MassaPro coordinates the entire group — multiple services, multiple stylists, one seamless booking experience.',
-          name: 'Olivia Grant',
-          role: 'Owner, Glow Beauty Bar',
-          photo: '/review-beauty-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Our VIP clients expect instant responses. MassaPro recognizes them by name, knows their preferences, and books their favorite treatments without any friction. It\'s luxury service at scale.',
-          name: 'Isabella Martinez',
-          role: 'Director, Serene Spa & Beauty',
-          photo: '/review-beauty-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'The post-treatment follow-ups with care instructions and rebooking prompts have been a game-changer. Our client retention went from 45% to over 70% in three months.',
-          name: 'Hannah Brooks',
-          role: 'Founder, Aura Aesthetics',
-          photo: '/review-beauty-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
-      name: 'Veterinary Clinics',
-      href: '/vet-clinic',
-      image: '/industry-vet-clinic.png',
-      description:
-        'Veterinary clinics face unique challenges — emergency triage, vaccination schedules, and worried pet owners who need reassurance at all hours. MassaPro\'s AI handles emergency call routing, appointment scheduling, and prescription refill requests, ensuring no pet owner is left waiting when it matters most.',
-      advantages: [
-        'Triage emergency calls and route to on-call vets immediately',
-        'Automate vaccination reminders and annual checkup scheduling',
-        'Handle prescription refill requests without staff intervention',
-        'Send pre-appointment preparation instructions to pet owners',
-      ],
-      services: ['Emergency Triage & Routing', 'Vaccination & Checkup Reminders', 'Appointment Scheduling', 'Prescription Refill Handling', 'Pre-Visit Preparation Instructions'],
-      reviews: [
-        {
-          quote: 'Before MassaPro, emergency calls after hours went to voicemail. Now our AI triages the call, gathers critical info, and routes emergencies to the on-call vet instantly. It\'s been life-saving — literally.',
-          name: 'Dr. Marcus Webb',
-          role: 'Director, Paws & Claws Veterinary',
-          photo: '/review-vet-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Vaccination reminders alone have increased our preventive care visits by 40%. Pet owners appreciate the timely texts, and our revenue from wellness visits has grown significantly.',
-          name: 'Dr. Sarah Kim',
-          role: 'Owner, Healthy Paws Clinic',
-          photo: '/review-vet-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'We handle 200+ calls daily. MassaPro now manages the routine ones — prescription refills, appointment confirmations, and basic questions — freeing our staff for the patients in front of us.',
-          name: 'Dr. David Patel',
-          role: 'Lead Vet, Greenfield Animal Hospital',
-          photo: '/review-vet-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
-      name: 'Wellness Centers',
-      image: '/industry-wellness.png',
-      description:
-        'Wellness centers offer diverse services — yoga classes, meditation sessions, massage therapy, and holistic treatments. MassaPro unifies all your booking channels, manages class capacities, handles waitlists, and sends personalized wellness tips to keep your community engaged between visits.',
-      advantages: [
-        'Manage class bookings with real-time capacity tracking',
-        'Automate waitlist management for popular sessions',
-        'Send personalized wellness tips and content between visits',
-        'Handle multi-practitioner scheduling seamlessly',
-      ],
-      services: ['Class & Session Booking', 'Waitlist & Capacity Management', 'Multi-Practitioner Scheduling', 'Wellness Content & Engagement', 'Membership & Package Management'],
-      reviews: [
-        {
-          quote: 'Our yoga classes used to have 30% no-show rates. Now with automated reminders and a smart waitlist that fills cancelled spots, every class runs at capacity. Revenue per class is up 45%.',
-          name: 'Lindsay Fowler',
-          role: 'Owner, ZenFlow Wellness Center',
-          photo: '/review-wellness-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Managing 8 different practitioners with varying schedules was overwhelming. MassaPro handles all the scheduling complexity — clients book the right therapist at the right time, every time.',
-          name: 'Ryan Cooper',
-          role: 'Director, Harmony Wellness Hub',
-          photo: '/review-wellness-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'The personalized wellness tips between visits keep our clients engaged and coming back. It feels like we have a dedicated community manager working around the clock.',
-          name: 'Maya Thompson',
-          role: 'Founder, Bloom Holistic Center',
-          photo: '/review-wellness-3.png',
-          stars: 5,
-        },
-      ],
-    },
-  ]
-
-  return (
-    <section id="industries" className="py-20 lg:py-28 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <Badge className="bg-purple-100 text-purple-800 mb-4">Industries</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Built for <span className="purple-gradient-text">Your Industry</span>
-            </h2>
-            <p className="text-lg text-gray-500">
-              MassaPro is tailored to the unique needs of each industry. Discover how our AI receptionist, secretary, and concierge transform businesses like yours.
-            </p>
-          </div>
-        </FadeIn>
-
-        <div className="space-y-28">
-          {industries.map((industry, idx) => (
-            <FadeIn key={industry.name} delay={0.1}>
-              <div>
-                {/* Industry Header with Image */}
-                <div className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 === 1 ? '' : ''}`}>
-                  <div className={idx % 2 === 1 ? 'lg:order-2' : ''}>
-                    <h3 className="text-3xl sm:text-4xl font-bold mb-4">{industry.name}</h3>
-                    <p className="text-gray-600 text-lg leading-relaxed mb-8">{industry.description}</p>
-
-                    {/* Advantages */}
-                    <div className="mb-8">
-                      <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">Key Advantages</h4>
-                      <ul className="space-y-3">
-                        {industry.advantages.map((adv) => (
-                          <li key={adv} className="flex items-start gap-3">
-                            <div className="w-5 h-5 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                              <Check className="w-3 h-3 text-purple-600" />
-                            </div>
-                            <span className="text-gray-700">{adv}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    {/* Services */}
-                    <div>
-                      <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">AI Services Included</h4>
-                      <div className="flex flex-wrap gap-2">
-                        {industry.services.map((svc) => (
-                          <Badge key={svc} variant="outline" className="border-purple-200 text-purple-700 bg-purple-50/50 hover:bg-purple-100">
-                            {svc}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
-                    <Link href={industry.href} className="block group">
-                      <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50 group-hover:shadow-2xl group-hover:shadow-purple-200/50 transition-all duration-300">
-                        <Image
-                          src={industry.image}
-                          alt={industry.name}
-                          width={1344}
-                          height={768}
-                          className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent" />
-                        <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 text-purple-700 font-semibold text-sm group-hover:bg-purple-700 group-hover:text-white transition-all duration-300">
-                          Learn More <ArrowRight className="w-4 h-4" />
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Reviews */}
-                <div className="mt-12">
-                  <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-6 text-center">
-                    What {industry.name} Owners Say
-                  </h4>
-                  <div className="grid md:grid-cols-3 gap-6">
-                    {industry.reviews.map((review) => (
-                      <Card key={review.name} className="border-purple-100 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300">
-                        <CardHeader className="pb-2">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Image
-                              src={review.photo}
-                              alt={review.name}
-                              width={40}
-                              height={40}
-                              className="w-10 h-10 rounded-full object-cover border-2 border-purple-200"
-                            />
-                            <div>
-                              <p className="font-semibold text-sm text-gray-800">{review.name}</p>
-                              <p className="text-xs text-gray-500">{review.role}</p>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1 mb-1">
-                            {Array.from({ length: review.stars }).map((_, i) => (
-                              <Star key={i} className="w-4 h-4 fill-purple-500 text-purple-500" />
-                            ))}
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-gray-600 text-sm leading-relaxed italic">&ldquo;{review.quote}&rdquo;</p>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-      </div>
-    </section>
-  )
-}
-
 /* ──────────────────── CTA Section ──────────────────── */
 function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
   return (
@@ -1446,22 +1158,21 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="relative rounded-3xl purple-gradient overflow-hidden shadow-2xl shadow-purple-300/30">
-            <div className="absolute inset-0 bg-[url('/salon-interior-v2.png')] bg-cover bg-center opacity-10" />
+            <div className="absolute inset-0 bg-[url('/vetclinic-hero-v2.png')] bg-cover bg-center opacity-10" />
             <div className="relative px-8 py-16 lg:px-16 lg:py-20 text-center">
               <FadeIn>
-                <Badge className="bg-white/20 text-white hover:bg-white/20 mb-4 border-0">Get Started Today</Badge>
+                <Badge className="bg-white/20 text-white hover:bg-white/20 mb-4 border-0">Stop Losing Revenue</Badge>
               </FadeIn>
               <FadeIn delay={0.1}>
                 <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-                  Ready to Transform
+                  Stop Losing $10K+/Month
                   <br />
-                  Your Business?
+                  in Missed Veterinary Appointments
                 </h2>
               </FadeIn>
               <FadeIn delay={0.2}>
                 <p className="text-purple-100 text-lg max-w-2xl mx-auto mb-8">
-                  Start with a free consultation. No setup fee, no hidden costs. Just intelligent AI that works
-                  around the clock so you can focus on what matters most — your customers.
+                  Every unanswered call is a pet owner who books with your competitor. Start with a free consultation — no setup fee, no hidden costs. Your AI receptionist deploys in minutes and starts capturing revenue immediately.
                 </p>
               </FadeIn>
               <FadeIn delay={0.3}>
@@ -1471,8 +1182,8 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
                     className="bg-white text-purple-700 hover:bg-purple-50 shadow-xl text-base px-8 py-6 font-semibold"
                     onClick={onOpenForm}
                   >
-                      <Mail className="w-5 h-5 mr-2" />
-                      Contact Us
+                    <Mail className="w-5 h-5 mr-2" />
+                    Get Free Consultation
                   </Button>
                   <Button
                     size="lg"
@@ -1480,39 +1191,13 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
                     className="bg-white text-purple-700 hover:bg-purple-50 border-white/30 text-base px-8 py-6 font-semibold"
                     onClick={onOpenForm}
                   >
-                      View Pricing <ArrowRight className="w-5 h-5 ml-2" />
+                    View Pricing <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </div>
               </FadeIn>
             </div>
           </div>
         </FadeIn>
-      </div>
-    </section>
-  )
-}
-
-/* ──────────────────── Key Terms Banner ──────────────────── */
-function KeyTermsBanner() {
-  const terms = [
-    { icon: Check, text: 'No setup fee' },
-    { icon: Calendar, text: '3-month minimum' },
-    { icon: MessageSquare, text: '1,000 interactions included' },
-    { icon: Phone, text: 'Inbound included' },
-    { icon: CreditCard, text: 'Monthly billing' },
-  ]
-
-  return (
-    <section className="py-8 bg-purple-50 border-y border-purple-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10">
-          {terms.map((term) => (
-            <div key={term.text} className="flex items-center gap-2 text-purple-700">
-              <term.icon className="w-4 h-4" />
-              <span className="text-sm font-medium">{term.text}</span>
-            </div>
-          ))}
-        </div>
       </div>
     </section>
   )
@@ -1524,29 +1209,44 @@ function FAQSection() {
 
   const faqs = [
     {
-      question: 'Will callers notice they are speaking with an AI?',
+      question: 'Can MassaPro handle emergency triage and route urgent calls to the on-call vet?',
       answer:
-        'Not at all. MassaPro leverages cutting-edge voice synthesis and conversational intelligence so every interaction feels warm, fluid, and genuinely human. Your clients experience a seamless, helpful dialogue — the kind they would expect from your best team member. Natural pauses, empathetic tone, and contextual awareness make the conversation indistinguishable from a real person on the other end of the line.',
+        'Absolutely. MassaPro is designed for veterinary clinics with emergency triage capabilities. Our AI assesses the urgency of incoming calls using structured triage questions — distinguishing between true emergencies (difficulty breathing, severe bleeding, poisoning) and urgent-but-stable situations. It immediately routes critical cases to your on-call veterinarian, provides basic first-aid guidance to pet owners while they wait, and ensures no emergency call ever goes to voicemail.',
     },
     {
-      question: 'Can the system manage intricate bookings and unusual requirements?',
+      question: 'How does MassaPro handle vaccination reminders and preventive care scheduling?',
       answer:
-        'Definitely. MassaPro is purpose-built to navigate complicated reservations, last-minute modifications, bespoke service requests, and anything outside the ordinary. When a situation calls for extra clarity, the AI proactively asks follow-up questions to get every detail right. And for those truly edge-case scenarios, it smoothly hands the conversation over to a member of your staff so nothing ever slips through the cracks.',
+        'MassaPro automates the entire vaccination and preventive care lifecycle. It tracks each pet\'s vaccination schedule based on species, age, and medical history, sends automated reminders at the right intervals (puppy/kitten series, annual boosters, triannual rabies), and books the appointments directly when pet owners confirm. It also manages preventive care reminders for heartworm, flea/tick medication refills, and senior wellness screenings — keeping your patients on schedule and your revenue predictable.',
     },
     {
-      question: 'How fast can my business be up and running?',
+      question: 'Can MassaPro manage scheduling across multiple veterinarians with different specialties?',
       answer:
-        'You can go live in as little as five to ten minutes. The process is straightforward: link your existing phone number (or grab a new one), tailor MassaPro\'s responses to match your brand voice and services, and you\'re all set. If you ever need a helping hand, our support team is just a click away inside the "Help" tab of your CRM dashboard, ready to walk you through anything in real time.',
+        'Yes — MassaPro excels at multi-veterinarian coordination. Each vet can have their own profile with specialties (surgery, dentistry, dermatology, exotics), service durations, and availability. The AI matches patients to the right vet based on the requested service, ensuring your surgeons handle surgical cases while general practitioners take wellness exams. No more mismatched bookings or wasted specialist time.',
     },
     {
-      question: 'What happens when a conversation requires a human touch?',
+      question: 'Does MassaPro integrate with Covetrus, IDEXX, or eVetPractice?',
       answer:
-        'MassaPro is intelligent enough to sense when a caller\'s needs go beyond what automated assistance can provide. In those moments, it instantly and gracefully transfers the call to the right person on your team — no awkward pauses, no dropped connections. You stay in full control of the escalation rules, deciding exactly which situations get routed where, so your customers always feel taken care of.',
+        'Yes. MassaPro integrates with the most popular veterinary practice management systems including Covetrus, IDEXX, and eVetPractice. Your AI syncs appointments, reads availability, and writes bookings directly into your existing system. No double-entry, no manual syncing — everything flows seamlessly between MassaPro and your practice management software.',
     },
     {
-      question: 'How do I connect MassaPro to my current business phone line?',
+      question: 'How does MassaPro handle after-hours emergency calls?',
       answer:
-        'You have two simple options. The easiest is call forwarding: just redirect your existing business number to MassaPro, and every incoming call is answered by your AI. Alternatively, you can pick a brand-new number through MassaPro and start fresh. Either way, the setup takes only a few minutes, and we walk you through every step inside the "Call Forwarding" tab of the CRM — no technical expertise required.',
+        'When your clinic is closed, MassaPro becomes your 24/7 emergency line. It answers every after-hours call, performs AI triage to assess urgency, provides calm and clear guidance to worried pet owners, and routes true emergencies to your on-call veterinarian. For non-urgent calls, it books appointments for the next available slot and sends confirmation via text. Pet owners get the reassurance they need, and your vets only get woken up for real emergencies.',
+    },
+    {
+      question: 'Can MassaPro process prescription refill requests?',
+      answer:
+        'Definitely. Prescription refill processing is one of our most time-saving features for vet clinics. MassaPro captures refill requests by phone or text, verifies the pet and medication details, checks the last refill date, routes the request to the appropriate vet for approval, and notifies the pet owner when it\'s ready for pickup. It eliminates the constant back-and-forth phone tag that consumes hours of your staff\'s day.',
+    },
+    {
+      question: 'How much does MassaPro cost for a vet clinic, and what\'s the ROI?',
+      answer:
+        'Plans start at $500/month for the Basic tier. Most vet clinics recover that investment within the first week — a single captured surgery booking ($500+) or dental cleaning ($300+) more than covers the daily cost. With an average of $10K+/month in recovered missed revenue, the ROI is substantial. We offer a free consultation to analyze your specific call volume and booking patterns so you can see the exact impact before committing.',
+    },
+    {
+      question: 'Can MassaPro send post-surgery aftercare follow-ups automatically?',
+      answer:
+        'Yes. Post-surgery aftercare follow-ups are fully automated and customizable for each procedure type. MassaPro sends personalized aftercare instructions via text or email at the right intervals — 24 hours, 3 days, and 7 days post-procedure. It checks on the pet\'s recovery, answers common post-op questions, and flags any concerns that need veterinary attention. Pet owners feel supported throughout recovery, and your team saves hours of manual follow-up calls.',
     },
   ]
 
@@ -1557,10 +1257,10 @@ function FAQSection() {
           <div className="text-center max-w-3xl mx-auto mb-16">
             <Badge className="bg-purple-100 text-purple-800 mb-4">FAQ</Badge>
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Frequently Asked <span className="purple-gradient-text">Questions</span>
+              Vet Clinic <span className="purple-gradient-text">FAQ</span>
             </h2>
             <p className="text-lg text-gray-500">
-              Everything you need to know about MassaPro. Can&apos;t find the answer you&apos;re looking for? Reach out to our team.
+              Questions specific to veterinary clinics. Can&apos;t find the answer you&apos;re looking for? Reach out to our team.
             </p>
           </div>
         </FadeIn>
@@ -1625,6 +1325,15 @@ function FAQSection() {
 
 /* ──────────────────── Footer ──────────────────── */
 function Footer() {
+  const industries = [
+    { name: 'Med Spas', href: '/med-spa', active: false, disabled: false },
+    { name: 'Hair Salons', href: '/hair-salon', active: false, disabled: false },
+    { name: 'Nail Studios', href: '/nail-studio', active: false, disabled: false },
+    { name: 'Beauty Shops', href: '/beauty-shop', active: false, disabled: false },
+    { name: 'Veterinary Clinics', href: '/vet-clinic', active: true, disabled: false },
+    { name: 'Wellness Centers', href: '#', active: false, disabled: true },
+  ]
+
   return (
     <footer className="bg-gray-950 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -1639,7 +1348,7 @@ function Footer() {
               className="h-10 w-auto mb-4"
             />
             <p className="text-sm text-gray-400 leading-relaxed">
-              Intelligent AI receptionists and secretaries for businesses that never want to miss a customer again.
+              Intelligent AI receptionists and secretaries for veterinary clinics that never want to miss a pet owner again.
             </p>
           </div>
 
@@ -1658,12 +1367,17 @@ function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Industries</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="/med-spa" className="hover:text-purple-400 transition-colors">Med Spas</a></li>
-              <li><a href="/hair-salon" className="hover:text-purple-400 transition-colors">Hair Salons</a></li>
-              <li><a href="/nail-studio" className="hover:text-purple-400 transition-colors">Nail Studios</a></li>
-              <li><a href="/beauty-shop" className="hover:text-purple-400 transition-colors">Beauty Shops</a></li>
-              <li><a href="/vet-clinic" className="hover:text-purple-400 transition-colors">Veterinary Clinics</a></li>
-              <li><span className="text-gray-500">Wellness Centers</span></li>
+              {industries.map((ind) => (
+                <li key={ind.name}>
+                  {ind.disabled ? (
+                    <span className="text-gray-600 cursor-not-allowed">{ind.name} <span className="text-xs text-gray-700">(Coming Soon)</span></span>
+                  ) : ind.active ? (
+                    <span className="text-purple-400 font-semibold">{ind.name}</span>
+                  ) : (
+                    <a href={ind.href} className="hover:text-purple-400 transition-colors">{ind.name}</a>
+                  )}
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -1698,7 +1412,7 @@ function Footer() {
 }
 
 /* ──────────────────── Main Page ──────────────────── */
-export default function Home() {
+export default function VetClinicPage() {
   const [formOpen, setFormOpen] = useState(false)
 
   const openForm = useCallback(() => setFormOpen(true), [])
@@ -1708,22 +1422,20 @@ export default function Home() {
       <Navbar onOpenForm={openForm} />
       <main className="flex-grow">
         <HeroSection onOpenForm={openForm} />
+        <StatsBanner />
         <ChannelBar />
         <IntegrationsSection />
-        <KeyTermsBanner />
         <PositionsSection onOpenForm={openForm} />
-        <HowItWorks />
-        <StatsSection />
+        <AdvantagesSection />
         <SkillsSection />
         <FlowsSection />
-        <IndustriesSection />
         <PricingSection onOpenForm={openForm} />
         <TestimonialsSection />
         <CTASection onOpenForm={openForm} />
         <FAQSection />
       </main>
       <Footer />
-      <LeadForm open={formOpen} onOpenChange={setFormOpen} />
+      <LeadForm open={formOpen} onOpenChange={setFormOpen} prefillIndustry="Vet Clinic" />
     </div>
   )
 }
