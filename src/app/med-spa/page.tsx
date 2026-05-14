@@ -333,7 +333,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">Bookings Captured</p>
-                    <p className="text-xs text-purple-600 font-medium">$15K+/month</p>
+                    <p className="text-xs text-purple-600 font-medium">$15K+<span className="text-[0.5rem]">/month</span></p>
                   </div>
                 </div>
               </div>
@@ -716,7 +716,11 @@ function AdvantagesSection() {
                   <div className="w-14 h-14 rounded-xl purple-gradient flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-200/50 group-hover:scale-110 transition-transform duration-300">
                     <adv.icon className="w-7 h-7 text-white" />
                   </div>
-                  <div className="text-3xl sm:text-4xl font-bold purple-gradient-text mb-1">{adv.stat}</div>
+                  <div className="text-3xl sm:text-4xl font-bold purple-gradient-text mb-1">
+                    {adv.stat.split('/').map((part, i) =>
+                      i === 0 ? part : <span key={i} className="text-base sm:text-lg">/{part}</span>
+                    )}
+                  </div>
                   <CardTitle className="text-lg">{adv.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
