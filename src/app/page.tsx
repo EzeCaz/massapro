@@ -1100,6 +1100,42 @@ function TestimonialsSection() {
 function IndustriesSection() {
   const industries = [
     {
+      name: 'Med Spas',
+      image: '/industry-med-spa-v2.png',
+      description:
+        'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. Up to 39% of Med Spa calls go unanswered, and 85% of those callers will never call back. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds, books high-value treatments 24/7, and converts weekend traffic that your competitors lose to voicemail.',
+      advantages: [
+        'Recover $30,000+/month in missed call revenue — 85% of unanswered callers never return',
+        'Engage leads within 10 seconds — conversion drops 80% after 5 minutes of silence',
+        'Capture 68% weekend conversion rates while your staff is off — your competitors go to voicemail',
+        'Reduce no-shows from 20% to under 5% with deposit handling and intelligent re-scheduling',
+      ],
+      services: ['Instant Lead Qualification & Booking', 'Deposit & Payment Handling', 'No-Show Recovery & Slot Refilling', 'Weekend & After-Hours Call Capture', 'CRM Sync (Zenoti, Pabau, and more)', 'Upsell Add-On Treatments Automatically'],
+      reviews: [
+        {
+          quote: 'We were missing 8–10 calls a day during peak hours. At an average booking value of $350, that was over $30,000 a month in lost revenue. MassaPro now answers every single call and books them on the spot — our revenue jumped 32% in the first month.',
+          name: 'Dr. Vanessa Carter',
+          role: 'Founder, Radiance Med Spa',
+          photo: '/review-medspa-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Our weekend callers were going straight to voicemail while our competitors\' phones were silent too. Now MassaPro captures that 68% weekend conversion rate, and we\'re booking 40+ extra appointments every weekend without a single staff member on the clock.',
+          name: 'Tanya Brooks',
+          role: 'Operations Director, Glow Aesthetics Clinic',
+          photo: '/review-medspa-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The no-show problem was killing us — 18% of slots wasted every week. MassaPro\'s deposit handling and smart re-scheduling cut that to under 4%. It doesn\'t just answer the phone; it sells. It upsells filler add-ons and secures deposits like a trained closer.',
+          name: 'Dr. Markus Lindgren',
+          role: 'Medical Director, Revive Wellness & Aesthetics',
+          photo: '/review-medspa-3.png',
+          stars: 5,
+        },
+      ],
+    },
+    {
       name: 'Hair Salons',
       image: '/industry-hair-salon-v2.png',
       description:
@@ -1275,42 +1311,6 @@ function IndustriesSection() {
           name: 'Maya Thompson',
           role: 'Founder, Bloom Holistic Center',
           photo: '/review-wellness-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
-      name: 'Med Spas',
-      image: '/industry-med-spa-v2.png',
-      description:
-        'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. Up to 39% of Med Spa calls go unanswered, and 85% of those callers will never call back. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds, books high-value treatments 24/7, and converts weekend traffic that your competitors lose to voicemail.',
-      advantages: [
-        'Recover $30,000+/month in missed call revenue — 85% of unanswered callers never return',
-        'Engage leads within 10 seconds — conversion drops 80% after 5 minutes of silence',
-        'Capture 68% weekend conversion rates while your staff is off — your competitors go to voicemail',
-        'Reduce no-shows from 20% to under 5% with deposit handling and intelligent re-scheduling',
-      ],
-      services: ['Instant Lead Qualification & Booking', 'Deposit & Payment Handling', 'No-Show Recovery & Slot Refilling', 'Weekend & After-Hours Call Capture', 'CRM Sync (Zenoti, Pabau, and more)', 'Upsell Add-On Treatments Automatically'],
-      reviews: [
-        {
-          quote: 'We were missing 8–10 calls a day during peak hours. At an average booking value of $350, that was over $30,000 a month in lost revenue. MassaPro now answers every single call and books them on the spot — our revenue jumped 32% in the first month.',
-          name: 'Dr. Vanessa Carter',
-          role: 'Founder, Radiance Med Spa',
-          photo: '/review-medspa-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Our weekend callers were going straight to voicemail while our competitors\' phones were silent too. Now MassaPro captures that 68% weekend conversion rate, and we\'re booking 40+ extra appointments every weekend without a single staff member on the clock.',
-          name: 'Tanya Brooks',
-          role: 'Operations Director, Glow Aesthetics Clinic',
-          photo: '/review-medspa-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'The no-show problem was killing us — 18% of slots wasted every week. MassaPro\'s deposit handling and smart re-scheduling cut that to under 4%. It doesn\'t just answer the phone; it sells. It upsells filler add-ons and secures deposits like a trained closer.',
-          name: 'Dr. Markus Lindgren',
-          role: 'Medical Director, Revive Wellness & Aesthetics',
-          photo: '/review-medspa-3.png',
           stars: 5,
         },
       ],
