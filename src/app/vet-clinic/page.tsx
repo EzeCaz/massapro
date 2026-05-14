@@ -314,7 +314,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
               {/* Main image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
                 <Image
-                  src="/vetclinic-hero-v2.png"
+                  src="/vetclinic-hero-v3.png"
                   alt="Professional AI Receptionist for Veterinary Clinics"
                   width={864}
                   height={1152}
@@ -1158,7 +1158,7 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="relative rounded-3xl purple-gradient overflow-hidden shadow-2xl shadow-purple-300/30">
-            <div className="absolute inset-0 bg-[url('/vetclinic-hero-v2.png')] bg-cover bg-center opacity-10" />
+            <div className="absolute inset-0 bg-[url('/vetclinic-hero-v3.png')] bg-cover bg-center opacity-10" />
             <div className="relative px-8 py-16 lg:px-16 lg:py-20 text-center">
               <FadeIn>
                 <Badge className="bg-white/20 text-white hover:bg-white/20 mb-4 border-0">Stop Losing Revenue</Badge>
