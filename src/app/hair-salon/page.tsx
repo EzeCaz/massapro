@@ -581,7 +581,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Handle same-day rescheduling for color and treatment appointments',
         'Process deposits and cancellation fees for premium color services',
       ],
-      image: '/hairsalon-secretary-v2.png',
+      image: '/hairsalon-secretary-v3.png',
     },
     {
       title: 'AI Concierge for Hair Salons',
