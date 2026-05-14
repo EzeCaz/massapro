@@ -314,7 +314,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
               {/* Main image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
                 <Image
-                  src="/nailstudio-hero.png"
+                  src="/nailstudio-hero-v2.png"
                   alt="Professional AI Receptionist for Nail Studios"
                   width={864}
                   height={1152}
@@ -333,7 +333,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                   </div>
                   <div>
                     <p className="text-sm font-semibold text-gray-800">Bookings Captured</p>
-                    <p className="text-xs text-purple-600 font-medium">$8K+/month</p>
+                    <p className="text-xs text-purple-600 font-medium">$8K+<span className="text-[0.5rem]">/month</span></p>
                   </div>
                 </div>
               </div>
@@ -371,7 +371,7 @@ function StatsBanner() {
 
   return (
     <section className="py-16 purple-gradient relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/nailstudio-interior.png')] bg-cover bg-center opacity-5" />
+      <div className="absolute inset-0 bg-[url('/nailstudio-interior-v2.png')] bg-cover bg-center opacity-5" />
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
           {stats.map((stat, i) => (
@@ -568,7 +568,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Greet returning clients by name with their service history',
         'Capture walk-in requests and waitlist sign-ups instantly',
       ],
-      image: '/nailstudio-receptionist.png',
+      image: '/nailstudio-receptionist-v2.png',
     },
     {
       title: 'AI Secretary for Nail Studios',
@@ -581,7 +581,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Handle same-day rescheduling for gel nails and acrylics',
         'Process deposits and cancellation fees for premium nail services',
       ],
-      image: '/nailstudio-secretary.png',
+      image: '/nailstudio-secretary-v2.png',
     },
     {
       title: 'AI Concierge for Nail Studios',
@@ -594,7 +594,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'VIP recognition with preference-based booking',
         'Proactive rebooking and seasonal promotion campaigns',
       ],
-      image: '/nailstudio-concierge.png',
+      image: '/nailstudio-concierge-v2.png',
     },
   ]
 
@@ -716,7 +716,11 @@ function AdvantagesSection() {
                   <div className="w-14 h-14 rounded-xl purple-gradient flex items-center justify-center mx-auto mb-3 shadow-lg shadow-purple-200/50 group-hover:scale-110 transition-transform duration-300">
                     <adv.icon className="w-7 h-7 text-white" />
                   </div>
-                  <div className="text-3xl sm:text-4xl font-bold purple-gradient-text mb-1">{adv.stat}</div>
+                  <div className="text-3xl sm:text-4xl font-bold purple-gradient-text mb-1">
+                    {adv.stat.split('/').map((part, i) =>
+                      i === 0 ? part : <span key={i} className="text-base sm:text-lg">/{part}</span>
+                    )}
+                  </div>
                   <CardTitle className="text-lg">{adv.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
@@ -895,7 +899,7 @@ function FlowsSection() {
         {/* Industry customization callout */}
         <FadeIn delay={0.3}>
           <div className="mt-12 rounded-2xl purple-gradient p-8 lg:p-12 text-white text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/nailstudio-interior.png')] bg-cover bg-center opacity-5" />
+            <div className="absolute inset-0 bg-[url('/nailstudio-interior-v2.png')] bg-cover bg-center opacity-5" />
             <div className="relative">
               <Sparkles className="w-8 h-8 mx-auto mb-4 text-purple-200" />
               <h3 className="text-2xl sm:text-3xl font-bold mb-4">Built for Nail Studios</h3>
@@ -1154,7 +1158,7 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="relative rounded-3xl purple-gradient overflow-hidden shadow-2xl shadow-purple-300/30">
-            <div className="absolute inset-0 bg-[url('/nailstudio-hero.png')] bg-cover bg-center opacity-10" />
+            <div className="absolute inset-0 bg-[url('/nailstudio-hero-v2.png')] bg-cover bg-center opacity-10" />
             <div className="relative px-8 py-16 lg:px-16 lg:py-20 text-center">
               <FadeIn>
                 <Badge className="bg-white/20 text-white hover:bg-white/20 mb-4 border-0">Stop Losing Revenue</Badge>
