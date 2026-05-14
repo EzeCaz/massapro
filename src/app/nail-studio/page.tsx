@@ -581,7 +581,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Handle same-day rescheduling for gel nails and acrylics',
         'Process deposits and cancellation fees for premium nail services',
       ],
-      image: '/nailstudio-secretary-v2.png',
+      image: '/nailstudio-secretary-v3.png',
     },
     {
       title: 'AI Concierge for Nail Studios',
