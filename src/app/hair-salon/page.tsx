@@ -568,7 +568,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Greet returning clients by name with their service history',
         'Capture walk-in requests and waitlist sign-ups instantly',
       ],
-      image: '/hairsalon-receptionist.png',
+      image: '/hairsalon-receptionist-v2.png',
     },
     {
       title: 'AI Secretary for Hair Salons',
@@ -581,7 +581,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Handle same-day rescheduling for color and treatment appointments',
         'Process deposits and cancellation fees for premium color services',
       ],
-      image: '/hairsalon-secretary.png',
+      image: '/hairsalon-secretary-v2.png',
     },
     {
       title: 'AI Concierge for Hair Salons',
