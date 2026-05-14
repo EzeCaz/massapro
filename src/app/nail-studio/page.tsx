@@ -899,7 +899,7 @@ function FlowsSection() {
         {/* Industry customization callout */}
         <FadeIn delay={0.3}>
           <div className="mt-12 rounded-2xl purple-gradient p-8 lg:p-12 text-white text-center relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/nailstudio-interior-v2.png')] bg-cover bg-center opacity-5" />
+            <div className="absolute inset-0 bg-[url('/nailstudio-hero-v3.png')] bg-cover bg-center opacity-5" />
             <div className="relative">
               <Sparkles className="w-8 h-8 mx-auto mb-4 text-purple-200" />
               <h3 className="text-2xl sm:text-3xl font-bold mb-4">Built for Nail Studios</h3>
