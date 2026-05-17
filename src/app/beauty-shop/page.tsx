@@ -944,14 +944,15 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Advanced analytics & no-show tracking',
         'Custom AI personality for your brand',
         'Deposit & cancellation fee handling',
+        'No setup fee (min 3 months)',
       ],
       highlight: true,
       badge: 'Most Popular',
     },
     {
       name: 'Enterprise',
-      price: 'Custom',
-      period: '',
+      price: '$2,000',
+      period: '/month',
       description:
         'Designed for multi-location beauty brands, med-aesthetic hybrid clinics, or high-volume shops needing VIP concierge-level service.',
       features: [
@@ -963,6 +964,7 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Multi-language support (2+ languages)',
         'White-glove VIP concierge service',
         'Multi-location management',
+        'No setup fee (min 3 months)',
       ],
       highlight: false,
       badge: '',
