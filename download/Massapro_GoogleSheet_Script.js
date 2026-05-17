@@ -2,6 +2,7 @@
  * MassaPro Lead Form — Google Apps Script
  * 
  * This script writes form submissions to the "Site" tab of your Google Sheet.
+ * Columns A–P = form data, Columns Q–U = UTM tracking parameters.
  *
  * HOW TO DEPLOY:
  * 1. Open your Google Sheet: https://docs.google.com/spreadsheets/d/1Pzm2p-QrgqYY-98SIQDWIvY8igF1ex22qdQ6BnEvleQ/edit
@@ -20,9 +21,41 @@
  *
  * IMPORTANT: The script writes to the sheet named "Site".
  *           If that sheet doesn't exist, it will be created automatically.
+ *           If UTM headers are missing, they will be added automatically.
+ *
+ * UTM COLUMNS (Q–U):
+ *   Q = UTM Source    (e.g. facebook, google, instagram)
+ *   R = UTM Medium    (e.g. paid_social, cpc, email, organic)
+ *   S = UTM Campaign  (e.g. spring_sale, medspa_q2_launch)
+ *   T = UTM Content   (e.g. hero_cta, sidebar_ad, video_v2)
+ *   U = UTM Term      (e.g. ai+receptionist+med+spa)
  */
 
 var SHEET_NAME = 'Site';
+
+var HEADERS = [
+  'First Name',
+  'Last Name',
+  'Company Name',
+  'Company URL',
+  'Industry',
+  'Email',
+  'Mobile',
+  'Country',
+  'State',
+  'Appointment Date',
+  'Appointment Time',
+  'Timezone',
+  'Service Type',
+  'Plan Type',
+  'Notes',
+  'Submitted At',
+  'UTM Source',
+  'UTM Medium',
+  'UTM Campaign',
+  'UTM Content',
+  'UTM Term'
+];
 
 function getOrCreateSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -36,60 +69,53 @@ function getOrCreateSheet() {
   return sheet;
 }
 
-function initializeSheet() {
-  var sheet = getOrCreateSheet();
+function ensureHeaders(sheet) {
+  // Check if headers exist and are complete
+  var lastColumn = sheet.getLastColumn();
+  var firstCellValue = sheet.getRange(1, 1).getValue();
 
-  // Set header row (columns A–P = form data, Q–U = UTM params)
-  var headers = [
-    'First Name',
-    'Last Name',
-    'Company Name',
-    'Company URL',
-    'Industry',
-    'Email',
-    'Mobile',
-    'Country',
-    'State',
-    'Appointment Date',
-    'Appointment Time',
-    'Timezone',
-    'Service Type',
-    'Plan Type',
-    'Notes',
-    'Submitted At',
-    'UTM Source',
-    'UTM Medium',
-    'UTM Campaign',
-    'UTM Content',
-    'UTM Term'
-  ];
-
-  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
-
-  // Format header row
-  sheet.getRange(1, 1, 1, headers.length)
-    .setFontWeight('bold')
-    .setBackground('#7e22ce')
-    .setFontColor('#ffffff')
-    .setWrap(true);
-
-  // Auto-resize columns
-  for (var i = 1; i <= headers.length; i++) {
-    sheet.autoResizeColumn(i);
+  // If sheet has no headers at all, initialize everything
+  if (firstCellValue === '' || lastColumn === 0) {
+    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+    sheet.getRange(1, 1, 1, HEADERS.length)
+      .setFontWeight('bold')
+      .setBackground('#7e22ce')
+      .setFontColor('#ffffff')
+      .setWrap(true);
+    for (var i = 1; i <= HEADERS.length; i++) {
+      sheet.autoResizeColumn(i);
+    }
+    sheet.setFrozenRows(1);
+    return;
   }
 
-  // Freeze header row
-  sheet.setFrozenRows(1);
+  // If headers exist but are missing UTM columns (only 16 columns = no UTMs)
+  if (lastColumn < HEADERS.length) {
+    // Get existing headers
+    var existingHeaders = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
+    
+    // Add only the missing headers starting from the next column
+    var newHeaders = HEADERS.slice(lastColumn);
+    sheet.getRange(1, lastColumn + 1, 1, newHeaders.length).setValues([newHeaders]);
+    sheet.getRange(1, lastColumn + 1, 1, newHeaders.length)
+      .setFontWeight('bold')
+      .setBackground('#7e22ce')
+      .setFontColor('#ffffff')
+      .setWrap(true);
+    
+    // Auto-resize new columns
+    for (var j = lastColumn + 1; j <= HEADERS.length; j++) {
+      sheet.autoResizeColumn(j);
+    }
+  }
 }
 
 function doPost(e) {
   try {
     var sheet = getOrCreateSheet();
 
-    // If headers aren't set yet, initialize
-    if (sheet.getRange(1, 1).getValue() === '') {
-      initializeSheet();
-    }
+    // Ensure headers are complete (adds UTM columns if missing)
+    ensureHeaders(sheet);
 
     var data = JSON.parse(e.postData.contents);
 
