@@ -1343,7 +1343,7 @@ function IndustriesSection() {
     },
     {
       name: 'Med Spas',
-      image: '/industry-med-spa-v2.png',
+      image: '/industry-med-spa-v4.png',
       description:
         'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. Up to 39% of Med Spa calls go unanswered, and 85% of those callers will never call back. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds, books high-value treatments 24/7, and converts weekend traffic that your competitors lose to voicemail.',
       advantages: [
