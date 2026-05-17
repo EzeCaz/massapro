@@ -1235,7 +1235,7 @@ function IndustriesSection() {
     },
     {
       name: 'Beauty Shops',
-      image: '/industry-beauty-shop.png',
+      image: '/industry-beauty-shop-v3.png',
       description:
         'Beauty shops and spas juggle multiple services, varied appointment durations, and a clientele that expects premium communication. MassaPro\'s AI Concierge handles complex booking scenarios, package deals, and VIP client management — delivering the white-glove experience your brand promises.',
       advantages: [
