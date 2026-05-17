@@ -581,7 +581,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Handle same-day rescheduling for chemical peels and facials',
         'Process deposits and cancellation fees for premium treatments',
       ],
-      image: '/beautyshop-secretary.png',
+      image: '/beautyshop-secretary-v3.png',
     },
     {
       title: 'AI Concierge for Beauty Shops',
