@@ -1199,7 +1199,7 @@ function IndustriesSection() {
     },
     {
       name: 'Nail Studios',
-      image: '/industry-nail-studio.png',
+      image: '/industry-nail-studio-v3.png',
       description:
         'Nail studios thrive on repeat bookings and walk-in traffic. MassaPro captures every call and message, books appointments around your technicians\' availability, and keeps your chairs full. From gel manicures to intricate nail art consultations, your AI handles it all with a personal touch.',
       advantages: [
