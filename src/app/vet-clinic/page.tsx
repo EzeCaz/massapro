@@ -581,7 +581,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Coordinate multi-provider schedules across veterinarians',
         'Vaccination reminders and preventive care scheduling',
       ],
-      image: '/vetclinic-secretary-v2.png',
+      image: '/vetclinic-secretary-v3.png',
     },
     {
       title: 'AI Concierge for Vet Clinics',
