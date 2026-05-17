@@ -1306,42 +1306,6 @@ function IndustriesSection() {
       ],
     },
     {
-      name: 'Wellness Centers',
-      image: '/industry-wellness.png',
-      description:
-        'Wellness centers offer diverse services — yoga classes, meditation sessions, massage therapy, and holistic treatments. MassaPro unifies all your booking channels, manages class capacities, handles waitlists, and sends personalized wellness tips to keep your community engaged between visits.',
-      advantages: [
-        'Manage class bookings with real-time capacity tracking',
-        'Automate waitlist management for popular sessions',
-        'Send personalized wellness tips and content between visits',
-        'Handle multi-practitioner scheduling seamlessly',
-      ],
-      services: ['Class & Session Booking', 'Waitlist & Capacity Management', 'Multi-Practitioner Scheduling', 'Wellness Content & Engagement', 'Membership & Package Management'],
-      reviews: [
-        {
-          quote: 'Our yoga classes used to have 30% no-show rates. Now with automated reminders and a smart waitlist that fills cancelled spots, every class runs at capacity. Revenue per class is up 45%.',
-          name: 'Lindsay Fowler',
-          role: 'Owner, ZenFlow Wellness Center',
-          photo: '/review-wellness-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Managing 8 different practitioners with varying schedules was overwhelming. MassaPro handles all the scheduling complexity — clients book the right therapist at the right time, every time.',
-          name: 'Ryan Cooper',
-          role: 'Director, Harmony Wellness Hub',
-          photo: '/review-wellness-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'The personalized wellness tips between visits keep our clients engaged and coming back. It feels like we have a dedicated community manager working around the clock.',
-          name: 'Maya Thompson',
-          role: 'Founder, Bloom Holistic Center',
-          photo: '/review-wellness-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
       name: 'Med Spas',
       image: '/industry-med-spa-v4.png',
       description:
