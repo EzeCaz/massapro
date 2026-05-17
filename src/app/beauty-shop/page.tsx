@@ -568,7 +568,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Greet returning clients by name with their service history',
         'Capture walk-in requests and waitlist sign-ups instantly',
       ],
-      image: '/beautyshop-receptionist.png',
+      image: '/beautyshop-receptionist-v3.png',
     },
     {
       title: 'AI Secretary for Beauty Shops',
