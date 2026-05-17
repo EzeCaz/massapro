@@ -16,6 +16,7 @@ import {
   Shield,
   Star,
   ChevronRight,
+  ChevronDown,
   Check,
   Zap,
   Globe,
@@ -92,7 +93,13 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
     { label: 'Services', href: '#services' },
     { label: 'Skills', href: '#skills' },
     { label: 'Flows', href: '#flows' },
-    { label: 'Industries', href: '#industries' },
+    { label: 'Industries', href: '#industries', children: [
+      { label: 'Med Spas', href: '/med-spa' },
+      { label: 'Hair Salons', href: '/hair-salon' },
+      { label: 'Nail Studios', href: '/nail-studio' },
+      { label: 'Beauty Shops', href: '/beauty-shop' },
+      { label: 'Veterinary Clinics', href: '/vet-clinic' },
+    ]},
     { label: 'Pricing', href: '#pricing' },
   ]
 
@@ -120,16 +127,43 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
 
           {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-gray-600 hover:text-purple-700 transition-colors relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all group-hover:w-full" />
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.children ? (
+                <div key={link.label} className="relative group">
+                  <a
+                    href={link.href}
+                    className="text-sm font-medium text-gray-600 hover:text-purple-700 transition-colors flex items-center gap-1"
+                  >
+                    {link.label}
+                    <ChevronDown className="w-3.5 h-3.5 transition-transform group-hover:rotate-180" />
+                    <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all group-hover:w-full" />
+                  </a>
+                  {/* Dropdown */}
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+                    <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-xl shadow-purple-100/50 border border-purple-100 py-2 min-w-[220px]">
+                      {link.children.map((child) => (
+                        <a
+                          key={child.href}
+                          href={child.href}
+                          className="block px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-purple-700 hover:bg-purple-50 transition-colors"
+                        >
+                          {child.label}
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  className="text-sm font-medium text-gray-600 hover:text-purple-700 transition-colors relative group"
+                >
+                  {link.label}
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all group-hover:w-full" />
+                </a>
+              )
+            )}
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
@@ -160,16 +194,40 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
       {mobileOpen && (
         <div className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-purple-100 shadow-lg">
           <div className="px-4 py-4 space-y-3">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="block text-sm font-medium text-gray-600 hover:text-purple-700 py-2"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) =>
+              link.children ? (
+                <div key={link.label}>
+                  <a
+                    href={link.href}
+                    onClick={() => setMobileOpen(false)}
+                    className="block text-sm font-medium text-gray-600 hover:text-purple-700 py-2"
+                  >
+                    {link.label}
+                  </a>
+                  <div className="pl-4 space-y-1">
+                    {link.children.map((child) => (
+                      <a
+                        key={child.href}
+                        href={child.href}
+                        onClick={() => setMobileOpen(false)}
+                        className="block text-sm text-gray-500 hover:text-purple-700 py-1.5 border-l-2 border-purple-200 pl-3"
+                      >
+                        {child.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setMobileOpen(false)}
+                  className="block text-sm font-medium text-gray-600 hover:text-purple-700 py-2"
+                >
+                  {link.label}
+                </a>
+              )
+            )}
             <div className="pt-2 flex flex-col gap-2">
               <Button variant="outline" className="border-purple-300 text-purple-700 w-full" asChild>
                 <a href="#pricing">View Plans</a>
