@@ -568,7 +568,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Process prescription refill requests and route to pharmacy',
         'Greet returning pet owners by name with their pet\'s history',
       ],
-      image: '/vetclinic-receptionist-v2.png',
+      image: '/vetclinic-receptionist-v3.png',
     },
     {
       title: 'AI Secretary for Vet Clinics',
