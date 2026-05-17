@@ -594,7 +594,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'VIP pet owner recognition with preference-based scheduling',
         'Proactive wellness plan enrollment and preventive care campaigns',
       ],
-      image: '/vetclinic-concierge-v2.png',
+      image: '/vetclinic-concierge-v3.png',
     },
   ]
 
