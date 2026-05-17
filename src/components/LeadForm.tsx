@@ -224,11 +224,11 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 gap-0">
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-white border-b border-purple-100 px-6 py-4 rounded-t-lg">
-          <DialogHeader>
+        <div className={`sticky top-0 z-10 bg-white border-b border-purple-100 px-6 py-4 rounded-t-lg ${submitted ? 'text-center' : ''}`}>
+          <DialogHeader className={submitted ? 'items-center' : ''}>
             <DialogTitle className="text-2xl font-bold">
               {submitted ? (
-                <span className="flex items-center gap-2 text-green-600">
+                <span className="flex items-center justify-center gap-2 text-green-600">
                   <Check className="w-6 h-6" /> Submitted!
                 </span>
               ) : (
