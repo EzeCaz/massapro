@@ -1709,11 +1709,11 @@ function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Industries</h4>
             <ul className="space-y-2 text-sm">
-              <li>Hair Salons</li>
-              <li>Nail Studios</li>
-              <li>Beauty Shops</li>
-              <li>Veterinary Clinics</li>
-              <li>Wellness Centers</li>
+              <li><a href="/hair-salon" className="hover:text-purple-400 transition-colors">Hair Salons</a></li>
+              <li><a href="/nail-studio" className="hover:text-purple-400 transition-colors">Nail Studios</a></li>
+              <li><a href="/beauty-shop" className="hover:text-purple-400 transition-colors">Beauty Shops</a></li>
+              <li><a href="/vet-clinic" className="hover:text-purple-400 transition-colors">Veterinary Clinics</a></li>
+              <li><a href="/med-spa" className="hover:text-purple-400 transition-colors">Med Spa</a></li>
             </ul>
           </div>
 

@@ -1360,12 +1360,11 @@ function FAQSection() {
 /* ──────────────────── Footer ──────────────────── */
 function Footer() {
   const industries = [
-    { name: 'Med Spas', href: '/med-spa', active: false, disabled: false },
     { name: 'Hair Salons', href: '/hair-salon', active: false, disabled: false },
     { name: 'Nail Studios', href: '/nail-studio', active: true, disabled: false },
     { name: 'Beauty Shops', href: '/beauty-shop', active: false, disabled: false },
-    { name: 'Veterinary Clinics', href: '#', active: false, disabled: true },
-    { name: 'Wellness Centers', href: '#', active: false, disabled: true },
+    { name: 'Veterinary Clinics', href: '/vet-clinic', active: false, disabled: false },
+    { name: 'Med Spa', href: '/med-spa', active: false, disabled: false },
   ]
 
   return (
