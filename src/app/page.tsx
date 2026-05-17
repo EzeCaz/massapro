@@ -339,7 +339,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
               {/* Main image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
                 <Image
-                  src="/hero-secretary-v3.png"
+                  src="/hero-secretary-v2.png"
                   alt="Professional AI Receptionist"
                   width={864}
                   height={1152}
