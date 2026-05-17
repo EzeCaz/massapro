@@ -39,7 +39,7 @@ function getOrCreateSheet() {
 function initializeSheet() {
   var sheet = getOrCreateSheet();
 
-  // Set header row
+  // Set header row (columns A–P = form data, Q–U = UTM params)
   var headers = [
     'First Name',
     'Last Name',
@@ -56,7 +56,12 @@ function initializeSheet() {
     'Service Type',
     'Plan Type',
     'Notes',
-    'Submitted At'
+    'Submitted At',
+    'UTM Source',
+    'UTM Medium',
+    'UTM Campaign',
+    'UTM Content',
+    'UTM Term'
   ];
 
   sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
@@ -88,7 +93,7 @@ function doPost(e) {
 
     var data = JSON.parse(e.postData.contents);
 
-    // Append the data as a new row to the "Site" sheet
+    // Append the data as a new row to the "Site" sheet (columns Q–U = UTM params)
     sheet.appendRow([
       data.firstName || '',
       data.lastName || '',
@@ -105,7 +110,12 @@ function doPost(e) {
       data.serviceType || '',
       data.planType || '',
       data.notes || '',
-      data.submittedAt || new Date().toISOString()
+      data.submittedAt || new Date().toISOString(),
+      data.utm_source || '',
+      data.utm_medium || '',
+      data.utm_campaign || '',
+      data.utm_content || '',
+      data.utm_term || ''
     ]);
 
     return ContentService

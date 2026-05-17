@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -80,9 +81,29 @@ interface LeadFormProps {
   onOpenChange: (open: boolean) => void
   prefillService?: string
   prefillPlan?: string
+  prefillIndustry?: string
 }
 
-export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: LeadFormProps) {
+interface UtmParams {
+  utm_source: string
+  utm_medium: string
+  utm_campaign: string
+  utm_content: string
+  utm_term: string
+}
+
+function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefillIndustry }: LeadFormProps) {
+  const searchParams = useSearchParams()
+
+  // Capture UTM parameters from URL on mount
+  const [utmParams] = useState<UtmParams>(() => ({
+    utm_source: searchParams.get('utm_source') || '',
+    utm_medium: searchParams.get('utm_medium') || '',
+    utm_campaign: searchParams.get('utm_campaign') || '',
+    utm_content: searchParams.get('utm_content') || '',
+    utm_term: searchParams.get('utm_term') || '',
+  }))
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -115,7 +136,7 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
     }
   }, [])
 
-  // Prefill service/plan from button click
+  // Prefill service/plan/industry from button click or page context
   useEffect(() => {
     if (prefillService) {
       setFormData((prev) => ({ ...prev, serviceType: prefillService }))
@@ -123,7 +144,10 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
     if (prefillPlan) {
       setFormData((prev) => ({ ...prev, planType: prefillPlan }))
     }
-  }, [prefillService, prefillPlan])
+    if (prefillIndustry) {
+      setFormData((prev) => ({ ...prev, industry: prefillIndustry }))
+    }
+  }, [prefillService, prefillPlan, prefillIndustry])
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -147,7 +171,10 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
       const res = await fetch('/api/submit-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          ...utmParams,
+        }),
       })
       const data = await res.json()
 
@@ -510,5 +537,13 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
         )}
       </DialogContent>
     </Dialog>
+  )
+}
+
+export function LeadForm(props: LeadFormProps) {
+  return (
+    <Suspense fallback={null}>
+      <LeadFormInner {...props} />
+    </Suspense>
   )
 }
