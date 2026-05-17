@@ -33,53 +33,11 @@ import {
 } from 'lucide-react'
 
 const INDUSTRIES = [
-  'Hair Salon',
-  'Nail Studio',
-  'Beauty Shop / Spa',
-  'Barbershop',
-  'Veterinary Clinic',
-  'Dental Clinic',
-  'Medical Practice',
-  'Chiropractic Office',
-  'Physical Therapy Clinic',
-  'Dermatology Clinic',
-  'Plastic Surgery Clinic',
-  'Med Spa / Aesthetics',
-  'Massage Therapy',
-  'Wellness Center',
-  'Yoga / Pilates Studio',
-  'Fitness Center / Gym',
-  'Personal Training Studio',
-  'Tattoo Studio',
-  'Photography Studio',
-  'Event Planning',
-  'Catering Company',
-  'Restaurant / Café',
-  'Real Estate Agency',
-  'Insurance Agency',
-  'Law Firm',
-  'Accounting Firm',
-  'Financial Advisory',
-  'Car Dealership',
-  'Auto Repair Shop',
-  'Pet Grooming',
-  'Pet Boarding / Daycare',
-  'Childcare / Daycare',
-  'Tutoring Center',
-  'Language School',
-  'Dance Studio',
-  'Music School',
-  'Art Studio / Gallery',
-  'Home Services (Plumbing, Electrical, etc.)',
-  'Cleaning Service',
-  'Landscaping / Gardening',
-  'Interior Design',
-  'Architecture Firm',
-  'Consulting Firm',
-  'Marketing Agency',
-  'IT Services',
-  'Travel Agency',
-  'Funeral Home',
+  'Med Spas',
+  'Hair Salons',
+  'Nail Studios',
+  'Beauty Shops',
+  'Veterinary Clinics',
   'Other',
 ]
 
@@ -92,8 +50,8 @@ const SERVICE_TYPES = [
 
 const PLAN_TYPES = [
   'Basic — $500/mo',
-  'Growth — $900/mo',
-  'Premium — $1,500/mo',
+  'Professional — $1,200/mo',
+  'Enterprise — $2,000/mo',
   'Not Sure Yet',
 ]
 
@@ -128,13 +86,12 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    companyName: '',
     companyUrl: '',
     industry: '',
+    otherIndustry: '',
     email: '',
     mobile: '',
     country: 'United States',
-    state: '',
     appointmentDate: '',
     appointmentTime: '',
     timezone: '',
@@ -199,6 +156,11 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
       }
 
       setSubmitted(true)
+
+      // Meta Pixel: track CompleteRegistration event
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        ;(window as any).fbq('track', 'CompleteRegistration')
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong'
       setError(msg)
@@ -213,13 +175,12 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
       setFormData({
         firstName: '',
         lastName: '',
-        companyName: '',
         companyUrl: '',
         industry: '',
+        otherIndustry: '',
         email: '',
         mobile: '',
         country: 'United States',
-        state: '',
         appointmentDate: '',
         appointmentTime: '',
         timezone: '',
@@ -316,19 +277,9 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
             {/* Company Info */}
             <div>
               <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
-                Company Information
+                Business Information
               </h3>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label htmlFor="companyName">Company Name</Label>
-                  <Input
-                    id="companyName"
-                    value={formData.companyName}
-                    onChange={(e) => handleChange('companyName', e.target.value)}
-                    placeholder="Acme Inc."
-                    className="border-purple-200 focus:border-purple-500"
-                  />
-                </div>
+              <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="companyUrl">Company URL</Label>
                   <Input
@@ -342,21 +293,31 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
                   />
                   <p className="text-xs text-gray-400">e.g. www.site.com or https://www.site.com</p>
                 </div>
-              </div>
-              <div className="mt-4 space-y-2">
-                <Label htmlFor="industry">Industry</Label>
-                <Select value={formData.industry} onValueChange={(v) => handleChange('industry', v)}>
-                  <SelectTrigger className="border-purple-200 focus:border-purple-500">
-                    <SelectValue placeholder="Select your industry" />
-                  </SelectTrigger>
-                  <SelectContent className="max-h-60">
-                    {INDUSTRIES.map((ind) => (
-                      <SelectItem key={ind} value={ind}>
-                        {ind}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                <div className="space-y-2">
+                  <Label htmlFor="industry">
+                    Industry <span className="text-red-500">*</span>
+                  </Label>
+                  <Select value={formData.industry} onValueChange={(v) => handleChange('industry', v)}>
+                    <SelectTrigger className="border-purple-200 focus:border-purple-500">
+                      <SelectValue placeholder="Select your industry" />
+                    </SelectTrigger>
+                    <SelectContent className="max-h-60">
+                      {INDUSTRIES.map((ind) => (
+                        <SelectItem key={ind} value={ind}>
+                          {ind}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {formData.industry === 'Other' && (
+                    <Input
+                      value={formData.otherIndustry}
+                      onChange={(e) => handleChange('otherIndustry', e.target.value)}
+                      placeholder="Please specify your industry"
+                      className="border-purple-200 focus:border-purple-500 mt-2"
+                    />
+                  )}
+                </div>
               </div>
             </div>
 
@@ -395,7 +356,7 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
                   />
                 </div>
               </div>
-              <div className="grid sm:grid-cols-2 gap-4 mt-4">
+              <div className="mt-4">
                 <div className="space-y-2">
                   <Label htmlFor="country">
                     Country <span className="text-red-500">*</span>
@@ -412,31 +373,6 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
                       ))}
                     </SelectContent>
                   </Select>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="state">State</Label>
-                  {formData.country === 'United States' ? (
-                    <Select value={formData.state} onValueChange={(v) => handleChange('state', v)}>
-                      <SelectTrigger className="border-purple-200 focus:border-purple-500">
-                        <SelectValue placeholder="Select state" />
-                      </SelectTrigger>
-                      <SelectContent className="max-h-60">
-                        {US_STATES.map((s) => (
-                          <SelectItem key={s} value={s}>
-                            {s}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  ) : (
-                    <Input
-                      id="state"
-                      value={formData.state}
-                      onChange={(e) => handleChange('state', e.target.value)}
-                      placeholder="Province / Region"
-                      className="border-purple-200 focus:border-purple-500"
-                    />
-                  )}
                 </div>
               </div>
             </div>
