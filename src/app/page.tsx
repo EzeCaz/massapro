@@ -557,7 +557,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'Your front-line AI that answers calls, responds to messages, and routes inquiries — 24/7. Never miss a customer again with an AI receptionist that sounds natural, understands context, and handles multiple conversations simultaneously across all your channels.',
       icon: Phone,
       features: ['Answer inbound calls 24/7', 'Route messages intelligently', 'Greet customers by name', 'Transfer to human when needed'],
-      image: '/vet-receptionist-v2.png',
+      image: '/ai-receptionist-home.png',
     },
     {
       title: 'AI Secretary / Virtual Assistant',
