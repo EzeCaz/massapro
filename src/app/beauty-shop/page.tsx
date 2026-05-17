@@ -594,7 +594,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
         'VIP recognition with preference-based booking',
         'Proactive rebooking and seasonal promotion campaigns',
       ],
-      image: '/beautyshop-concierge.png',
+      image: '/beautyshop-concierge-v3.png',
     },
   ]
 
