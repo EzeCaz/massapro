@@ -122,10 +122,9 @@ interface LeadFormProps {
   onOpenChange: (open: boolean) => void
   prefillService?: string
   prefillPlan?: string
-  prefillIndustry?: string
 }
 
-export function LeadForm({ open, onOpenChange, prefillService, prefillPlan, prefillIndustry }: LeadFormProps) {
+export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: LeadFormProps) {
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -159,7 +158,7 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan, pref
     }
   }, [])
 
-  // Prefill service/plan/industry from button click
+  // Prefill service/plan from button click
   useEffect(() => {
     if (prefillService) {
       setFormData((prev) => ({ ...prev, serviceType: prefillService }))
@@ -167,10 +166,7 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan, pref
     if (prefillPlan) {
       setFormData((prev) => ({ ...prev, planType: prefillPlan }))
     }
-    if (prefillIndustry) {
-      setFormData((prev) => ({ ...prev, industry: prefillIndustry }))
-    }
-  }, [prefillService, prefillPlan, prefillIndustry])
+  }, [prefillService, prefillPlan])
 
   const handleChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }))

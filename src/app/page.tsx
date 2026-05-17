@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -1101,45 +1100,7 @@ function TestimonialsSection() {
 function IndustriesSection() {
   const industries = [
     {
-      name: 'Med Spas',
-      href: '/med-spa',
-      image: '/industry-med-spa-v2.png',
-      description:
-        'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. Up to 39% of Med Spa calls go unanswered, and 85% of those callers will never call back. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds, books high-value treatments 24/7, and converts weekend traffic that your competitors lose to voicemail.',
-      advantages: [
-        'Recover $30,000+/month in missed call revenue — 85% of unanswered callers never return',
-        'Engage leads within 10 seconds — conversion drops 80% after 5 minutes of silence',
-        'Capture 68% weekend conversion rates while your staff is off — your competitors go to voicemail',
-        'Reduce no-shows from 20% to under 5% with deposit handling and intelligent re-scheduling',
-      ],
-      services: ['Instant Lead Qualification & Booking', 'Deposit & Payment Handling', 'No-Show Recovery & Slot Refilling', 'Weekend & After-Hours Call Capture', 'CRM Sync (Zenoti, Pabau, and more)', 'Upsell Add-On Treatments Automatically'],
-      reviews: [
-        {
-          quote: 'We were missing 8–10 calls a day during peak hours. At an average booking value of $350, that was over $30,000 a month in lost revenue. MassaPro now answers every single call and books them on the spot — our revenue jumped 32% in the first month.',
-          name: 'Dr. Vanessa Carter',
-          role: 'Founder, Radiance Med Spa',
-          photo: '/review-medspa-1.png',
-          stars: 5,
-        },
-        {
-          quote: 'Our weekend callers were going straight to voicemail while our competitors\' phones were silent too. Now MassaPro captures that 68% weekend conversion rate, and we\'re booking 40+ extra appointments every weekend without a single staff member on the clock.',
-          name: 'Tanya Brooks',
-          role: 'Operations Director, Glow Aesthetics Clinic',
-          photo: '/review-medspa-2.png',
-          stars: 5,
-        },
-        {
-          quote: 'The no-show problem was killing us — 18% of slots wasted every week. MassaPro\'s deposit handling and smart re-scheduling cut that to under 4%. It doesn\'t just answer the phone; it sells. It upsells filler add-ons and secures deposits like a trained closer.',
-          name: 'Dr. Markus Lindgren',
-          role: 'Medical Director, Revive Wellness & Aesthetics',
-          photo: '/review-medspa-3.png',
-          stars: 5,
-        },
-      ],
-    },
-    {
       name: 'Hair Salons',
-      href: '/hair-salon',
       image: '/industry-hair-salon-v2.png',
       description:
         'MassaPro transforms hair salons by handling the full appointment lifecycle — from booking and confirmation to reminders and follow-ups. Your AI receptionist answers calls, responds to texts, and manages your calendar so your stylists can focus on what they do best: creating beautiful hair.',
@@ -1176,8 +1137,7 @@ function IndustriesSection() {
     },
     {
       name: 'Nail Studios',
-      href: '/nail-studio',
-      image: '/industry-nail-studio-v2.png',
+      image: '/industry-nail-studio.png',
       description:
         'Nail studios thrive on repeat bookings and walk-in traffic. MassaPro captures every call and message, books appointments around your technicians\' availability, and keeps your chairs full. From gel manicures to intricate nail art consultations, your AI handles it all with a personal touch.',
       advantages: [
@@ -1213,7 +1173,6 @@ function IndustriesSection() {
     },
     {
       name: 'Beauty Shops',
-      href: '/beauty-shop',
       image: '/industry-beauty-shop.png',
       description:
         'Beauty shops and spas juggle multiple services, varied appointment durations, and a clientele that expects premium communication. MassaPro\'s AI Concierge handles complex booking scenarios, package deals, and VIP client management — delivering the white-glove experience your brand promises.',
@@ -1250,7 +1209,6 @@ function IndustriesSection() {
     },
     {
       name: 'Veterinary Clinics',
-      href: '/vet-clinic',
       image: '/industry-vet-clinic.png',
       description:
         'Veterinary clinics face unique challenges — emergency triage, vaccination schedules, and worried pet owners who need reassurance at all hours. MassaPro\'s AI handles emergency call routing, appointment scheduling, and prescription refill requests, ensuring no pet owner is left waiting when it matters most.',
@@ -1321,6 +1279,42 @@ function IndustriesSection() {
         },
       ],
     },
+    {
+      name: 'Med Spas',
+      image: '/industry-med-spa-v2.png',
+      description:
+        'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. Up to 39% of Med Spa calls go unanswered, and 85% of those callers will never call back. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds, books high-value treatments 24/7, and converts weekend traffic that your competitors lose to voicemail.',
+      advantages: [
+        'Recover $30,000+/month in missed call revenue — 85% of unanswered callers never return',
+        'Engage leads within 10 seconds — conversion drops 80% after 5 minutes of silence',
+        'Capture 68% weekend conversion rates while your staff is off — your competitors go to voicemail',
+        'Reduce no-shows from 20% to under 5% with deposit handling and intelligent re-scheduling',
+      ],
+      services: ['Instant Lead Qualification & Booking', 'Deposit & Payment Handling', 'No-Show Recovery & Slot Refilling', 'Weekend & After-Hours Call Capture', 'CRM Sync (Zenoti, Pabau, and more)', 'Upsell Add-On Treatments Automatically'],
+      reviews: [
+        {
+          quote: 'We were missing 8–10 calls a day during peak hours. At an average booking value of $350, that was over $30,000 a month in lost revenue. MassaPro now answers every single call and books them on the spot — our revenue jumped 32% in the first month.',
+          name: 'Dr. Vanessa Carter',
+          role: 'Founder, Radiance Med Spa',
+          photo: '/review-medspa-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Our weekend callers were going straight to voicemail while our competitors\' phones were silent too. Now MassaPro captures that 68% weekend conversion rate, and we\'re booking 40+ extra appointments every weekend without a single staff member on the clock.',
+          name: 'Tanya Brooks',
+          role: 'Operations Director, Glow Aesthetics Clinic',
+          photo: '/review-medspa-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The no-show problem was killing us — 18% of slots wasted every week. MassaPro\'s deposit handling and smart re-scheduling cut that to under 4%. It doesn\'t just answer the phone; it sells. It upsells filler add-ons and secures deposits like a trained closer.',
+          name: 'Dr. Markus Lindgren',
+          role: 'Medical Director, Revive Wellness & Aesthetics',
+          photo: '/review-medspa-3.png',
+          stars: 5,
+        },
+      ],
+    },
   ]
 
   return (
@@ -1377,37 +1371,16 @@ function IndustriesSection() {
                   </div>
 
                   <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
-                    {industry.href ? (
-                      <Link href={industry.href} className="block group">
-                        <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50 group-hover:shadow-2xl group-hover:shadow-purple-200/50 transition-all duration-300">
-                          <Image
-                            src={industry.image}
-                            alt={industry.name}
-                            width={1344}
-                            height={768}
-                            className="w-full h-auto object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 to-transparent" />
-                          <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 text-purple-700 font-semibold text-sm group-hover:bg-purple-700 group-hover:text-white transition-all duration-300">
-                            Learn More <ArrowRight className="w-4 h-4" />
-                          </div>
-                        </div>
-                      </Link>
-                    ) : (
-                      <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50">
-                        <Image
-                          src={industry.image}
-                          alt={industry.name}
-                          width={1344}
-                          height={768}
-                          className="w-full h-auto object-cover"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-purple-900/10 to-transparent" />
-                        <div className="absolute bottom-4 right-4 bg-gray-400/90 backdrop-blur-sm rounded-full px-4 py-2 flex items-center gap-2 text-white font-semibold text-sm">
-                          Coming Soon
-                        </div>
-                      </div>
-                    )}
+                    <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50">
+                      <Image
+                        src={industry.image}
+                        alt={industry.name}
+                        width={1344}
+                        height={768}
+                        className="w-full h-auto object-cover"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-purple-900/10 to-transparent" />
+                    </div>
                   </div>
                 </div>
 
@@ -1674,12 +1647,11 @@ function Footer() {
           <div>
             <h4 className="font-semibold text-white mb-4">Industries</h4>
             <ul className="space-y-2 text-sm">
-              <li><a href="/med-spa" className="hover:text-purple-400 transition-colors">Med Spas</a></li>
-              <li><a href="/hair-salon" className="hover:text-purple-400 transition-colors">Hair Salons</a></li>
-              <li><a href="/nail-studio" className="hover:text-purple-400 transition-colors">Nail Studios</a></li>
-              <li><a href="/beauty-shop" className="hover:text-purple-400 transition-colors">Beauty Shops</a></li>
-              <li><a href="/vet-clinic" className="hover:text-purple-400 transition-colors">Veterinary Clinics</a></li>
-              <li><span className="text-gray-500">Wellness Centers</span></li>
+              <li>Hair Salons</li>
+              <li>Nail Studios</li>
+              <li>Beauty Shops</li>
+              <li>Veterinary Clinics</li>
+              <li>Wellness Centers</li>
             </ul>
           </div>
 
