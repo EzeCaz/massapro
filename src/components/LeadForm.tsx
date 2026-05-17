@@ -157,9 +157,9 @@ export function LeadForm({ open, onOpenChange, prefillService, prefillPlan }: Le
 
       setSubmitted(true)
 
-      // Meta Pixel: track CompleteRegistration event
+      // Meta Pixel: track Schedule event
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-        ;(window as any).fbq('track', 'CompleteRegistration')
+        ;(window as any).fbq('track', 'Schedule')
       }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong'
