@@ -1409,6 +1409,13 @@ export default function HairSalonPage() {
 
   const openForm = useCallback(() => setFormOpen(true), [])
 
+  // Fire Meta Pixel CompleteRegistration on page load
+  useEffect(() => {
+    if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+      ;(window as any).fbq('track', 'CompleteRegistration')
+    }
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar onOpenForm={openForm} />
