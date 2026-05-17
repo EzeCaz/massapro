@@ -1,6 +1,6 @@
 import { MetadataRoute } from 'next/server'
 
-const BASE_URL = 'https://receptionist.massapro.com'
+const BASE_URL = 'https://massapro.com'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [

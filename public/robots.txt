@@ -13,4 +13,4 @@ Allow: /
 User-agent: *
 Allow: /
 
-Sitemap: https://receptionist.massapro.com/sitemap.xml
+Sitemap: https://massapro.com/sitemap.xml
