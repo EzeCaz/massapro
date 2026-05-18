@@ -126,6 +126,23 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
+  // Track form open event (Meta Pixel + Google Analytics)
+  useEffect(() => {
+    if (open) {
+      // Meta Pixel: custom event
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        ;(window as any).fbq('trackCustom', 'LeadFormOpen')
+      }
+      // Google Analytics 4: custom event
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'lead_form_open', {
+          event_category: 'engagement',
+          event_label: 'Lead Form Opened',
+        })
+      }
+    }
+  }, [open])
+
   // Auto-detect timezone
   useEffect(() => {
     try {
