@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, Suspense } from 'react'
+import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -20,18 +20,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
-import { Calendar } from '@/components/ui/calendar'
-import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
-import { Badge } from '@/components/ui/badge'
 import {
-  X,
-  CalendarIcon,
-  Clock,
   ChevronRight,
   Check,
   Loader2,
   AlertCircle,
 } from 'lucide-react'
+import WeeklySlotPicker from '@/components/WeeklySlotPicker'
 
 const INDUSTRIES = [
   'Med Spas',
@@ -54,17 +49,6 @@ const PLAN_TYPES = [
   'Professional — $1,200/mo',
   'Enterprise — $2,000/mo',
   'Not Sure Yet',
-]
-
-const US_STATES = [
-  'Alabama','Alaska','Arizona','Arkansas','California','Colorado','Connecticut','Delaware',
-  'Florida','Georgia','Hawaii','Idaho','Illinois','Indiana','Iowa','Kansas','Kentucky',
-  'Louisiana','Maine','Maryland','Massachusetts','Michigan','Minnesota','Mississippi',
-  'Missouri','Montana','Nebraska','Nevada','New Hampshire','New Jersey','New Mexico',
-  'New York','North Carolina','North Dakota','Ohio','Oklahoma','Oregon','Pennsylvania',
-  'Rhode Island','South Carolina','South Dakota','Tennessee','Texas','Utah','Vermont',
-  'Virginia','Washington','West Virginia','Wisconsin','Wyoming','District of Columbia',
-  'Puerto Rico','Other',
 ]
 
 const COUNTRIES = [
@@ -115,13 +99,13 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
     country: 'United States',
     appointmentDate: '',
     appointmentTime: '',
+    appointmentSlotId: '',
     timezone: '',
     serviceType: '',
     planType: '',
     notes: '',
   })
-  const [calendarOpen, setCalendarOpen] = useState(false)
-  const [calendarDate, setCalendarDate] = useState<Date | undefined>(undefined)
+  const [bookedSlots, setBookedSlots] = useState<string[]>([])
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
@@ -142,6 +126,26 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
       }
     }
   }, [open])
+
+  // Fetch booked slots when form opens
+  useEffect(() => {
+    if (open) {
+      fetchBookedSlots()
+    }
+  }, [open])
+
+  const fetchBookedSlots = async () => {
+    try {
+      const res = await fetch('/api/available-slots')
+      if (res.ok) {
+        const data = await res.json()
+        setBookedSlots(data.bookedSlots || [])
+      }
+    } catch {
+      // Silently fail — all slots will show as available
+      console.warn('Could not fetch booked slots')
+    }
+  }
 
   // Auto-detect timezone
   useEffect(() => {
@@ -170,17 +174,25 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
-  const handleCalendarSelect = (date: Date | undefined) => {
-    if (date) {
-      const formatted = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`
-      setFormData((prev) => ({ ...prev, appointmentDate: formatted }))
-      setCalendarDate(date)
-      setCalendarOpen(false)
-    }
-  }
+  // Handle slot selection from WeeklySlotPicker
+  const handleSlotSelect = useCallback((slotId: string, dateISO: string, timeIsrael: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      appointmentSlotId: slotId,
+      appointmentDate: dateISO,
+      appointmentTime: timeIsrael,
+    }))
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    // Require a slot selection
+    if (!formData.appointmentSlotId) {
+      setError('Please select a time slot for your consultation.')
+      return
+    }
+
     setError('')
     setSubmitting(true)
 
@@ -196,10 +208,17 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
       const data = await res.json()
 
       if (!res.ok) {
+        // If the slot was taken, refresh booked slots
+        if (data.error?.includes('already booked') || data.error?.includes('slot')) {
+          fetchBookedSlots()
+        }
         throw new Error(data.error || 'Submission failed')
       }
 
       setSubmitted(true)
+
+      // Add the newly booked slot locally so it shows as unavailable if they reopen
+      setBookedSlots(prev => [...prev, formData.appointmentSlotId])
 
       // Meta Pixel: track Schedule event
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
@@ -227,12 +246,12 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
         country: 'United States',
         appointmentDate: '',
         appointmentTime: '',
+        appointmentSlotId: '',
         timezone: '',
         serviceType: '',
         planType: '',
         notes: '',
       })
-      setCalendarDate(undefined)
     }
     onOpenChange(false)
   }
@@ -254,8 +273,8 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
             </DialogTitle>
             <DialogDescription>
               {submitted
-                ? "We'll be in touch within 24 hours to schedule your consultation."
-                : 'Fill out the form below and our team will reach out to schedule your free consultation.'}
+                ? "Your consultation has been scheduled. A Google Meet link will be sent to your email."
+                : 'Fill out the form below and schedule your free consultation.'}
             </DialogDescription>
           </DialogHeader>
         </div>
@@ -267,8 +286,8 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
             </div>
             <h3 className="text-xl font-bold text-gray-800">Thank You!</h3>
             <p className="text-gray-600 max-w-md mx-auto">
-              Your consultation request has been received. Our team will contact you at{' '}
-              <span className="font-semibold text-purple-700">{formData.email}</span> within 24 hours.
+              Your consultation has been scheduled. A Google Meet link and confirmation email will be sent to{' '}
+              <span className="font-semibold text-purple-700">{formData.email}</span> shortly.
             </p>
             <Button onClick={handleClose} className="purple-gradient text-white mt-4">
               Close
@@ -421,52 +440,16 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
               </div>
             </div>
 
-            {/* Appointment */}
+            {/* Appointment - Weekly Slot Picker */}
             <div>
               <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
                 Schedule Consultation
               </h3>
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div className="space-y-2">
-                  <Label>Appointment Date</Label>
-                  <Popover open={calendarOpen} onOpenChange={setCalendarOpen}>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="w-full justify-start text-left font-normal border-purple-200 hover:border-purple-500 hover:bg-purple-50"
-                      >
-                        <CalendarIcon className="w-4 h-4 mr-2 text-purple-500" />
-                        {calendarDate ? calendarDate.toLocaleDateString('en-US') : 'Pick a date'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={calendarDate}
-                        onSelect={handleCalendarSelect}
-                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="appointmentTime">Appointment Time</Label>
-                  <Input
-                    id="appointmentTime"
-                    type="time"
-                    value={formData.appointmentTime}
-                    onChange={(e) => handleChange('appointmentTime', e.target.value)}
-                    className="border-purple-200 focus:border-purple-500"
-                  />
-                  {formData.timezone && (
-                    <div className="flex items-center gap-1 text-xs text-purple-500">
-                      <Clock className="w-3 h-3" />
-                      {formData.timezone}
-                    </div>
-                  )}
-                </div>
-              </div>
+              <WeeklySlotPicker
+                selectedSlot={formData.appointmentSlotId}
+                onSelectSlot={handleSlotSelect}
+                bookedSlots={bookedSlots}
+              />
             </div>
 
             {/* Service Selection */}
@@ -531,23 +514,23 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
             <div className="pt-2 pb-4">
               <Button
                 type="submit"
-                disabled={submitting}
-                className="w-full purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-6 text-base font-semibold"
+                disabled={submitting || !formData.appointmentSlotId}
+                className="w-full purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-6 text-base font-semibold disabled:opacity-50"
               >
                 {submitting ? (
                   <>
                     <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                    Submitting...
+                    Scheduling...
                   </>
                 ) : (
                   <>
-                    Submit Consultation Request
+                    Schedule Consultation
                     <ChevronRight className="w-5 h-5 ml-2" />
                   </>
                 )}
               </Button>
               <p className="text-xs text-gray-400 text-center mt-3">
-                No setup fee • Free consultation • We&apos;ll respond within 24 hours
+                No setup fee &bull; Free consultation &bull; Google Meet link sent to your email
               </p>
             </div>
           </form>

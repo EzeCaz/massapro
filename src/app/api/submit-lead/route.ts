@@ -1,14 +1,79 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { createCalendarEvent, isSlotAvailable } from '@/lib/google-calendar'
+import nodemailer from 'nodemailer'
 
 // Google Apps Script Web App URL - deployed from the MassaPro Google Sheet
 const GOOGLE_SCRIPT_URL = process.env.GOOGLE_SCRIPT_URL || ''
+
+// Gmail SMTP config for sending confirmation emails
+const GMAIL_USER = process.env.GMAIL_USER || ''
+const GMAIL_APP_PASSWORD = process.env.GMAIL_APP_PASSWORD || ''
+
+/**
+ * Send a confirmation email to the attendee with the Google Meet link.
+ */
+async function sendConfirmationEmail(
+  toEmail: string,
+  attendeeName: string,
+  meetLink: string,
+  dateStr: string,
+  timeStr: string
+) {
+  if (!GMAIL_USER || !GMAIL_APP_PASSWORD) {
+    console.warn('Gmail not configured — skipping confirmation email. Set GMAIL_USER and GMAIL_APP_PASSWORD.')
+    return false
+  }
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: GMAIL_USER,
+      pass: GMAIL_APP_PASSWORD,
+    },
+  })
+
+  const mailOptions = {
+    from: `"Eze from MassaPro" <${GMAIL_USER}>`,
+    to: toEmail,
+    subject: `MassaPro Consultation — ${dateStr} at ${timeStr} (Israel time)`,
+    html: `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+        <div style="background: linear-gradient(135deg, #7c3aed, #6d28d9); padding: 24px; border-radius: 12px 12px 0 0;">
+          <h1 style="color: white; margin: 0; font-size: 22px;">MassaPro Consultation Confirmed</h1>
+        </div>
+        <div style="background: #f9fafb; padding: 24px; border-radius: 0 0 12px 12px; border: 1px solid #e5e7eb; border-top: none;">
+          <p style="color: #374151; font-size: 16px; margin-bottom: 16px;">Hi ${attendeeName},</p>
+          <p style="color: #374151; font-size: 16px; margin-bottom: 16px;">
+            Thanks for scheduling the call, please feel free to send any relevant information for our call.
+          </p>
+          <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin: 16px 0;">
+            <p style="margin: 0 0 8px; color: #6b7280; font-size: 14px;"><strong>📅 Date:</strong> ${dateStr}</p>
+            <p style="margin: 0 0 8px; color: #6b7280; font-size: 14px;"><strong>🕐 Time:</strong> ${timeStr} (Israel time)</p>
+            <p style="margin: 0; color: #6b7280; font-size: 14px;"><strong>🔗 Meeting Link:</strong> <a href="${meetLink}" style="color: #7c3aed;">${meetLink}</a></p>
+          </div>
+          <p style="color: #6b7280; font-size: 14px; margin-top: 16px;">Best regards,</p>
+          <p style="color: #6b7280; font-size: 14px; margin: 0;"><strong>Eze</strong><br/>MassaPro</p>
+        </div>
+      </div>
+    `,
+  }
+
+  try {
+    await transporter.sendMail(mailOptions)
+    console.log(`Confirmation email sent to ${toEmail}`)
+    return true
+  } catch (error) {
+    console.error('Error sending confirmation email:', error)
+    return false
+  }
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
 
     // Validate required fields
-    const requiredFields = ['firstName', 'lastName', 'email', 'mobile', 'country']
+    const requiredFields = ['firstName', 'lastName', 'email', 'mobile', 'country', 'appointmentSlotId', 'appointmentDate', 'appointmentTime']
     const missing = requiredFields.filter((f) => !body[f])
     if (missing.length > 0) {
       return NextResponse.json(
@@ -17,55 +82,104 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // If no Google Script URL configured, log the data and return success
-    if (!GOOGLE_SCRIPT_URL) {
-      console.log('📧 Lead received (no Google Script URL configured):', JSON.stringify(body, null, 2))
-      return NextResponse.json({
-        success: true,
-        message: 'Lead received! Google Sheet integration not yet configured.',
-        data: body,
-      })
+    // Check slot availability in Google Calendar
+    const slotStart = new Date(body.appointmentSlotId)
+    const slotEnd = new Date(slotStart.getTime() + 30 * 60 * 1000) // 30-min consultation
+
+    const available = await isSlotAvailable(slotStart.toISOString(), slotEnd.toISOString())
+    if (!available) {
+      return NextResponse.json(
+        { error: 'This time slot has already been booked. Please choose another slot.' },
+        { status: 409 }
+      )
     }
 
-    // Submit to Google Apps Script Web App
-    const response = await fetch(GOOGLE_SCRIPT_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        firstName: body.firstName,
-        lastName: body.lastName,
-        companyName: body.companyName || '',
-        companyUrl: body.companyUrl || '',
-        industry: body.industry || '',
-        email: body.email,
-        mobile: body.mobile,
-        country: body.country,
-        state: body.state || '',
-        appointmentDate: body.appointmentDate || '',
-        appointmentTime: body.appointmentTime || '',
-        timezone: body.timezone || '',
-        serviceType: body.serviceType || '',
-        planType: body.planType || '',
-        notes: body.notes || '',
-        submittedAt: new Date().toISOString(),
-        utm_source: body.utm_source || '',
-        utm_medium: body.utm_medium || '',
-        utm_campaign: body.utm_campaign || '',
-        utm_content: body.utm_content || '',
-        utm_term: body.utm_term || '',
-      }),
+    // Create Google Calendar event with Google Meet
+    const calendarResult = await createCalendarEvent({
+      summary: `MassaPro Consultation — ${body.firstName} ${body.lastName}`,
+      description: [
+        `Consultation with ${body.firstName} ${body.lastName}`,
+        `Industry: ${body.industry || 'N/A'}`,
+        `Service: ${body.serviceType || 'N/A'}`,
+        `Plan: ${body.planType || 'N/A'}`,
+        body.notes ? `Notes: ${body.notes}` : '',
+        `Company: ${body.companyUrl || 'N/A'}`,
+        `Phone: ${body.mobile}`,
+        `Country: ${body.country}`,
+      ].filter(Boolean).join('\n'),
+      startTime: slotStart.toISOString(),
+      endTime: slotEnd.toISOString(),
+      attendeeEmail: body.email,
+      attendeeName: `${body.firstName} ${body.lastName}`,
     })
 
-    if (!response.ok) {
-      throw new Error(`Google Script returned ${response.status}`)
+    const meetLink = calendarResult?.meetLink || ''
+    const formattedDate = body.appointmentDate // e.g. "2026-05-19"
+    const formattedTime = body.appointmentTime // e.g. "10:00"
+
+    // Send confirmation email with the Meet link
+    if (meetLink) {
+      await sendConfirmationEmail(
+        body.email,
+        body.firstName,
+        meetLink,
+        formattedDate,
+        formattedTime
+      )
     }
 
-    const result = await response.text().catch(() => 'OK')
+    // Submit to Google Apps Script Web App (Google Sheet)
+    if (GOOGLE_SCRIPT_URL) {
+      try {
+        await fetch(GOOGLE_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            firstName: body.firstName,
+            lastName: body.lastName,
+            companyName: body.companyName || '',
+            companyUrl: body.companyUrl || '',
+            industry: body.industry || '',
+            email: body.email,
+            mobile: body.mobile,
+            country: body.country,
+            state: body.state || '',
+            appointmentDate: formattedDate,
+            appointmentTime: formattedTime,
+            appointmentSlotId: body.appointmentSlotId,
+            timezone: body.timezone || '',
+            serviceType: body.serviceType || '',
+            planType: body.planType || '',
+            notes: body.notes || '',
+            meetLink,
+            calendarEventId: calendarResult?.eventId || '',
+            submittedAt: new Date().toISOString(),
+            utm_source: body.utm_source || '',
+            utm_medium: body.utm_medium || '',
+            utm_campaign: body.utm_campaign || '',
+            utm_content: body.utm_content || '',
+            utm_term: body.utm_term || '',
+          }),
+        })
+      } catch (err) {
+        console.error('Failed to submit to Google Sheet:', err)
+        // Don't fail the request — calendar event is already created
+      }
+    } else {
+      console.log('Lead received (no Google Script URL):', JSON.stringify({
+        name: `${body.firstName} ${body.lastName}`,
+        email: body.email,
+        date: formattedDate,
+        time: formattedTime,
+        meetLink,
+      }, null, 2))
+    }
 
     return NextResponse.json({
       success: true,
-      message: 'Lead submitted successfully to Google Sheet!',
-      result,
+      message: 'Consultation scheduled successfully!',
+      meetLink,
+      calendarEventId: calendarResult?.eventId || '',
     })
   } catch (error: unknown) {
     console.error('Lead submission error:', error)
