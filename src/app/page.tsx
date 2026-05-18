@@ -174,7 +174,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
             >
               <a href="#pricing">View Plans</a>
             </Button>
-            <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'Header', page_name: 'Home' }); } onOpenForm(); }}>
+            <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Home' }); } onOpenForm(); }}>
                 Get Started <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
@@ -232,7 +232,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
               <Button variant="outline" className="border-purple-300 text-purple-700 w-full" asChild>
                 <a href="#pricing">View Plans</a>
               </Button>
-              <Button className="purple-gradient text-white w-full" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'Header', page_name: 'Home' }); } setMobileOpen(false); onOpenForm(); }}>
+              <Button className="purple-gradient text-white w-full" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Home' }); } setMobileOpen(false); onOpenForm(); }}>
                   Get Started
               </Button>
             </div>
@@ -286,7 +286,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                 <Button
                   size="lg"
                   className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
-                  onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'Hero', page_name: 'Home' }); } onOpenForm(); }}
+                  onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Hero', page_name: 'Home' }); } onOpenForm(); }}
                 >
                     Start Free Consultation
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -618,7 +618,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
                       </li>
                     ))}
                   </ul>
-                  <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'Services', page_name: 'Home' }); } onOpenForm(); }}>
+                  <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Services', page_name: 'Home' }); } onOpenForm(); }}>
                       Get Started <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -938,7 +938,7 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
                         ? 'purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30'
                         : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
                     }`}
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'Pricing', page_name: 'Home' }); } onOpenForm(); }}
+                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Pricing', page_name: 'Home' }); } onOpenForm(); }}
                   >
                       Get Started <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -1484,7 +1484,7 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
                   <Button
                     size="lg"
                     className="bg-white text-purple-700 hover:bg-purple-50 shadow-xl text-base px-8 py-6 font-semibold"
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'CTA', page_name: 'Home' }); } onOpenForm(); }}
+                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'Home' }); } onOpenForm(); }}
                   >
                       <Mail className="w-5 h-5 mr-2" />
                       Contact Us
@@ -1493,7 +1493,7 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
                     size="lg"
                     variant="outline"
                     className="bg-white text-purple-700 hover:bg-purple-50 border-white/30 text-base px-8 py-6 font-semibold"
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'CTA', page_name: 'Home' }); } onOpenForm(); }}
+                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'Home' }); } onOpenForm(); }}
                   >
                       View Pricing <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
@@ -1624,7 +1624,7 @@ function FAQSection({ onOpenForm }: { onOpenForm: () => void }) {
               size="lg"
               className="purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 text-base px-8 py-6"
               onClick={() => {
-                if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'GetStartedClick', { button_location: 'FAQ', page_name: 'Home' }); }
+                if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'FAQ', page_name: 'Home' }); }
                 onOpenForm();
               }}
             >
