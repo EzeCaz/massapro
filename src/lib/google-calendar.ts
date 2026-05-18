@@ -20,7 +20,14 @@ import { google } from 'googleapis'
 
 function getAuth() {
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n')
+  let privateKey = process.env.GOOGLE_PRIVATE_KEY || ''
+
+  // Remove surrounding quotes if present
+  if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
+    privateKey = privateKey.slice(1, -1)
+  }
+  // Replace literal \n with actual newlines
+  privateKey = privateKey.replace(/\\n/g, '\n')
 
   if (!clientEmail || !privateKey) {
     return null
