@@ -193,7 +193,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
               <a href="#pricing">View Plans</a>
             </Button>
             <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Hair_Salon_TY' }); } onOpenForm(); }}>
-              Get Started <ArrowRight className="w-4 h-4 ml-1" />
+              Free Consultation <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
 
@@ -251,7 +251,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
                 <a href="#pricing" onClick={() => setMobileOpen(false)}>View Plans</a>
               </Button>
               <Button className="purple-gradient text-white w-full" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Hair_Salon_TY' }); } setMobileOpen(false); onOpenForm(); }}>
-                Get Started
+                Free Consultation
               </Button>
             </div>
           </div>
@@ -305,7 +305,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                   className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
                   onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Hero', page_name: 'Hair_Salon_TY' }); } onOpenForm(); }}
                 >
-                  Start Free Consultation
+                  Free Consultation
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
                 <Button
@@ -682,7 +682,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
                     ))}
                   </ul>
                   <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Services', page_name: 'Hair_Salon_TY' }); } onOpenForm(); }}>
-                    Get Started <ArrowRight className="w-4 h-4 ml-2" />
+                    Free Consultation <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
                 <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
@@ -1076,7 +1076,7 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
                     }`}
                     onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Pricing', page_name: 'Hair_Salon_TY' }); } onOpenForm(); }}
                   >
-                    {tier.name === 'Enterprise' ? 'Contact Sales' : 'Get Started'} <ArrowRight className="w-4 h-4 ml-2" />
+                    {tier.name === 'Enterprise' ? 'Contact Sales' : 'Free Consultation'} <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </CardFooter>
               </Card>
