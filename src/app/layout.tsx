@@ -106,17 +106,23 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* MassaPro Affiliate Tracker - Step 1: Tracker Script + Config */}
+        {/* MassaPro Affiliate Tracker - Step 1: Tracker Script */}
         <Script
           id="massapro-affiliate-tracker"
           src="https://aff-massapro.space-z.ai/massapro-affiliate-tracker.js"
           strategy="afterInteractive"
-          onLoad={() => {
-            if (typeof window !== 'undefined' && (window as any).MassaProAffiliate) {
-              (window as any).MassaProAffiliate.config({ dashboardUrl: 'https://aff-massapro.space-z.ai' });
-            }
-          }}
         />
+        <Script id="massapro-affiliate-config" strategy="afterInteractive">
+          {`
+            (function initAffiliate() {
+              if (typeof MassaProAffiliate !== 'undefined') {
+                MassaProAffiliate.config({ dashboardUrl: 'https://aff-massapro.space-z.ai' });
+              } else {
+                setTimeout(initAffiliate, 100);
+              }
+            })();
+          `}
+        </Script>
 
         {/* MassaPro Affiliate Tracker - Step 2: Google Calendar Booking Tracking */}
         <Script id="massapro-affiliate-booking" strategy="afterInteractive">
