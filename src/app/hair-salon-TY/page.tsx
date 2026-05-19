@@ -1463,10 +1463,15 @@ export default function HairSalonPage() {
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <FadeIn>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
-                Check your inbox
+                Check your inbox!
               </h1>
             </FadeIn>
             <FadeIn delay={0.1}>
+              <p className="text-sm sm:text-base text-gray-400 max-w-xl mx-auto leading-relaxed mt-2">
+                (If it&apos;s not there, check your &ldquo;All Mail&rdquo; and move it to your Inbox).
+              </p>
+            </FadeIn>
+            <FadeIn delay={0.2}>
               <p className="text-lg sm:text-xl lg:text-2xl text-gray-600 max-w-2xl mx-auto leading-relaxed mt-4">
                 Your guide is on the way. Now, want to skip the manual work entirely? Here&apos;s how salon owners are doing it automatically.
               </p>

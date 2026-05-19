@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Thank You | MassaPro for Hair Salons",
   description:
-    "Your guide is on the way. Discover how salon owners are automating with MassaPro.",
+    "Check your inbox! Your guide is on the way. Now, want to skip the manual work entirely? Here's how salon owners are doing it automatically.",
   robots: "noindex, nofollow",
 };
 
