@@ -1,11 +1,10 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { PurchaseForm } from '@/components/PurchaseForm'
 import {
   Phone,
   MessageSquare,
@@ -38,6 +37,24 @@ import {
   Languages,
   Palette,
 } from 'lucide-react'
+
+/* ──────────────────── Helper Functions ──────────────────── */
+function scrollToPricing() {
+  document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })
+}
+
+function handleGetNowClick(location: string) {
+  if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+    (window as any).fbq('trackCustom', 'GetNowClick', { button_location: location, page_name: 'All', cta: 'purchase' })
+  }
+  if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+    try { (window as any).MassaProAffiliate.trackEvent('btn_get_now') } catch(e){}
+  }
+  if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+    (window as any).gtag('event', 'get_now', { button_location: location, page_name: 'All' })
+  }
+  scrollToPricing()
+}
 
 /* ──────────────────── Scroll Animation Hook ──────────────────── */
 function useInView(threshold = 0.15) {
@@ -78,19 +95,8 @@ function FadeIn({ children, className = '', delay = 0 }: { children: React.React
   )
 }
 
-/* ──────────────────── Custom Mic Icon ──────────────────── */
-function Mic(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
-      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
-      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
-      <line x1="12" x2="12" y1="19" y2="22" />
-    </svg>
-  )
-}
-
 /* ──────────────────── Navbar ──────────────────── */
-function Navbar({ onGetNow }: { onGetNow: () => void }) {
+function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -124,6 +130,7 @@ function Navbar({ onGetNow }: { onGetNow: () => void }) {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
+          {/* Logo */}
           <a href="#" className="flex items-center gap-2">
             <Image
               src="/massapro-logo-v2.png"
@@ -135,6 +142,7 @@ function Navbar({ onGetNow }: { onGetNow: () => void }) {
             />
           </a>
 
+          {/* Desktop Nav */}
           <div className="hidden lg:flex items-center gap-8">
             {navLinks.map((link) =>
               link.children ? (
@@ -147,6 +155,7 @@ function Navbar({ onGetNow }: { onGetNow: () => void }) {
                     <ChevronDown className="w-3.5 h-3.5 transition-transform group-hover:rotate-180" />
                     <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all group-hover:w-full" />
                   </a>
+                  {/* Dropdown */}
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                     <div className="bg-white/95 backdrop-blur-xl rounded-xl shadow-xl shadow-purple-100/50 border border-purple-100 py-2 min-w-[220px]">
                       {link.children.map((child) => (
@@ -182,11 +191,12 @@ function Navbar({ onGetNow }: { onGetNow: () => void }) {
             >
               <a href="#pricing">View Plans</a>
             </Button>
-            <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'All', cta: 'getnow' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_nav_contact'); } catch(e){} } onGetNow(); }}>
+            <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => handleGetNowClick('Header')}>
                 Get Now <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
 
+          {/* Mobile Menu Toggle */}
           <button
             className="lg:hidden p-2 text-purple-700"
             onClick={() => setMobileOpen(!mobileOpen)}
@@ -197,6 +207,7 @@ function Navbar({ onGetNow }: { onGetNow: () => void }) {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       {mobileOpen && (
         <div className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-purple-100 shadow-lg">
           <div className="px-4 py-4 space-y-3">
@@ -236,9 +247,9 @@ function Navbar({ onGetNow }: { onGetNow: () => void }) {
             )}
             <div className="pt-2 flex flex-col gap-2">
               <Button variant="outline" className="border-purple-300 text-purple-700 w-full" asChild>
-                <a href="#pricing" onClick={() => setMobileOpen(false)}>View Plans</a>
+                <a href="#pricing">View Plans</a>
               </Button>
-              <Button className="purple-gradient text-white w-full" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'All', cta: 'getnow' }); } setMobileOpen(false); if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_nav_contact'); } catch(e){} } onGetNow(); }}>
+              <Button className="purple-gradient text-white w-full" onClick={() => { handleGetNowClick('Header'); setMobileOpen(false); }}>
                   Get Now
               </Button>
             </div>
@@ -250,9 +261,10 @@ function Navbar({ onGetNow }: { onGetNow: () => void }) {
 }
 
 /* ──────────────────── Hero Section ──────────────────── */
-function HeroSection({ onGetNow }: { onGetNow: () => void }) {
+function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-white via-purple-50 to-white">
+      {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl" />
@@ -261,6 +273,7 @@ function HeroSection({ onGetNow }: { onGetNow: () => void }) {
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          {/* Left: Text Content */}
           <div className="space-y-8">
             <FadeIn>
               <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium">
@@ -290,7 +303,7 @@ function HeroSection({ onGetNow }: { onGetNow: () => void }) {
                 <Button
                   size="lg"
                   className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
-                  onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Hero', page_name: 'All', cta: 'getnow' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_hero_demo'); } catch(e){} } onGetNow(); }}
+                  onClick={() => handleGetNowClick('Hero')}
                 >
                     Get Now
                     <ArrowRight className="w-5 h-5 ml-2" />
@@ -333,11 +346,14 @@ function HeroSection({ onGetNow }: { onGetNow: () => void }) {
             </FadeIn>
           </div>
 
+          {/* Right: Hero Image */}
           <FadeIn delay={0.2} className="relative">
             <div className="relative">
+              {/* Decorative elements */}
               <div className="absolute -top-6 -left-6 w-24 h-24 bg-purple-200/40 rounded-2xl rotate-12 blur-sm" />
               <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-purple-300/30 rounded-full blur-sm" />
 
+              {/* Main image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
                 <Image
                   src="/hero-secretary-v2.png"
@@ -347,9 +363,11 @@ function HeroSection({ onGetNow }: { onGetNow: () => void }) {
                   className="w-full h-auto object-cover"
                   priority
                 />
+                {/* Overlay gradient */}
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 via-transparent to-transparent" />
               </div>
 
+              {/* Floating card */}
               <div className="absolute -bottom-4 -left-4 sm:bottom-8 sm:-left-8 glass-card rounded-2xl p-4 shadow-xl animate-float">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full purple-gradient flex items-center justify-center">
@@ -362,6 +380,7 @@ function HeroSection({ onGetNow }: { onGetNow: () => void }) {
                 </div>
               </div>
 
+              {/* Floating card 2 */}
               <div className="absolute -top-4 -right-4 sm:top-8 sm:-right-8 glass-card rounded-2xl p-4 shadow-xl animate-float" style={{ animationDelay: '1s' }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
@@ -467,46 +486,75 @@ function IntegrationsSection() {
         </FadeIn>
 
         <div className="relative">
+          {/* Gradient fade edges */}
           <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-purple-50/30 to-transparent z-10 pointer-events-none" />
           <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
 
+          {/* Scrolling row 1 - left to right */}
           <div className="flex gap-6 mb-6 animate-scroll-left">
             {integrations.slice(0, 15).map((item, i) => (
               <div
                 key={`${item.name}-1`}
                 className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
               >
-                <Image src={item.logo} alt={item.name} width={48} height={48} className="w-12 h-12 rounded-xl object-contain" />
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
                 <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
               </div>
             ))}
+            {/* Duplicate for seamless loop */}
             {integrations.slice(0, 15).map((item, i) => (
               <div
                 key={`${item.name}-1d`}
                 className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
               >
-                <Image src={item.logo} alt={item.name} width={48} height={48} className="w-12 h-12 rounded-xl object-contain" />
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
                 <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
               </div>
             ))}
           </div>
 
+          {/* Scrolling row 2 - right to left */}
           <div className="flex gap-6 animate-scroll-right">
             {integrations.slice(15).map((item, i) => (
               <div
                 key={`${item.name}-2`}
                 className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
               >
-                <Image src={item.logo} alt={item.name} width={48} height={48} className="w-12 h-12 rounded-xl object-contain" />
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
                 <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
               </div>
             ))}
+            {/* Duplicate for seamless loop */}
             {integrations.slice(15).map((item, i) => (
               <div
                 key={`${item.name}-2d`}
                 className="flex-shrink-0 flex flex-col items-center gap-3 bg-white rounded-2xl border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300 px-6 py-5 w-[130px]"
               >
-                <Image src={item.logo} alt={item.name} width={48} height={48} className="w-12 h-12 rounded-xl object-contain" />
+                <Image
+                  src={item.logo}
+                  alt={item.name}
+                  width={48}
+                  height={48}
+                  className="w-12 h-12 rounded-xl object-contain"
+                />
                 <span className="text-sm font-medium text-gray-700 text-center leading-tight">{item.name}</span>
               </div>
             ))}
@@ -518,7 +566,7 @@ function IntegrationsSection() {
 }
 
 /* ──────────────────── AI Positions Section ──────────────────── */
-function PositionsSection({ onGetNow }: { onGetNow: () => void }) {
+function PositionsSection() {
   const positions = [
     {
       title: 'AI Receptionist',
@@ -587,7 +635,7 @@ function PositionsSection({ onGetNow }: { onGetNow: () => void }) {
                       </li>
                     ))}
                   </ul>
-                  <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Services', page_name: 'All', cta: 'getnow' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_hero_demo'); } catch(e){} } onGetNow(); }}>
+                  <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={() => handleGetNowClick('Services')}>
                       Get Now <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -770,6 +818,7 @@ function FlowsSection() {
           ))}
         </div>
 
+        {/* Industry customization callout */}
         <FadeIn delay={0.3}>
           <div className="mt-12 rounded-2xl purple-gradient p-8 lg:p-12 text-white text-center relative overflow-hidden">
             <div className="absolute inset-0 bg-[url('/salon-interior-v2.png')] bg-cover bg-center opacity-10" />
@@ -789,12 +838,11 @@ function FlowsSection() {
 }
 
 /* ──────────────────── Pricing Section ──────────────────── */
-function PricingSection({ onBuyNow }: { onBuyNow: (name: string, price: string) => void }) {
+function PricingSection() {
   const tiers = [
     {
       name: 'Basic',
       price: '$500',
-      priceRaw: '500',
       period: '/month',
       description:
         'Perfect for small single-location businesses such as independent hair salons, nail studios, or small beauty shops.',
@@ -808,11 +856,14 @@ function PricingSection({ onBuyNow }: { onBuyNow: (name: string, price: string) 
       ],
       highlight: false,
       badge: '',
+      value: 500,
+      contentName: 'Basic Plan',
+      affiliateEvent: 'btn_buy_basic',
+      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=1000',
     },
     {
       name: 'Professional',
       price: '$1,200',
-      priceRaw: '1200',
       period: '/month',
       description:
         'Ideal for growing businesses with moderate volume. Great for busier salons or clinics handling more daily inquiries.',
@@ -828,11 +879,14 @@ function PricingSection({ onBuyNow }: { onBuyNow: (name: string, price: string) 
       ],
       highlight: true,
       badge: 'Most Popular',
+      value: 1200,
+      contentName: 'Professional Plan',
+      affiliateEvent: 'btn_buy_professional',
+      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=2000',
     },
     {
       name: 'Enterprise',
       price: '$2,000',
-      priceRaw: '2000',
       period: '/month',
       description:
         'Designed for multi-location businesses, high-volume practices, or brands needing VIP concierge-level service.',
@@ -849,6 +903,10 @@ function PricingSection({ onBuyNow }: { onBuyNow: (name: string, price: string) 
       ],
       highlight: false,
       badge: '',
+      value: 2000,
+      contentName: 'Enterprise Plan',
+      affiliateEvent: 'btn_buy_enterprise',
+      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=3000',
     },
   ]
 
@@ -874,20 +932,20 @@ function PricingSection({ onBuyNow }: { onBuyNow: (name: string, price: string) 
                 className={`relative h-full flex flex-col ${
                   tier.highlight
                     ? 'border-purple-400 shadow-2xl shadow-purple-200/50 scale-105 z-10 bg-gradient-to-b from-white to-purple-50/30'
-                    : 'border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50'
-                } transition-all duration-300`}
+                    : 'border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300'
+                }`}
               >
                 {tier.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <Badge className="purple-gradient text-white px-4 py-1 text-xs font-bold shadow-lg shadow-purple-300/30">
+                  <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                    <Badge className="purple-gradient text-white px-4 py-1 shadow-lg shadow-purple-300/30">
                       {tier.badge}
                     </Badge>
                   </div>
                 )}
-                <CardHeader className="pt-8">
-                  <CardTitle className="text-xl">{tier.name}</CardTitle>
-                  <div className="mt-2">
-                    <span className="text-4xl font-bold">{tier.price}</span>
+                <CardHeader className="text-center pb-2">
+                  <CardTitle className="text-xl font-bold">{tier.name}</CardTitle>
+                  <div className="flex items-baseline justify-center gap-1 mt-2">
+                    <span className="text-4xl sm:text-5xl font-extrabold purple-gradient-text">{tier.price}</span>
                     <span className="text-gray-500">{tier.period}</span>
                   </div>
                   <CardDescription className="text-gray-600 mt-3 min-h-[3rem]">{tier.description}</CardDescription>
@@ -903,22 +961,34 @@ function PricingSection({ onBuyNow }: { onBuyNow: (name: string, price: string) 
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button
-                    className={`w-full ${
+                  <a
+                    href={tier.cbUrl}
+                    className={`w-full inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
                       tier.highlight
                         ? 'purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30'
                         : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
                     }`}
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Pricing', page_name: 'All', cta: 'getnow' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_pricing_tier'); } catch(e){} } onBuyNow(tier.name, tier.priceRaw); }}
+                    onClick={() => {
+                      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+                        (window as any).fbq('track', 'Purchase', { value: tier.value, currency: 'USD', content_name: tier.contentName, cta: 'purchase' })
+                      }
+                      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+                        try { (window as any).MassaProAffiliate.trackEvent(tier.affiliateEvent) } catch(e){}
+                      }
+                      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+                        (window as any).gtag('event', 'purchase', { value: tier.value, currency: 'USD', items: [{ name: tier.contentName, price: tier.value }] })
+                      }
+                    }}
                   >
                       Buy Now <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
+                  </a>
                 </CardFooter>
               </Card>
             </FadeIn>
           ))}
         </div>
 
+        {/* Add-ons */}
         <FadeIn delay={0.3}>
           <div className="mt-20">
             <h3 className="text-2xl sm:text-3xl font-bold text-center mb-10">
@@ -952,6 +1022,16 @@ function PricingSection({ onBuyNow }: { onBuyNow: (name: string, price: string) 
         </FadeIn>
       </div>
     </section>
+  )
+}
+
+function Mic(props: React.SVGProps<SVGSVGElement>) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
+      <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+      <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+      <line x1="12" x2="12" y1="19" y2="22" />
+    </svg>
   )
 }
 
@@ -994,6 +1074,7 @@ function HowItWorks() {
         </FadeIn>
 
         <div className="grid md:grid-cols-3 gap-8 relative">
+          {/* Connecting line */}
           <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-0.5 bg-gradient-to-r from-purple-200 via-purple-400 to-purple-200" />
 
           {steps.map((step, i) => (
@@ -1133,16 +1214,34 @@ function IndustriesSection() {
       ],
       services: ['Appointment Booking & Reminders', 'Color Consultation Intake', 'Deposit & Payment Handling', 'Post-Visit Follow-up & Reviews', 'Rebooking & Loyalty Campaigns'],
       reviews: [
-        { quote: 'Our no-show rate dropped from 30% to under 10%.', name: 'Jessica Torres', role: 'Owner, Luxe Hair Studio', photo: '/review-hair-1.png', stars: 5 },
-        { quote: 'Revenue is up 25% in just two months.', name: 'Amanda Chen', role: 'Manager, Style & Co. Salon', photo: '/review-hair-2.png', stars: 5 },
-        { quote: 'The deposit handling alone saved us thousands.', name: 'Rachel Morrison', role: 'Founder, The Hair Lounge', photo: '/review-hair-3.png', stars: 5 },
+        {
+          quote: 'Our no-show rate dropped from 30% to under 10%. The AI handles all appointment calls and texts so my stylists never have to stop mid-cut to answer the phone.',
+          name: 'Jessica Torres',
+          role: 'Owner, Luxe Hair Studio',
+          photo: '/review-hair-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'I used to miss 15+ calls a day during peak hours. Now MassaPro books appointments while I focus on my clients. Revenue is up 25% in just two months.',
+          name: 'Amanda Chen',
+          role: 'Manager, Style & Co. Salon',
+          photo: '/review-hair-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The deposit handling alone saved us thousands. No more wasted time slots from no-shows. Clients love the instant confirmation and reminder texts.',
+          name: 'Rachel Morrison',
+          role: 'Founder, The Hair Lounge',
+          photo: '/review-hair-3.png',
+          stars: 5,
+        },
       ],
     },
     {
       name: 'Nail Studios',
       image: '/industry-nail-studio-v3.png',
       description:
-        "Nail studios thrive on repeat bookings and walk-in traffic. MassaPro captures every call and message, books appointments around your technicians' availability, and keeps your chairs full.",
+        'Nail studios thrive on repeat bookings and walk-in traffic. MassaPro captures every call and message, books appointments around your technicians\' availability, and keeps your chairs full. From gel manicures to intricate nail art consultations, your AI handles it all with a personal touch.',
       advantages: [
         'Capture every walk-in inquiry even during busy hours',
         'Automate appointment confirmations and same-day reminders',
@@ -1151,16 +1250,34 @@ function IndustriesSection() {
       ],
       services: ['Appointment Booking & Reminders', 'Walk-In Inquiry Handling', 'Service & Pricing FAQ', 'Promotion & Seasonal Campaigns', 'Post-Service Follow-up'],
       reviews: [
-        { quote: "It's like having a 24/7 front desk.", name: 'Sophia Williams', role: 'Owner, Diamond Nails', photo: '/review-nail-1.png', stars: 5 },
-        { quote: 'Our rebooking rate jumped 35%.', name: 'Mia Johnson', role: 'Manager, Pink Petals Studio', photo: '/review-nail-2.png', stars: 5 },
-        { quote: 'Clients love booking at midnight after seeing our Instagram posts.', name: 'Emily Park', role: 'Founder, Nail Artistry Co.', photo: '/review-nail-3.png', stars: 5 },
+        {
+          quote: 'We get so many texts asking about availability and pricing. MassaPro handles all of them instantly and books appointments directly into our calendar. It\'s like having a 24/7 front desk.',
+          name: 'Sophia Williams',
+          role: 'Owner, Diamond Nails',
+          photo: '/review-nail-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Our seasonal promotions used to require manual texting to hundreds of clients. Now MassaPro sends personalized offers automatically, and our rebooking rate jumped 35%.',
+          name: 'Mia Johnson',
+          role: 'Manager, Pink Petals Studio',
+          photo: '/review-nail-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'Clients love that they can book at midnight after seeing our Instagram posts. MassaPro captures those late-night inquiries that we used to lose completely.',
+          name: 'Emily Park',
+          role: 'Founder, Nail Artistry Co.',
+          photo: '/review-nail-3.png',
+          stars: 5,
+        },
       ],
     },
     {
       name: 'Beauty Shops',
       image: '/industry-beauty-shop-v3.png',
       description:
-        "Beauty shops and spas juggle multiple services, varied appointment durations, and a clientele that expects premium communication. MassaPro's AI Concierge handles complex booking scenarios, package deals, and VIP client management.",
+        'Beauty shops and spas juggle multiple services, varied appointment durations, and a clientele that expects premium communication. MassaPro\'s AI Concierge handles complex booking scenarios, package deals, and VIP client management — delivering the white-glove experience your brand promises.',
       advantages: [
         'Manage multi-service bookings with correct time slots',
         'Handle VIP and loyalty program inquiries automatically',
@@ -1169,16 +1286,34 @@ function IndustriesSection() {
       ],
       services: ['Multi-Service Booking', 'VIP & Loyalty Management', 'Package & Gift Card Sales', 'Post-Treatment Follow-up', 'Bridal & Group Booking Coordination'],
       reviews: [
-        { quote: 'MassaPro coordinates the entire group booking experience.', name: 'Olivia Grant', role: 'Owner, Glow Beauty Bar', photo: '/review-beauty-1.png', stars: 5 },
-        { quote: "It's luxury service at scale.", name: 'Isabella Martinez', role: 'Director, Serene Spa & Beauty', photo: '/review-beauty-2.png', stars: 5 },
-        { quote: 'Our client retention went from 45% to over 70%.', name: 'Hannah Brooks', role: 'Founder, Aura Aesthetics', photo: '/review-beauty-3.png', stars: 5 },
+        {
+          quote: 'Managing bridal party bookings used to be a nightmare of back-and-forth calls. MassaPro coordinates the entire group — multiple services, multiple stylists, one seamless booking experience.',
+          name: 'Olivia Grant',
+          role: 'Owner, Glow Beauty Bar',
+          photo: '/review-beauty-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Our VIP clients expect instant responses. MassaPro recognizes them by name, knows their preferences, and books their favorite treatments without any friction. It\'s luxury service at scale.',
+          name: 'Isabella Martinez',
+          role: 'Director, Serene Spa & Beauty',
+          photo: '/review-beauty-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The post-treatment follow-ups with care instructions and rebooking prompts have been a game-changer. Our client retention went from 45% to over 70% in three months.',
+          name: 'Hannah Brooks',
+          role: 'Founder, Aura Aesthetics',
+          photo: '/review-beauty-3.png',
+          stars: 5,
+        },
       ],
     },
     {
       name: 'Veterinary Clinics',
       image: '/industry-vet-clinic.png',
       description:
-        "Veterinary clinics face unique challenges — emergency triage, vaccination schedules, and worried pet owners who need reassurance at all hours. MassaPro's AI handles emergency call routing, appointment scheduling, and prescription refill requests.",
+        'Veterinary clinics face unique challenges — emergency triage, vaccination schedules, and worried pet owners who need reassurance at all hours. MassaPro\'s AI handles emergency call routing, appointment scheduling, and prescription refill requests, ensuring no pet owner is left waiting when it matters most.',
       advantages: [
         'Triage emergency calls and route to on-call vets immediately',
         'Automate vaccination reminders and annual checkup scheduling',
@@ -1187,27 +1322,63 @@ function IndustriesSection() {
       ],
       services: ['Emergency Triage & Routing', 'Vaccination & Checkup Reminders', 'Appointment Scheduling', 'Prescription Refill Handling', 'Pre-Visit Preparation Instructions'],
       reviews: [
-        { quote: "It's been life-saving — literally.", name: 'Dr. Marcus Webb', role: 'Director, Paws & Claws Veterinary', photo: '/review-vet-1.png', stars: 5 },
-        { quote: 'Vaccination reminders increased preventive care visits by 40%.', name: 'Dr. Sarah Kim', role: 'Owner, Healthy Paws Clinic', photo: '/review-vet-2.png', stars: 5 },
-        { quote: 'We handle 200+ calls daily. MassaPro manages the routine ones.', name: 'Dr. David Patel', role: 'Lead Vet, Greenfield Animal Hospital', photo: '/review-vet-3.png', stars: 5 },
+        {
+          quote: 'Before MassaPro, emergency calls after hours went to voicemail. Now our AI triages the call, gathers critical info, and routes emergencies to the on-call vet instantly. It\'s been life-saving — literally.',
+          name: 'Dr. Marcus Webb',
+          role: 'Director, Paws & Claws Veterinary',
+          photo: '/review-vet-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Vaccination reminders alone have increased our preventive care visits by 40%. Pet owners appreciate the timely texts, and our revenue from wellness visits has grown significantly.',
+          name: 'Dr. Sarah Kim',
+          role: 'Owner, Healthy Paws Clinic',
+          photo: '/review-vet-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'We handle 200+ calls daily. MassaPro now manages the routine ones — prescription refills, appointment confirmations, and basic questions — freeing our staff for the patients in front of us.',
+          name: 'Dr. David Patel',
+          role: 'Lead Vet, Greenfield Animal Hospital',
+          photo: '/review-vet-3.png',
+          stars: 5,
+        },
       ],
     },
     {
       name: 'Med Spas',
       image: '/industry-med-spa-v4.png',
       description:
-        'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds.',
+        'The US Med Spa market is projected to reach $26.2 billion in 2026, yet clinics are hemorrhaging revenue through missed calls, slow lead response, and weekend gaps. Up to 39% of Med Spa calls go unanswered, and 85% of those callers will never call back. MassaPro plugs these "silent revenue leaks" by deploying a sales-oriented AI secretary that captures every lead in under 10 seconds, books high-value treatments 24/7, and converts weekend traffic that your competitors lose to voicemail.',
       advantages: [
-        'Recover $30,000+/month in missed call revenue',
-        'Engage leads within 10 seconds — conversion drops 80% after 5 minutes',
-        'Capture 68% weekend conversion rates while your staff is off',
-        'Reduce no-shows from 20% to under 5% with deposit handling',
+        'Recover $30,000+/month in missed call revenue — 85% of unanswered callers never return',
+        'Engage leads within 10 seconds — conversion drops 80% after 5 minutes of silence',
+        'Capture 68% weekend conversion rates while your staff is off — your competitors go to voicemail',
+        'Reduce no-shows from 20% to under 5% with deposit handling and intelligent re-scheduling',
       ],
       services: ['Instant Lead Qualification & Booking', 'Deposit & Payment Handling', 'No-Show Recovery & Slot Refilling', 'Weekend & After-Hours Call Capture', 'CRM Sync (Zenoti, Pabau, and more)', 'Upsell Add-On Treatments Automatically'],
       reviews: [
-        { quote: 'Revenue jumped 32% in the first month.', name: 'Dr. Vanessa Carter', role: 'Founder, Radiance Med Spa', photo: '/review-medspa-1.png', stars: 5 },
-        { quote: "We're booking 40+ extra appointments every weekend.", name: 'Tanya Brooks', role: 'Operations Director, Glow Aesthetics Clinic', photo: '/review-medspa-2.png', stars: 5 },
-        { quote: "It doesn't just answer the phone; it sells.", name: 'Dr. Markus Lindgren', role: 'Medical Director, Revive Wellness & Aesthetics', photo: '/review-medspa-3.png', stars: 5 },
+        {
+          quote: 'We were missing 8–10 calls a day during peak hours. At an average booking value of $350, that was over $30,000 a month in lost revenue. MassaPro now answers every single call and books them on the spot — our revenue jumped 32% in the first month.',
+          name: 'Dr. Vanessa Carter',
+          role: 'Founder, Radiance Med Spa',
+          photo: '/review-medspa-1.png',
+          stars: 5,
+        },
+        {
+          quote: 'Our weekend callers were going straight to voicemail while our competitors\' phones were silent too. Now MassaPro captures that 68% weekend conversion rate, and we\'re booking 40+ extra appointments every weekend without a single staff member on the clock.',
+          name: 'Tanya Brooks',
+          role: 'Operations Director, Glow Aesthetics Clinic',
+          photo: '/review-medspa-2.png',
+          stars: 5,
+        },
+        {
+          quote: 'The no-show problem was killing us — 18% of slots wasted every week. MassaPro\'s deposit handling and smart re-scheduling cut that to under 4%. It doesn\'t just answer the phone; it sells. It upsells filler add-ons and secures deposits like a trained closer.',
+          name: 'Dr. Markus Lindgren',
+          role: 'Medical Director, Revive Wellness & Aesthetics',
+          photo: '/review-medspa-3.png',
+          stars: 5,
+        },
       ],
     },
   ]
@@ -1231,10 +1402,13 @@ function IndustriesSection() {
           {industries.map((industry, idx) => (
             <FadeIn key={industry.name} delay={0.1}>
               <div>
-                <div className={`grid lg:grid-cols-2 gap-12 items-center`}>
+                {/* Industry Header with Image */}
+                <div className={`grid lg:grid-cols-2 gap-12 items-center ${idx % 2 === 1 ? '' : ''}`}>
                   <div className={idx % 2 === 1 ? 'lg:order-2' : ''}>
                     <h3 className="text-3xl sm:text-4xl font-bold mb-4">{industry.name}</h3>
                     <p className="text-gray-600 text-lg leading-relaxed mb-8">{industry.description}</p>
+
+                    {/* Advantages */}
                     <div className="mb-8">
                       <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">Key Advantages</h4>
                       <ul className="space-y-3">
@@ -1248,6 +1422,8 @@ function IndustriesSection() {
                         ))}
                       </ul>
                     </div>
+
+                    {/* Services */}
                     <div>
                       <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">AI Services Included</h4>
                       <div className="flex flex-wrap gap-2">
@@ -1259,13 +1435,22 @@ function IndustriesSection() {
                       </div>
                     </div>
                   </div>
+
                   <div className={idx % 2 === 1 ? 'lg:order-1' : ''}>
                     <div className="relative rounded-3xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-50">
-                      <Image src={industry.image} alt={industry.name} width={1344} height={768} className="w-full h-auto object-cover" />
+                      <Image
+                        src={industry.image}
+                        alt={industry.name}
+                        width={1344}
+                        height={768}
+                        className="w-full h-auto object-cover"
+                      />
                       <div className="absolute inset-0 bg-gradient-to-t from-purple-900/10 to-transparent" />
                     </div>
                   </div>
                 </div>
+
+                {/* Reviews */}
                 <div className="mt-12">
                   <h4 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-6 text-center">
                     What {industry.name} Owners Say
@@ -1275,7 +1460,13 @@ function IndustriesSection() {
                       <Card key={review.name} className="border-purple-100 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300">
                         <CardHeader className="pb-2">
                           <div className="flex items-center gap-3 mb-2">
-                            <Image src={review.photo} alt={review.name} width={40} height={40} className="w-10 h-10 rounded-full object-cover border-2 border-purple-200" />
+                            <Image
+                              src={review.photo}
+                              alt={review.name}
+                              width={40}
+                              height={40}
+                              className="w-10 h-10 rounded-full object-cover border-2 border-purple-200"
+                            />
                             <div>
                               <p className="font-semibold text-sm text-gray-800">{review.name}</p>
                               <p className="text-xs text-gray-500">{review.role}</p>
@@ -1304,7 +1495,7 @@ function IndustriesSection() {
 }
 
 /* ──────────────────── CTA Section ──────────────────── */
-function CTASection({ onGetNow }: { onGetNow: () => void }) {
+function CTASection() {
   return (
     <section id="contact" className="py-20 lg:py-28 bg-gradient-to-b from-purple-50/50 to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -1333,7 +1524,7 @@ function CTASection({ onGetNow }: { onGetNow: () => void }) {
                   <Button
                     size="lg"
                     className="bg-white text-purple-700 hover:bg-purple-50 shadow-xl text-base px-8 py-6 font-semibold"
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'All', cta: 'getnow' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_cta_signup'); } catch(e){} } onGetNow(); }}
+                    onClick={() => handleGetNowClick('CTA')}
                   >
                       <Mail className="w-5 h-5 mr-2" />
                       Get Now
@@ -1342,9 +1533,9 @@ function CTASection({ onGetNow }: { onGetNow: () => void }) {
                     size="lg"
                     variant="outline"
                     className="bg-white text-purple-700 hover:bg-purple-50 border-white/30 text-base px-8 py-6 font-semibold"
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'All', cta: 'getnow' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_cta_signup'); } catch(e){} } onGetNow(); }}
+                    onClick={() => handleGetNowClick('CTA')}
                   >
-                      View Pricing <ArrowRight className="w-5 h-5 ml-2" />
+                      Buy Now <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
                 </div>
               </FadeIn>
@@ -1383,34 +1574,34 @@ function KeyTermsBanner() {
 }
 
 /* ──────────────────── FAQ Section ──────────────────── */
-function FAQSection({ onGetNow }: { onGetNow: () => void }) {
+function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const faqs = [
     {
       question: 'Will callers notice they are speaking with an AI?',
       answer:
-        'Not at all. MassaPro leverages cutting-edge voice synthesis and conversational intelligence so every interaction feels warm, fluid, and genuinely human.',
+        'Not at all. MassaPro leverages cutting-edge voice synthesis and conversational intelligence so every interaction feels warm, fluid, and genuinely human. Your clients experience a seamless, helpful dialogue — the kind they would expect from your best team member. Natural pauses, empathetic tone, and contextual awareness make the conversation indistinguishable from a real person on the other end of the line.',
     },
     {
       question: 'Can the system manage intricate bookings and unusual requirements?',
       answer:
-        'Definitely. MassaPro is purpose-built to navigate complicated reservations, last-minute modifications, bespoke service requests, and anything outside the ordinary.',
+        'Definitely. MassaPro is purpose-built to navigate complicated reservations, last-minute modifications, bespoke service requests, and anything outside the ordinary. When a situation calls for extra clarity, the AI proactively asks follow-up questions to get every detail right. And for those truly edge-case scenarios, it smoothly hands the conversation over to a member of your staff so nothing ever slips through the cracks.',
     },
     {
       question: 'How fast can my business be up and running?',
       answer:
-        'You can go live in as little as five to ten minutes. The process is straightforward: link your existing phone number (or grab a new one), tailor MassaPro\'s responses, and you\'re all set.',
+        'You can go live in as little as five to ten minutes. The process is straightforward: link your existing phone number (or grab a new one), tailor MassaPro\'s responses to match your brand voice and services, and you\'re all set. If you ever need a helping hand, our support team is just a click away inside the "Help" tab of your CRM dashboard, ready to walk you through anything in real time.',
     },
     {
       question: 'What happens when a conversation requires a human touch?',
       answer:
-        "MassaPro is intelligent enough to sense when a caller's needs go beyond what automated assistance can provide. It instantly and gracefully transfers the call to the right person on your team.",
+        'MassaPro is intelligent enough to sense when a caller\'s needs go beyond what automated assistance can provide. In those moments, it instantly and gracefully transfers the call to the right person on your team — no awkward pauses, no dropped connections. You stay in full control of the escalation rules, deciding exactly which situations get routed where, so your customers always feel taken care of.',
     },
     {
       question: 'How do I connect MassaPro to my current business phone line?',
       answer:
-        'You have two simple options. The easiest is call forwarding: just redirect your existing business number to MassaPro. Alternatively, you can pick a brand-new number through MassaPro.',
+        'You have two simple options. The easiest is call forwarding: just redirect your existing business number to MassaPro, and every incoming call is answered by your AI. Alternatively, you can pick a brand-new number through MassaPro and start fresh. Either way, the setup takes only a few minutes, and we walk you through every step inside the "Call Forwarding" tab of the CRM — no technical expertise required.',
     },
   ]
 
@@ -1465,17 +1656,14 @@ function FAQSection({ onGetNow }: { onGetNow: () => void }) {
           ))}
         </div>
 
+        {/* CTA under FAQ */}
         <FadeIn delay={0.4}>
           <div className="mt-12 text-center">
             <p className="text-gray-500 mb-4">Still have questions?</p>
             <Button
               size="lg"
               className="purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 text-base px-8 py-6"
-              onClick={() => {
-                if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'FAQ', page_name: 'All', cta: 'getnow' }); }
-                if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_cta_signup'); } catch(e){} }
-                onGetNow();
-              }}
+              onClick={() => handleGetNowClick('FAQ')}
             >
               <Mail className="w-5 h-5 mr-2" />
               Get Now
@@ -1493,6 +1681,7 @@ function Footer() {
     <footer className="bg-gray-950 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {/* Brand */}
           <div className="sm:col-span-2 lg:col-span-1">
             <Image
               src="/massapro-logo-v2.png"
@@ -1505,6 +1694,8 @@ function Footer() {
               Intelligent AI receptionists and secretaries for businesses that never want to miss a customer again.
             </p>
           </div>
+
+          {/* Services */}
           <div>
             <h4 className="font-semibold text-white mb-4">Services</h4>
             <ul className="space-y-2 text-sm">
@@ -1514,6 +1705,8 @@ function Footer() {
               <li><a href="#skills" className="hover:text-purple-400 transition-colors">Skills & Flows</a></li>
             </ul>
           </div>
+
+          {/* Industries */}
           <div>
             <h4 className="font-semibold text-white mb-4">Industries</h4>
             <ul className="space-y-2 text-sm">
@@ -1524,6 +1717,8 @@ function Footer() {
               <li><a href="/med-spa" className="hover:text-purple-400 transition-colors">Med Spa</a></li>
             </ul>
           </div>
+
+          {/* Contact */}
           <div>
             <h4 className="font-semibold text-white mb-4">Contact</h4>
             <ul className="space-y-3 text-sm">
@@ -1538,6 +1733,7 @@ function Footer() {
             </ul>
           </div>
         </div>
+
         <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-gray-500">
             &copy; {new Date().getFullYear()} MassaPro. All rights reserved.
@@ -1554,45 +1750,26 @@ function Footer() {
 
 /* ──────────────────── Main Page ──────────────────── */
 export default function AllPage() {
-  const [purchaseOpen, setPurchaseOpen] = useState(false)
-  const [selectedPlan, setSelectedPlan] = useState({ name: '', price: '' })
-
-  const scrollToPricing = useCallback(() => {
-    const el = document.getElementById('pricing')
-    if (el) el.scrollIntoView({ behavior: 'smooth' })
-  }, [])
-
-  const openPurchase = useCallback((name: string, price: string) => {
-    setSelectedPlan({ name, price })
-    setPurchaseOpen(true)
-  }, [])
-
   return (
     <div className="min-h-screen flex flex-col">
-      <Navbar onGetNow={scrollToPricing} />
+      <Navbar />
       <main className="flex-grow">
-        <HeroSection onGetNow={scrollToPricing} />
+        <HeroSection />
         <ChannelBar />
         <IntegrationsSection />
         <KeyTermsBanner />
-        <PositionsSection onGetNow={scrollToPricing} />
+        <PositionsSection />
         <HowItWorks />
         <StatsSection />
         <SkillsSection />
         <FlowsSection />
         <IndustriesSection />
-        <PricingSection onBuyNow={openPurchase} />
+        <PricingSection />
         <TestimonialsSection />
-        <CTASection onGetNow={scrollToPricing} />
-        <FAQSection onGetNow={scrollToPricing} />
+        <CTASection />
+        <FAQSection />
       </main>
       <Footer />
-      <PurchaseForm
-        open={purchaseOpen}
-        onOpenChange={setPurchaseOpen}
-        planName={selectedPlan.name}
-        planPrice={selectedPlan.price}
-      />
     </div>
   )
 }
