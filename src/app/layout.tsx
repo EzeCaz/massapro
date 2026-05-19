@@ -108,12 +108,12 @@ export default function RootLayout({
 
         {/* MassaPro Affiliate Tracker - Step 1: Tracker Script */}
         <Script
-          src="https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site/massapro-affiliate-tracker.js"
+          src="https://aff-massapro.space-z.ai/massapro-affiliate-tracker.js"
           strategy="afterInteractive"
         />
         <Script id="massapro-affiliate-config" strategy="afterInteractive">
           {`
-            MassaProAffiliate.config({ dashboardUrl: 'https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site' });
+            MassaProAffiliate.config({ dashboardUrl: 'https://aff-massapro.space-z.ai' });
           `}
         </Script>
 
