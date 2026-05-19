@@ -10,16 +10,16 @@ export async function GET() {
     const endDate = new Date(now)
     endDate.setDate(endDate.getDate() + 56) // 8 weeks
 
-    const bookedSlots = await getBookedSlots(now.toISOString(), endDate.toISOString())
+    const bookedRanges = await getBookedSlots(now.toISOString(), endDate.toISOString())
 
     return NextResponse.json({
-      bookedSlots,
+      bookedRanges, // Array of { startMs, endMs } for precise overlap comparison
       generatedAt: new Date().toISOString(),
     })
   } catch (error) {
     console.error('Error in available-slots API:', error)
     return NextResponse.json(
-      { bookedSlots: [], error: 'Failed to fetch available slots' },
+      { bookedRanges: [], error: 'Failed to fetch available slots' },
       { status: 500 }
     )
   }

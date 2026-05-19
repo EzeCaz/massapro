@@ -105,7 +105,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
     planType: '',
     notes: '',
   })
-  const [bookedSlots, setBookedSlots] = useState<string[]>([])
+  const [bookedRanges, setBookedRanges] = useState<Array<{ startMs: number; endMs: number }>>([])
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
@@ -139,7 +139,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
       const res = await fetch('/api/available-slots')
       if (res.ok) {
         const data = await res.json()
-        setBookedSlots(data.bookedSlots || [])
+        setBookedRanges(data.bookedRanges || [])
       }
     } catch {
       // Silently fail — all slots will show as available
@@ -218,7 +218,8 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
       setSubmitted(true)
 
       // Add the newly booked slot locally so it shows as unavailable if they reopen
-      setBookedSlots(prev => [...prev, formData.appointmentSlotId])
+      const slotStartMs = new Date(formData.appointmentSlotId).getTime()
+      setBookedRanges(prev => [...prev, { startMs: slotStartMs, endMs: slotStartMs + 30 * 60 * 1000 }])
 
       // Meta Pixel: track Schedule event
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
@@ -487,7 +488,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
               <WeeklySlotPicker
                 selectedSlot={formData.appointmentSlotId}
                 onSelectSlot={handleSlotSelect}
-                bookedSlots={bookedSlots}
+                bookedRanges={bookedRanges}
               />
             </div>
 

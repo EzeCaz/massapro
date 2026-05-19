@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect, useCallback } from 'react'
 import { Check, ChevronLeft, ChevronRight, Clock, ChevronDown } from 'lucide-react'
 
 const ISRAEL_TZ = 'Asia/Jerusalem'
@@ -38,7 +38,7 @@ export interface DaySlots {
 interface WeeklySlotPickerProps {
   selectedSlot: string
   onSelectSlot: (slotId: string, dateISO: string, timeIsrael: string) => void
-  bookedSlots: string[]
+  bookedRanges: Array<{ startMs: number; endMs: number }>
 }
 
 /**
@@ -90,12 +90,25 @@ function getWeekSunday(date: Date): Date {
   return d
 }
 
-export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlots }: WeeklySlotPickerProps) {
+export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedRanges }: WeeklySlotPickerProps) {
   const [weekOffset, setWeekOffset] = useState(0)
   const [userTz] = useState(getUserTimezone)
   const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set())
 
   const now = useMemo(() => new Date(), [])
+
+  /**
+   * Check if a slot overlaps with any booked range.
+   * Uses precise timestamp comparison instead of exact ISO string matching.
+   * A 30-min slot [slotStart, slotStart+30min] overlaps with a booked range
+   * [booked.startMs, booked.endMs] if: slotStart < booked.endMs && booked.startMs < slotEnd
+   */
+  const isSlotBooked = useCallback((slotStartMs: number): boolean => {
+    const slotEndMs = slotStartMs + 30 * 60 * 1000
+    return bookedRanges.some(
+      (range) => slotStartMs < range.endMs && range.startMs < slotEndMs
+    )
+  }, [bookedRanges])
 
   // Calculate the start (Sunday) of the displayed week
   const weekSunday = useMemo(() => {
@@ -122,8 +135,9 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
       for (const { h, m } of MORNING_SLOTS) {
         const slotDate = createIsraelDate(year, month, day, h, m)
         const id = slotDate.toISOString()
-        const isPast = slotDate.getTime() < now.getTime()
-        const isBooked = bookedSlots.includes(id)
+        const slotStartMs = slotDate.getTime()
+        const isPast = slotStartMs < now.getTime()
+        const isBooked = isSlotBooked(slotStartMs)
         morningSlots.push({
           id,
           localLabel: formatLocalTime(slotDate),
@@ -135,8 +149,9 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
       for (const { h, m } of EVENING_SLOTS) {
         const slotDate = createIsraelDate(year, month, day, h, m)
         const id = slotDate.toISOString()
-        const isPast = slotDate.getTime() < now.getTime()
-        const isBooked = bookedSlots.includes(id)
+        const slotStartMs = slotDate.getTime()
+        const isPast = slotStartMs < now.getTime()
+        const isBooked = isSlotBooked(slotStartMs)
         eveningSlots.push({
           id,
           localLabel: formatLocalTime(slotDate),
@@ -159,7 +174,7 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
 
     // Filter out days with no available slots at all (all past/booked)
     return result.filter(d => d.hasAvailableSlots)
-  }, [weekSunday, now, bookedSlots])
+  }, [weekSunday, now, bookedRanges, isSlotBooked])
 
   // Week label
   const weekLabel = useMemo(() => {

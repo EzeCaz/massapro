@@ -52,9 +52,10 @@ function getCalendar() {
 
 /**
  * Get booked event times from Google Calendar within a date range.
- * Returns an array of ISO strings representing the start times of existing events.
+ * Returns an array of objects with start/end timestamps (ms) for precise overlap comparison.
+ * Filters out all-day events, cancelled events, and declined events.
  */
-export async function getBookedSlots(startDate: string, endDate: string): Promise<string[]> {
+export async function getBookedSlots(startDate: string, endDate: string): Promise<Array<{ startMs: number; endMs: number }>> {
   const calendar = getCalendar()
   if (!calendar) {
     console.warn('Google Calendar not configured — returning empty booked slots')
@@ -73,8 +74,23 @@ export async function getBookedSlots(startDate: string, endDate: string): Promis
 
     const events = response.data.items || []
     return events
-      .filter((e) => e.start?.dateTime)
-      .map((e) => new Date(e.start.dateTime!).toISOString())
+      .filter((e) => {
+        // Skip cancelled events
+        if (e.status === 'cancelled') return false
+        // Skip all-day events (no dateTime)
+        if (!e.start?.dateTime || !e.end?.dateTime) return false
+        // Skip events where the calendar owner declined
+        const selfResponse = e.attendees?.find(
+          (a) => a.email === (process.env.GOOGLE_CALENDAR_ID || 'eze@massapro.com')
+              || a.self === true
+        )
+        if (selfResponse?.responseStatus === 'declined') return false
+        return true
+      })
+      .map((e) => ({
+        startMs: new Date(e.start.dateTime!).getTime(),
+        endMs: new Date(e.end.dateTime!).getTime(),
+      }))
   } catch (error) {
     console.error('Error fetching booked slots from Google Calendar:', error)
     return []
@@ -163,22 +179,65 @@ export async function createCalendarEvent({
 
 /**
  * Check if a specific time slot is available (no conflicting events).
+ * Only blocks on timed events (not all-day) that are confirmed or tentative.
+ * Cancelled, all-day, and declined events are ignored.
  */
 export async function isSlotAvailable(startTime: string, endTime: string): Promise<boolean> {
   const calendar = getCalendar()
   if (!calendar) return true // If not configured, assume available
 
   try {
+    const slotStart = new Date(startTime).getTime()
+    const slotEnd = new Date(endTime).getTime()
+
+    // Query with a wider window to catch events that overlap
     const response = await calendar.events.list({
       calendarId: process.env.GOOGLE_CALENDAR_ID || 'eze@massapro.com',
-      timeMin: startTime,
-      timeMax: endTime,
+      timeMin: new Date(slotStart - 30 * 60 * 1000).toISOString(),
+      timeMax: new Date(slotEnd + 30 * 60 * 1000).toISOString(),
       singleEvents: true,
-      maxResults: 10,
+      maxResults: 50,
     })
 
     const events = response.data.items || []
-    return events.length === 0
+
+    // Filter to only events that truly overlap with the requested slot
+    const conflictingEvents = events.filter((event) => {
+      // Skip cancelled events
+      if (event.status === 'cancelled') return false
+
+      // Skip all-day events (they have 'date' instead of 'dateTime')
+      if (!event.start?.dateTime || !event.end?.dateTime) return false
+
+      // Skip events where the calendar owner declined
+      const selfResponse = event.attendees?.find(
+        (a) => a.email === (process.env.GOOGLE_CALENDAR_ID || 'eze@massapro.com')
+            || a.self === true
+      )
+      if (selfResponse?.responseStatus === 'declined') return false
+
+      // Check actual time overlap
+      const eventStart = new Date(event.start.dateTime!).getTime()
+      const eventEnd = new Date(event.end.dateTime!).getTime()
+
+      // Two ranges overlap if: start1 < end2 && start2 < end1
+      return slotStart < eventEnd && eventStart < slotEnd
+    })
+
+    if (conflictingEvents.length > 0) {
+      console.log('Slot conflict detected:', {
+        slotStart,
+        slotEnd,
+        conflicts: conflictingEvents.map(e => ({
+          summary: e.summary,
+          start: e.start?.dateTime,
+          end: e.end?.dateTime,
+          status: e.status,
+        })),
+      })
+    }
+
+    return conflictingEvents.length === 0
   } catch (error) {
     console.error('Error checking slot availability:', error)
     return true // Assume available on error
