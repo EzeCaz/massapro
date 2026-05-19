@@ -106,16 +106,17 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* MassaPro Affiliate Tracker - Step 1: Tracker Script */}
+        {/* MassaPro Affiliate Tracker - Step 1: Tracker Script + Config */}
         <Script
+          id="massapro-affiliate-tracker"
           src="https://aff-massapro.space-z.ai/massapro-affiliate-tracker.js"
           strategy="afterInteractive"
+          onLoad={() => {
+            if (typeof window !== 'undefined' && (window as any).MassaProAffiliate) {
+              (window as any).MassaProAffiliate.config({ dashboardUrl: 'https://aff-massapro.space-z.ai' });
+            }
+          }}
         />
-        <Script id="massapro-affiliate-config" strategy="afterInteractive">
-          {`
-            MassaProAffiliate.config({ dashboardUrl: 'https://aff-massapro.space-z.ai' });
-          `}
-        </Script>
 
         {/* MassaPro Affiliate Tracker - Step 2: Google Calendar Booking Tracking */}
         <Script id="massapro-affiliate-booking" strategy="afterInteractive">
@@ -128,6 +129,7 @@ export default function RootLayout({
                 if (e.data && e.data.type === 'calendar-event-booked') {
                   if (formSubmitted) return;
                   formSubmitted = true;
+                  if (typeof MassaProAffiliate === 'undefined') return;
                   var attr = MassaProAffiliate.getAttribution();
                   if (attr && attr.affid) {
                     MassaProAffiliate.trackLead({
@@ -153,6 +155,7 @@ export default function RootLayout({
 
                 if (emailField || nameField) {
                   formSubmitted = true;
+                  if (typeof MassaProAffiliate === 'undefined') return;
                   var attr = MassaProAffiliate.getAttribution();
                   if (attr && attr.affid) {
                     MassaProAffiliate.trackLead({
@@ -171,7 +174,7 @@ export default function RootLayout({
               document.addEventListener('click', function(e) {
                 var target = e.target.closest('a[href*="calendar.google"], a[href*="calendly"], button[data-calendar], [data-book]');
                 if (target && !formSubmitted) {
-                  MassaProAffiliate.trackEvent('btn_book_calendar');
+                  if (typeof MassaProAffiliate !== 'undefined') MassaProAffiliate.trackEvent('btn_book_calendar');
                 }
               });
             })();
