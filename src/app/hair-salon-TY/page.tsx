@@ -272,7 +272,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-100/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-16 lg:pt-16 lg:pb-24">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           {/* Left: Text Content */}
           <div className="space-y-8">
@@ -1459,7 +1459,7 @@ export default function HairSalonPage() {
       <Navbar onOpenForm={openForm} />
       <main className="flex-grow">
         {/* Thank You Banner */}
-        <section className="bg-gradient-to-br from-white via-purple-50 to-white pt-28 pb-0">
+        <section className="bg-gradient-to-br from-white via-purple-50 to-white pt-14 pb-0">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <FadeIn>
               <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
