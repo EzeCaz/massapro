@@ -192,7 +192,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
             >
               <a href="#pricing">View Plans</a>
             </Button>
-            <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } onOpenForm(); }}>
+            <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_nav_contact'); } catch(e){} } onOpenForm(); }}>
               Free Consultation <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
@@ -250,7 +250,7 @@ function Navbar({ onOpenForm }: { onOpenForm: () => void }) {
               <Button variant="outline" className="border-purple-300 text-purple-700 w-full" asChild>
                 <a href="#pricing" onClick={() => setMobileOpen(false)}>View Plans</a>
               </Button>
-              <Button className="purple-gradient text-white w-full" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } setMobileOpen(false); onOpenForm(); }}>
+              <Button className="purple-gradient text-white w-full" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Header', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } setMobileOpen(false); if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_nav_contact'); } catch(e){} } onOpenForm(); }}>
                 Free Consultation
               </Button>
             </div>
@@ -303,7 +303,7 @@ function HeroSection({ onOpenForm }: { onOpenForm: () => void }) {
                 <Button
                   size="lg"
                   className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
-                  onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Hero', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } onOpenForm(); }}
+                  onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Hero', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_hero_demo'); } catch(e){} } onOpenForm(); }}
                 >
                   Free Consultation
                   <ArrowRight className="w-5 h-5 ml-2" />
@@ -681,7 +681,7 @@ function PositionsSection({ onOpenForm }: { onOpenForm: () => void }) {
                       </li>
                     ))}
                   </ul>
-                  <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Services', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } onOpenForm(); }}>
+                  <Button className="mt-8 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30" onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Services', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_hero_demo'); } catch(e){} } onOpenForm(); }}>
                     Free Consultation <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
                 </div>
@@ -1074,7 +1074,7 @@ function PricingSection({ onOpenForm }: { onOpenForm: () => void }) {
                         ? 'purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30'
                         : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
                     }`}
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Pricing', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } onOpenForm(); }}
+                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'Pricing', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_pricing_tier'); } catch(e){} } onOpenForm(); }}
                   >
                     {tier.name === 'Enterprise' ? 'Contact Sales' : 'Free Consultation'} <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -1224,7 +1224,7 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
                   <Button
                     size="lg"
                     className="bg-white text-purple-700 hover:bg-purple-50 shadow-xl text-base px-8 py-6 font-semibold"
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } onOpenForm(); }}
+                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_cta_signup'); } catch(e){} } onOpenForm(); }}
                   >
                     <Mail className="w-5 h-5 mr-2" />
                     Get Free Consultation
@@ -1233,7 +1233,7 @@ function CTASection({ onOpenForm }: { onOpenForm: () => void }) {
                     size="lg"
                     variant="outline"
                     className="bg-white text-purple-700 hover:bg-purple-50 border-white/30 text-base px-8 py-6 font-semibold"
-                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } onOpenForm(); }}
+                    onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'CTA', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_cta_signup'); } catch(e){} } onOpenForm(); }}
                   >
                     View Pricing <ArrowRight className="w-5 h-5 ml-2" />
                   </Button>
@@ -1342,7 +1342,7 @@ function FAQSection({ onOpenForm }: { onOpenForm: () => void }) {
             <Button
               size="lg"
               className="purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 text-base px-8 py-6"
-              onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'FAQ', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } onOpenForm(); }}
+              onClick={() => { if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') { (window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: 'FAQ', page_name: 'Hair_Salon_TY', cta: 'freeconsult' }); } if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') { try { (window as any).MassaProAffiliate.trackEvent('btn_cta_signup'); } catch(e){} } onOpenForm(); }}
             >
               <Mail className="w-5 h-5 mr-2" />
               Contact Our Team

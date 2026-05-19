@@ -225,6 +225,25 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
         ;(window as any).fbq('track', 'Schedule')
       }
+
+      // MassaPro Affiliate Tracker: track lead (direct call since React preventDefault blocks document submit listener)
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+        try {
+          const attr = (window as any).MassaProAffiliate.getAttribution()
+          if (attr && attr.affid) {
+            ;(window as any).MassaProAffiliate.trackLead({
+              lead_name: `${formData.firstName} ${formData.lastName}`,
+              lead_email: formData.email,
+              lead_phone: formData.mobile,
+              lead_company: formData.companyUrl || '',
+              plan_type: formData.planType || 'Basic',
+              initial_status: 'Booked Call',
+            })
+          }
+        } catch (e) {
+          console.warn('MassaPro Affiliate trackLead error:', e)
+        }
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong'
       setError(msg)

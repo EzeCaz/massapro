@@ -105,6 +105,78 @@ export default function RootLayout({
             gtag('config', 'G-Z2TP8Y923Q');
           `}
         </Script>
+
+        {/* MassaPro Affiliate Tracker - Step 1: Tracker Script */}
+        <Script
+          src="https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site/massapro-affiliate-tracker.js"
+          strategy="afterInteractive"
+        />
+        <Script id="massapro-affiliate-config" strategy="afterInteractive">
+          {`
+            MassaProAffiliate.config({ dashboardUrl: 'https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site' });
+          `}
+        </Script>
+
+        {/* MassaPro Affiliate Tracker - Step 2: Google Calendar Booking Tracking */}
+        <Script id="massapro-affiliate-booking" strategy="afterInteractive">
+          {`
+            (function() {
+              var formSubmitted = false;
+
+              // Method 1: Watch for Google Calendar iframe postMessage events
+              window.addEventListener('message', function(e) {
+                if (e.data && e.data.type === 'calendar-event-booked') {
+                  if (formSubmitted) return;
+                  formSubmitted = true;
+                  var attr = MassaProAffiliate.getAttribution();
+                  if (attr && attr.affid) {
+                    MassaProAffiliate.trackLead({
+                      lead_name: e.data.name || 'Google Calendar Booking',
+                      lead_email: e.data.email || '',
+                      lead_phone: e.data.phone || '',
+                      lead_company: '',
+                      plan_type: 'Basic',
+                      initial_status: 'Booked Call'
+                    });
+                  }
+                }
+              });
+
+              // Method 2: Watch for any form submission on the page (fallback)
+              document.addEventListener('submit', function(e) {
+                if (formSubmitted) return;
+                var form = e.target;
+                var emailField = form.querySelector('input[type="email"], input[name*="email"], input[placeholder*="email" i]');
+                var nameField = form.querySelector('input[name*="name"], input[placeholder*="name" i]');
+                var phoneField = form.querySelector('input[type="tel"], input[name*="phone"], input[placeholder*="phone" i]');
+                var companyField = form.querySelector('input[name*="company"], input[placeholder*="company" i]');
+
+                if (emailField || nameField) {
+                  formSubmitted = true;
+                  var attr = MassaProAffiliate.getAttribution();
+                  if (attr && attr.affid) {
+                    MassaProAffiliate.trackLead({
+                      lead_name: nameField ? nameField.value : 'Website Lead',
+                      lead_email: emailField ? emailField.value : '',
+                      lead_phone: phoneField ? phoneField.value : '',
+                      lead_company: companyField ? companyField.value : '',
+                      plan_type: 'Basic',
+                      initial_status: 'Lead'
+                    });
+                  }
+                }
+              }, true);
+
+              // Method 3: Watch for Google Calendar button/link clicks
+              document.addEventListener('click', function(e) {
+                var target = e.target.closest('a[href*="calendar.google"], a[href*="calendly"], button[data-calendar], [data-book]');
+                if (target && !formSubmitted) {
+                  MassaProAffiliate.trackEvent('btn_book_calendar');
+                }
+              });
+            })();
+          `}
+        </Script>
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-background text-foreground`}
