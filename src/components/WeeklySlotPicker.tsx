@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useMemo, useEffect } from 'react'
-import { Check, ChevronLeft, ChevronRight, Clock } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Clock, ChevronDown } from 'lucide-react'
 
 const ISRAEL_TZ = 'Asia/Jerusalem'
 const DAY_LABELS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu']
@@ -19,8 +19,6 @@ const EVENING_SLOTS = [
   { h: 20, m: 30 }, { h: 21, m: 0 }, { h: 21, m: 30 },
 ]
 
-const ALL_SLOT_TIMES = [...MORNING_SLOTS, ...EVENING_SLOTS]
-
 export interface SlotInfo {
   id: string // ISO string of the slot start time (UTC)
   localLabel: string // e.g. "10:00 AM"
@@ -34,6 +32,7 @@ export interface DaySlots {
   dateLabel: string // e.g. "May 19"
   morning: SlotInfo[]
   evening: SlotInfo[]
+  hasAvailableSlots: boolean // at least one non-past, non-booked slot
 }
 
 interface WeeklySlotPickerProps {
@@ -47,9 +46,7 @@ interface WeeklySlotPickerProps {
  * Handles DST correctly (IST = UTC+2, IDT = UTC+3).
  */
 function getIsraelOffsetMs(year: number, month0: number, day: number): number {
-  // Create a reference date at noon UTC on the target date
   const noonUTC = new Date(Date.UTC(year, month0, day, 12, 0, 0))
-  // Format it in Israel timezone to find the local time
   const israelStr = noonUTC.toLocaleString('en-US', { timeZone: ISRAEL_TZ })
   const israelDate = new Date(israelStr)
   return israelDate.getTime() - noonUTC.getTime()
@@ -96,6 +93,7 @@ function getWeekSunday(date: Date): Date {
 export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlots }: WeeklySlotPickerProps) {
   const [weekOffset, setWeekOffset] = useState(0)
   const [userTz] = useState(getUserTimezone)
+  const [expandedDays, setExpandedDays] = useState<Set<string>>(new Set())
 
   const now = useMemo(() => new Date(), [])
 
@@ -124,24 +122,30 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
       for (const { h, m } of MORNING_SLOTS) {
         const slotDate = createIsraelDate(year, month, day, h, m)
         const id = slotDate.toISOString()
+        const isPast = slotDate.getTime() < now.getTime()
+        const isBooked = bookedSlots.includes(id)
         morningSlots.push({
           id,
           localLabel: formatLocalTime(slotDate),
-          isPast: slotDate.getTime() < now.getTime(),
-          isBooked: bookedSlots.includes(id),
+          isPast,
+          isBooked,
         })
       }
 
       for (const { h, m } of EVENING_SLOTS) {
         const slotDate = createIsraelDate(year, month, day, h, m)
         const id = slotDate.toISOString()
+        const isPast = slotDate.getTime() < now.getTime()
+        const isBooked = bookedSlots.includes(id)
         eveningSlots.push({
           id,
           localLabel: formatLocalTime(slotDate),
-          isPast: slotDate.getTime() < now.getTime(),
-          isBooked: bookedSlots.includes(id),
+          isPast,
+          isBooked,
         })
       }
+
+      const hasAvailableSlots = [...morningSlots, ...eveningSlots].some(s => !s.isPast && !s.isBooked)
 
       result.push({
         dateISO: `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`,
@@ -149,25 +153,24 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
         dateLabel: dayDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         morning: morningSlots,
         evening: eveningSlots,
+        hasAvailableSlots,
       })
     }
 
-    return result
+    // Filter out days with no available slots at all (all past/booked)
+    return result.filter(d => d.hasAvailableSlots)
   }, [weekSunday, now, bookedSlots])
 
   // Week label
   const weekLabel = useMemo(() => {
+    if (days.length === 0) return ''
     const start = days[0]?.dateLabel || ''
-    const end = days[4]?.dateLabel || ''
+    const end = days[days.length - 1]?.dateLabel || ''
     return `${start} — ${end}`
   }, [days])
 
-  // Check if all morning/evening slots in the week are past or booked (to auto-advance)
-  const allUnavailable = useMemo(() => {
-    return days.every(d =>
-      [...d.morning, ...d.evening].every(s => s.isPast || s.isBooked)
-    )
-  }, [days])
+  // Check if all remaining days are unavailable (to auto-advance)
+  const allUnavailable = days.length === 0
 
   // Auto-advance week if all slots are unavailable
   useEffect(() => {
@@ -201,10 +204,50 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
         timeZone: ISRAEL_TZ,
         hour: '2-digit', minute: '2-digit', hour12: false,
       })
-      // Format as HH:MM
       const timeParts = israelStr.match(/(\d{1,2}):(\d{2})/)
       const timeIsrael = timeParts ? `${timeParts[1].padStart(2, '0')}:${timeParts[2]}` : ''
       onSelectSlot(slot.id, day.dateISO, timeIsrael)
+    }
+  }
+
+  const toggleDayExpand = (dateISO: string) => {
+    setExpandedDays(prev => {
+      const next = new Set(prev)
+      if (next.has(dateISO)) {
+        next.delete(dateISO)
+      } else {
+        next.add(dateISO)
+      }
+      return next
+    })
+  }
+
+  // Get visible slots for a day (collapsed = 2 morning + 2 evening; expanded = all)
+  const getVisibleSlots = (day: DaySlots) => {
+    const isExpanded = expandedDays.has(day.dateISO)
+
+    // Filter out past/booked slots for display
+    const availableMorning = day.morning.filter(s => !s.isPast && !s.isBooked)
+    const availableEvening = day.evening.filter(s => !s.isPast && !s.isBooked)
+
+    if (isExpanded) {
+      // Show all non-past, non-booked slots
+      return {
+        morning: availableMorning,
+        evening: availableEvening,
+        hasMoreMorning: false,
+        hasMoreEvening: false,
+      }
+    }
+
+    // Collapsed: show first 2 available from each
+    const morningPreview = availableMorning.slice(0, 2)
+    const eveningPreview = availableEvening.slice(0, 2)
+    return {
+      morning: morningPreview,
+      evening: eveningPreview,
+      hasMoreMorning: availableMorning.length > 2,
+      hasMoreEvening: availableEvening.length > 2,
     }
   }
 
@@ -232,6 +275,15 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
         {isSelected && <Check className="w-3 h-3" />}
         {slot.localLabel}
       </button>
+    )
+  }
+
+  if (days.length === 0 && weekOffset >= 8) {
+    return (
+      <div className="text-center py-8 text-gray-500">
+        <p>No available slots found in the next 8 weeks.</p>
+        <p className="text-sm mt-1">Please contact us directly at info@massapro.com</p>
+      </div>
     )
   }
 
@@ -270,53 +322,112 @@ export default function WeeklySlotPicker({ selectedSlot, onSelectSlot, bookedSlo
       {/* Weekly grid */}
       <div className="overflow-x-auto -mx-2 px-2">
         {/* Desktop: horizontal grid */}
-        <div className="hidden sm:grid sm:grid-cols-5 gap-2 min-w-[500px]">
-          {days.map((day) => (
-            <div key={day.dateISO} className="space-y-2">
-              {/* Day header */}
-              <div className="text-center pb-1 border-b border-purple-100">
-                <div className="text-xs font-bold text-purple-800">{day.dayLabel}</div>
-                <div className="text-[11px] text-purple-500">{day.dateLabel}</div>
-              </div>
+        <div className="hidden sm:grid sm:grid-cols-5 gap-2 min-w-[600px]">
+          {days.map((day) => {
+            const { morning, evening, hasMoreMorning, hasMoreEvening } = getVisibleSlots(day)
+            const isExpanded = expandedDays.has(day.dateISO)
+            const hasMore = hasMoreMorning || hasMoreEvening
 
-              {/* Morning */}
-              <div className="space-y-1">
-                <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-center">Morning</div>
-                {day.morning.map(slot => renderSlot(slot, day))}
-              </div>
+            return (
+              <div key={day.dateISO} className="space-y-2">
+                {/* Day header */}
+                <div className="text-center pb-1 border-b border-purple-100">
+                  <div className="text-xs font-bold text-purple-800">{day.dayLabel}</div>
+                  <div className="text-[11px] text-purple-500">{day.dateLabel}</div>
+                </div>
 
-              {/* Evening */}
-              <div className="space-y-1 mt-2">
-                <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-center">Evening</div>
-                {day.evening.map(slot => renderSlot(slot, day))}
+                {/* Morning */}
+                {morning.length > 0 && (
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-center">Morning</div>
+                    {morning.map(slot => renderSlot(slot, day))}
+                  </div>
+                )}
+
+                {/* Evening */}
+                {evening.length > 0 && (
+                  <div className="space-y-1 mt-2">
+                    <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider text-center">Evening</div>
+                    {evening.map(slot => renderSlot(slot, day))}
+                  </div>
+                )}
+
+                {/* See more / Show less */}
+                {hasMore && !isExpanded && (
+                  <button
+                    type="button"
+                    onClick={() => toggleDayExpand(day.dateISO)}
+                    className="w-full text-[11px] font-medium text-purple-600 hover:text-purple-800 flex items-center justify-center gap-0.5 py-1 transition-colors"
+                  >
+                    See more <ChevronDown className="w-3 h-3" />
+                  </button>
+                )}
+                {isExpanded && (
+                  <button
+                    type="button"
+                    onClick={() => toggleDayExpand(day.dateISO)}
+                    className="w-full text-[11px] font-medium text-gray-400 hover:text-gray-600 flex items-center justify-center gap-0.5 py-1 transition-colors"
+                  >
+                    Show less
+                  </button>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
 
         {/* Mobile: vertical list */}
         <div className="sm:hidden space-y-3">
-          {days.map((day) => (
-            <div key={day.dateISO} className="bg-white rounded-lg border border-purple-100 p-3">
-              <div className="font-semibold text-purple-800 text-sm mb-2">
-                {day.dayLabel}, {day.dateLabel}
-              </div>
+          {days.map((day) => {
+            const { morning, evening, hasMoreMorning, hasMoreEvening } = getVisibleSlots(day)
+            const isExpanded = expandedDays.has(day.dateISO)
+            const hasMore = hasMoreMorning || hasMoreEvening
 
-              <div className="space-y-1 mb-2">
-                <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Morning</div>
-                <div className="grid grid-cols-3 gap-1">
-                  {day.morning.map(slot => renderSlot(slot, day))}
+            return (
+              <div key={day.dateISO} className="bg-white rounded-lg border border-purple-100 p-3">
+                <div className="font-semibold text-purple-800 text-sm mb-2">
+                  {day.dayLabel}, {day.dateLabel}
                 </div>
-              </div>
 
-              <div className="space-y-1">
-                <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Evening</div>
-                <div className="grid grid-cols-3 gap-1">
-                  {day.evening.map(slot => renderSlot(slot, day))}
-                </div>
+                {morning.length > 0 && (
+                  <div className="space-y-1 mb-2">
+                    <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Morning</div>
+                    <div className="grid grid-cols-3 gap-1">
+                      {morning.map(slot => renderSlot(slot, day))}
+                    </div>
+                  </div>
+                )}
+
+                {evening.length > 0 && (
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Evening</div>
+                    <div className="grid grid-cols-3 gap-1">
+                      {evening.map(slot => renderSlot(slot, day))}
+                    </div>
+                  </div>
+                )}
+
+                {hasMore && !isExpanded && (
+                  <button
+                    type="button"
+                    onClick={() => toggleDayExpand(day.dateISO)}
+                    className="w-full text-[11px] font-medium text-purple-600 hover:text-purple-800 flex items-center justify-center gap-0.5 py-1 mt-1 transition-colors"
+                  >
+                    See more <ChevronDown className="w-3 h-3" />
+                  </button>
+                )}
+                {isExpanded && (
+                  <button
+                    type="button"
+                    onClick={() => toggleDayExpand(day.dateISO)}
+                    className="w-full text-[11px] font-medium text-gray-400 hover:text-gray-600 flex items-center justify-center gap-0.5 py-1 mt-1 transition-colors"
+                  >
+                    Show less
+                  </button>
+                )}
               </div>
-            </div>
-          ))}
+            )
+          })}
         </div>
       </div>
 

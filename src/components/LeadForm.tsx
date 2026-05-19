@@ -258,7 +258,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
 
   return (
     <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto p-0 gap-0">
+      <DialogContent className="sm:max-w-4xl max-w-[95vw] max-h-[90vh] overflow-y-auto p-0 gap-0">
         {/* Header */}
         <div className={`sticky top-0 z-10 bg-white border-b border-purple-100 px-6 py-4 rounded-t-lg ${submitted ? 'text-center' : ''}`}>
           <DialogHeader className={submitted ? 'items-center' : ''}>
@@ -440,19 +440,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
               </div>
             </div>
 
-            {/* Appointment - Weekly Slot Picker */}
-            <div>
-              <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
-                Schedule Consultation
-              </h3>
-              <WeeklySlotPicker
-                selectedSlot={formData.appointmentSlotId}
-                onSelectSlot={handleSlotSelect}
-                bookedSlots={bookedSlots}
-              />
-            </div>
-
-            {/* Service Selection */}
+            {/* Service Selection — BEFORE Schedule Consultation */}
             <div>
               <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
                 Service Selection
@@ -489,6 +477,18 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
                   </Select>
                 </div>
               </div>
+            </div>
+
+            {/* Appointment - Weekly Slot Picker — AFTER Service Selection */}
+            <div>
+              <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
+                Schedule Consultation
+              </h3>
+              <WeeklySlotPicker
+                selectedSlot={formData.appointmentSlotId}
+                onSelectSlot={handleSlotSelect}
+                bookedSlots={bookedSlots}
+              />
             </div>
 
             {/* Notes */}
