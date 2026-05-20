@@ -882,7 +882,7 @@ function PricingSection() {
       value: 1200,
       contentName: 'Professional Plan',
       affiliateEvent: 'btn_buy_professional',
-      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=2000',
+      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=1001',
     },
     {
       name: 'Enterprise',
