@@ -970,13 +970,13 @@ function PricingSection() {
                     }`}
                     onClick={() => {
                       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-                        (window as any).fbq('track', 'Purchase', { value: tier.value, currency: 'USD', content_name: tier.contentName, cta: 'purchase' })
+                        (window as any).fbq('track', 'AddToCart', { value: tier.value, currency: 'USD', content_name: tier.contentName, cta: 'add_to_cart' })
                       }
                       if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
                         try { (window as any).MassaProAffiliate.trackEvent(tier.affiliateEvent) } catch(e){}
                       }
                       if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-                        (window as any).gtag('event', 'purchase', { value: tier.value, currency: 'USD', items: [{ name: tier.contentName, price: tier.value }] })
+                        (window as any).gtag('event', 'add_to_cart', { value: tier.value, currency: 'USD', items: [{ name: tier.contentName, price: tier.value }] })
                       }
                     }}
                   >
