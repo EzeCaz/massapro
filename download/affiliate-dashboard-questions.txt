@@ -1,0 +1,62 @@
+MASSAPRO AFFILIATE DASHBOARD - QUESTIONS BEFORE INTEGRATION
+============================================================
+
+1. DASHBOARD URL MISMATCH - CRITICAL
+-------------------------------------
+The integration instructions say:
+  dashboardUrl: 'https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site'
+
+But the current website uses:
+  dashboardUrl: 'https://aff-massapro.space-z.ai'
+
+Question: Which URL is the real production dashboard?
+- If the preview URL is temporary, we should keep aff-massapro.space-z.ai
+- If the preview URL is the real one, we need to update the website
+
+
+2. TRACKER JS URL MISMATCH
+---------------------------
+The instructions reference:
+  src="https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site/massapro-affiliate-tracker.js"
+
+But the site currently loads:
+  src="https://aff-massapro.space-z.ai/massapro-affiliate-tracker.js"
+
+Question: Which URL should the site use to load the tracker JS?
+
+
+3. trackEvent() METHOD - WAS IT ADDED TO THE HOSTED TRACKER JS?
+----------------------------------------------------------------
+Previously we discovered that the hosted massapro-affiliate-tracker.js
+was MISSING the trackEvent() method. It only had:
+  - config()
+  - trackLead()
+  - getAttribution()
+
+I provided the complete updated JS code with trackEvent() + fireEventTracking().
+
+Question: Has the updated tracker JS been uploaded to the dashboard?
+If not, all trackEvent() calls from the website will silently fail.
+
+
+4. API ENDPOINTS ON DASHBOARD
+------------------------------
+For the tracker to save data, the dashboard needs these API routes:
+  - POST /api/track/click   (for click pixel tracking)
+  - POST /api/track/lead    (for trackLead())
+  - POST /api/track/event   (for trackEvent()) <-- THIS ONE WAS MISSING
+
+Question: Are all three API endpoints deployed and working on the dashboard?
+
+
+5. PURCHASE EVENTS NOT IN THE INSTRUCTIONS
+-------------------------------------------
+The /all page fires additional events not covered in the integration guide:
+  - trackEvent('btn_buy_basic')
+  - trackEvent('btn_buy_professional')
+  - trackEvent('btn_buy_enterprise')
+  - trackEvent('btn_get_now')
+  - Meta fbq('track', 'Purchase', ...) events
+
+Question: Should these also appear in the affiliate dashboard?
+If so, the integration instructions should document them.
