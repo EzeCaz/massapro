@@ -136,17 +136,15 @@ export default function RootLayout({
                   if (formSubmitted) return;
                   formSubmitted = true;
                   if (typeof MassaProAffiliate === 'undefined') return;
-                  var attr = MassaProAffiliate.getAttribution();
-                  if (attr && attr.affid) {
-                    MassaProAffiliate.trackLead({
-                      lead_name: e.data.name || 'Google Calendar Booking',
-                      lead_email: e.data.email || '',
-                      lead_phone: e.data.phone || '',
-                      lead_company: '',
-                      plan_type: 'Basic',
-                      initial_status: 'Booked Call'
-                    });
-                  }
+                  // Always fire — tracker v4.0 attributes no_affiliate traffic automatically
+                  MassaProAffiliate.trackLead({
+                    lead_name: e.data.name || 'Google Calendar Booking',
+                    lead_email: e.data.email || '',
+                    lead_phone: e.data.phone || '',
+                    lead_company: '',
+                    plan_type: 'Basic',
+                    initial_status: 'Booked Call'
+                  });
                 }
               });
 
@@ -162,17 +160,15 @@ export default function RootLayout({
                 if (emailField || nameField) {
                   formSubmitted = true;
                   if (typeof MassaProAffiliate === 'undefined') return;
-                  var attr = MassaProAffiliate.getAttribution();
-                  if (attr && attr.affid) {
-                    MassaProAffiliate.trackLead({
-                      lead_name: nameField ? nameField.value : 'Website Lead',
-                      lead_email: emailField ? emailField.value : '',
-                      lead_phone: phoneField ? phoneField.value : '',
-                      lead_company: companyField ? companyField.value : '',
-                      plan_type: 'Basic',
-                      initial_status: 'Lead'
-                    });
-                  }
+                  // Always fire — tracker v4.0 attributes no_affiliate traffic automatically
+                  MassaProAffiliate.trackLead({
+                    lead_name: nameField ? nameField.value : 'Website Lead',
+                    lead_email: emailField ? emailField.value : '',
+                    lead_phone: phoneField ? phoneField.value : '',
+                    lead_company: companyField ? companyField.value : '',
+                    plan_type: 'Basic',
+                    initial_status: 'Lead'
+                  });
                 }
               }, true);
 

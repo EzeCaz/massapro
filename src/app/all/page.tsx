@@ -978,20 +978,23 @@ function PricingSection() {
                       if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
                         try {
                           (window as any).MassaProAffiliate.trackEvent(tier.affiliateEvent)
-                          ;(window as any).MassaProAffiliate.trackCart({ plan: tier.name, value: tier.value, currency: 'USD' })
+                          ;(window as any).MassaProAffiliate.trackCart({ plan_type: tier.name, quantity: 1, cart_value: tier.value, currency: 'USD' })
                         } catch(e){}
                       }
                       // GA4: add_to_cart
                       if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
                         (window as any).gtag('event', 'add_to_cart', { value: tier.value, currency: 'USD', items: [{ name: tier.contentName, price: tier.value }] })
                       }
-                      // Build final ClickBank URL with cvendthru=affid (passes MassaPro affid to ClickBank)
+                      // Build final ClickBank URL with cvendthru=affid (only for real affiliates, not no_affiliate)
                       let finalUrl = tier.cbUrl
                       if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
                         try {
-                          const attr = (window as any).MassaProAffiliate.getAttribution()
-                          if (attr && attr.affid) {
-                            finalUrl = finalUrl + '&cvendthru=' + encodeURIComponent(attr.affid)
+                          const hasAff = (window as any).MassaProAffiliate.hasAffiliate()
+                          if (hasAff) {
+                            const attr = (window as any).MassaProAffiliate.getAttribution()
+                            if (attr && attr.affid) {
+                              finalUrl = finalUrl + '&cvendthru=' + encodeURIComponent(attr.affid)
+                            }
                           }
                         } catch(e){}
                       }

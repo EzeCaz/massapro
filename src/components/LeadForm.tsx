@@ -226,20 +226,17 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
         ;(window as any).fbq('track', 'Schedule')
       }
 
-      // MassaPro Affiliate Tracker: track lead (direct call since React preventDefault blocks document submit listener)
+      // MassaPro Affiliate Tracker: track lead (always fires — tracker v4.0 attributes no_affiliate traffic automatically)
       if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
         try {
-          const attr = (window as any).MassaProAffiliate.getAttribution()
-          if (attr && attr.affid) {
-            ;(window as any).MassaProAffiliate.trackLead({
-              lead_name: `${formData.firstName} ${formData.lastName}`,
-              lead_email: formData.email,
-              lead_phone: formData.mobile,
-              lead_company: formData.companyUrl || '',
-              plan_type: formData.planType || 'Basic',
-              initial_status: 'Booked Call',
-            })
-          }
+          ;(window as any).MassaProAffiliate.trackLead({
+            lead_name: `${formData.firstName} ${formData.lastName}`,
+            lead_email: formData.email,
+            lead_phone: formData.mobile,
+            lead_company: formData.companyUrl || '',
+            plan_type: formData.planType || 'Basic',
+            initial_status: 'Booked Call',
+          })
         } catch (e) {
           console.warn('MassaPro Affiliate trackLead error:', e)
         }
