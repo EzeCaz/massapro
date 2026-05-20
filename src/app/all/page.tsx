@@ -906,7 +906,7 @@ function PricingSection() {
       value: 2000,
       contentName: 'Enterprise Plan',
       affiliateEvent: 'btn_buy_enterprise',
-      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=3000',
+      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=1002',
     },
   ]
 
