@@ -29,10 +29,19 @@ function ThankYouContent() {
       })
     }
 
-    // MassaPro Affiliate Tracker
+    // MassaPro Affiliate Tracker: trackEvent + trackPurchase
     if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
       try {
         ;(window as any).MassaProAffiliate.trackEvent('btn_purchase_complete')
+        // Fire trackPurchase for commission attribution (Phase 1 client-side; Phase 2 server-side postback)
+        const attr = (window as any).MassaProAffiliate.getAttribution()
+        if (attr && attr.affid) {
+          ;(window as any).MassaProAffiliate.trackPurchase({
+            plan: planName,
+            value: Number(price) || 0,
+            currency: 'USD',
+          })
+        }
       } catch {}
     }
 
