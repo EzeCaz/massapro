@@ -20,3 +20,20 @@ Stage Summary:
 - Massapro_GoogleSheet_Script.js: Now writes to "Site" tab specifically
 - All "Get Started" and "Contact Us" buttons already connected to form via onOpenForm prop
 - User still needs to deploy Google Apps Script and set GOOGLE_SCRIPT_URL in .env
+
+---
+Task ID: 2
+Agent: Main Agent
+Task: Set up shared communication channel between Main Site and Dashboard chats
+
+Work Log:
+- Created `/home/z/my-project/shared/` directory
+- Created `README.md` with conventions and file descriptions
+- Created `dashboard-api-spec.md` with full API contract (all endpoints, request formats, field names)
+- Created `pending-actions.md` with two requests for the dashboard chat (data cleanup + chart fix)
+- Created `integration-status.md` with current tracker v4.0 integration status
+
+Stage Summary:
+- Shared communication channel established at `/home/z/my-project/shared/`
+- Both chats can read/write to this directory
+- Dashboard chat should be told to read `pending-actions.md` and `dashboard-api-spec.md`
