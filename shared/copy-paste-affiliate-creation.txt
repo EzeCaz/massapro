@@ -1,0 +1,10 @@
+Please read /home/z/my-project/shared/README.md for context if you haven't already.
+
+ACTION: Create a new affiliate in the dashboard database with the following details:
+
+- Affiliate ID: MP-ROBERTO-001
+- Name: Roberto Singler
+- Email: rsingler18@gmail.com
+- Password: soyelmejor
+
+After creating, confirm the affiliate appears in the dashboard and update /home/z/my-project/shared/pending-actions.md with the result.
