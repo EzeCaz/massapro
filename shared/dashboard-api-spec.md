@@ -3,7 +3,7 @@
 This document defines the contract between the MassaPro main website (sender) and the affiliate dashboard (receiver).
 
 ## Base URL
-`https://aff-massapro.space-z.ai`
+`https://aff.massapro.com`
 
 ---
 

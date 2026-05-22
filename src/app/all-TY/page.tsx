@@ -1,6 +1,7 @@
 'use client'
 
 import { useEffect, Suspense } from 'react'
+import { BackupTracker } from '@/lib/backup-tracker'
 import { useSearchParams } from 'next/navigation'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -11,6 +12,11 @@ function ThankYouContent() {
   const searchParams = useSearchParams()
   const planName = searchParams.get('plan') || 'your plan'
   const price = searchParams.get('price') || ''
+
+  // Backup tracker: pageview
+  useEffect(() => {
+    BackupTracker.trackPageView()
+  }, [])
 
   // Fire analytics events on mount
   useEffect(() => {
@@ -40,6 +46,9 @@ function ThankYouContent() {
         })
       } catch {}
     }
+
+    // Local backup: track purchase
+    BackupTracker.trackPurchase(planName, Number(price) || 0, 'clickbank')
 
     // Google Analytics 4: purchase event
     if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {

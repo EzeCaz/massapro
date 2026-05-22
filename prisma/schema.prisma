@@ -1,9 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,20 +10,106 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// ─── Tracking Models (Local Backup) ───
+
+model PageView {
+  id          String   @id @default(cuid())
+  sessionId   String
+  affid       String   @default("no_affiliate")
+  page        String   // e.g. "/", "/hair-salon", "/all"
+  referrer    String?
+  userAgent   String?
+  ip          String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  createdAt   DateTime @default(now())
+
+  @@index([affid])
+  @@index([page])
+  @@index([createdAt])
+  @@index([sessionId])
 }
 
-model Post {
-  id        String   @id @default(cuid())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  authorId  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model ClickEvent {
+  id         String   @id @default(cuid())
+  sessionId  String
+  affid      String   @default("no_affiliate")
+  eventType  String   // "button_click", "link_click", etc.
+  eventId    String   // "btn_buy_basic", "btn_book_demo", etc.
+  page       String
+  metadata   String?  // JSON string for extra data
+  createdAt  DateTime @default(now())
+
+  @@index([affid])
+  @@index([eventType])
+  @@index([eventId])
+  @@index([createdAt])
+}
+
+model ScrollEvent {
+  id         String   @id @default(cuid())
+  sessionId  String
+  affid      String   @default("no_affiliate")
+  page       String
+  scrollPct  Int      // 0-100 percentage scrolled
+  section    String?  // Section name/ID if available
+  createdAt  DateTime @default(now())
+
+  @@index([affid])
+  @@index([page])
+  @@index([createdAt])
+}
+
+model Lead {
+  id          String   @id @default(cuid())
+  sessionId   String
+  affid       String   @default("no_affiliate")
+  name        String
+  email       String
+  phone       String?
+  company     String?
+  companyUrl  String?
+  planType    String?
+  message     String?
+  utmSource   String?
+  utmMedium   String?
+  utmCampaign String?
+  utmContent  String?
+  utmTerm     String?
+  createdAt   DateTime @default(now())
+
+  @@index([affid])
+  @@index([email])
+  @@index([createdAt])
+}
+
+model CartEvent {
+  id         String   @id @default(cuid())
+  sessionId  String
+  affid      String   @default("no_affiliate")
+  planType   String   // "Basic", "Professional", "Enterprise"
+  cartValue  Int      // Price in USD cents (50000 = $500.00)
+  page       String
+  createdAt  DateTime @default(now())
+
+  @@index([affid])
+  @@index([planType])
+  @@index([createdAt])
+}
+
+model PurchaseEvent {
+  id         String   @id @default(cuid())
+  sessionId  String
+  affid      String   @default("no_affiliate")
+  planType   String
+  revenue    Int      // Price in USD cents
+  source     String?  // "clickbank", "stripe", etc.
+  createdAt  DateTime @default(now())
+
+  @@index([affid])
+  @@index([planType])
+  @@index([createdAt])
 }

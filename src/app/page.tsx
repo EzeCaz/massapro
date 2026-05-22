@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef, useCallback } from 'react'
+import { BackupTracker } from '@/lib/backup-tracker'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -1724,6 +1725,28 @@ export default function Home() {
     if (params.get('consult') === 'true' || window.location.hash === '#contact') {
       setFormOpen(true)
     }
+  }, [])
+
+  // Backup tracker: pageview + scroll tracking
+  useEffect(() => {
+    BackupTracker.trackPageView()
+
+    // Scroll tracking: fire at 25%, 50%, 75%, 90% thresholds
+    const thresholds = [25, 50, 75, 90]
+    const fired = new Set<number>()
+    const onScroll = () => {
+      const scrollH = document.documentElement.scrollHeight - window.innerHeight
+      if (scrollH <= 0) return
+      const pct = Math.round((window.scrollY / scrollH) * 100)
+      for (const t of thresholds) {
+        if (pct >= t && !fired.has(t)) {
+          fired.add(t)
+          BackupTracker.trackScroll(t)
+        }
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
   return (

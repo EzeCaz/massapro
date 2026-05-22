@@ -7,7 +7,7 @@ The integration instructions say:
   dashboardUrl: 'https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site'
 
 But the current website uses:
-  dashboardUrl: 'https://aff-massapro.space-z.ai'
+  dashboardUrl: 'https://aff.massapro.com'
 
 Question: Which URL is the real production dashboard?
 - If the preview URL is temporary, we should keep aff-massapro.space-z.ai
@@ -20,7 +20,7 @@ The instructions reference:
   src="https://preview-f43bf3a5-083a-4c86-b60b-5e47f8a89485.space.chatglm.site/massapro-affiliate-tracker.js"
 
 But the site currently loads:
-  src="https://aff-massapro.space-z.ai/massapro-affiliate-tracker.js"
+  src="https://aff.massapro.com/massapro-affiliate-tracker.js"
 
 Question: Which URL should the site use to load the tracker JS?
 

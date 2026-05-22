@@ -3,7 +3,7 @@
 This directory is a **shared communication layer** between two chat sessions:
 
 1. **Main Website Chat** — Manages the MassaPro Next.js website (tracker integration, pages, components)
-2. **Affiliate Dashboard Chat** — Manages the affiliate dashboard at `aff-massapro.space-z.ai` (database, API, charts, UI)
+2. **Affiliate Dashboard Chat** — Manages the affiliate dashboard at `aff.massapro.com` (database, API, charts, UI)
 
 ## How It Works
 

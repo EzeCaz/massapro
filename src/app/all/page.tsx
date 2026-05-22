@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { BackupTracker } from '@/lib/backup-tracker'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -981,6 +982,9 @@ function PricingSection() {
                           ;(window as any).MassaProAffiliate.trackCart({ plan_type: tier.name, quantity: 1, cart_value: tier.value, currency: 'USD' })
                         } catch(e){}
                       }
+                      // Local backup: track click + cart
+                      BackupTracker.trackClick('button_click', tier.affiliateEvent, { plan: tier.name, page: '/all' })
+                      BackupTracker.trackCart(tier.name, tier.value)
                       // GA4: add_to_cart
                       if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
                         (window as any).gtag('event', 'add_to_cart', { value: tier.value, currency: 'USD', items: [{ name: tier.contentName, price: tier.value }] })
@@ -1771,6 +1775,26 @@ function Footer() {
 
 /* ──────────────────── Main Page ──────────────────── */
 export default function AllPage() {
+  // Backup tracker: pageview + scroll tracking
+  useEffect(() => {
+    BackupTracker.trackPageView()
+    const thresholds = [25, 50, 75, 90]
+    const fired = new Set<number>()
+    const onScroll = () => {
+      const scrollH = document.documentElement.scrollHeight - window.innerHeight
+      if (scrollH <= 0) return
+      const pct = Math.round((window.scrollY / scrollH) * 100)
+      for (const t of thresholds) {
+        if (pct >= t && !fired.has(t)) {
+          fired.add(t)
+          BackupTracker.trackScroll(t)
+        }
+      }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true })
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar />

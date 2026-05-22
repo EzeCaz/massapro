@@ -109,14 +109,14 @@ export default function RootLayout({
         {/* MassaPro Affiliate Tracker - Step 1: Tracker Script */}
         <Script
           id="massapro-affiliate-tracker"
-          src="https://aff-massapro.space-z.ai/massapro-affiliate-tracker.js"
+          src="https://aff.massapro.com/massapro-affiliate-tracker.js"
           strategy="afterInteractive"
         />
         <Script id="massapro-affiliate-config" strategy="afterInteractive">
           {`
             (function initAffiliate() {
               if (typeof MassaProAffiliate !== 'undefined') {
-                MassaProAffiliate.config({ dashboardUrl: 'https://aff-massapro.space-z.ai' });
+                MassaProAffiliate.config({ dashboardUrl: 'https://aff.massapro.com' });
               } else {
                 setTimeout(initAffiliate, 100);
               }

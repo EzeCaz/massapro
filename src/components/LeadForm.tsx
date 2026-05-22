@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
+import { BackupTracker } from '@/lib/backup-tracker'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -241,6 +242,15 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
           console.warn('MassaPro Affiliate trackLead error:', e)
         }
       }
+
+      // Local backup: track lead
+      BackupTracker.trackLead({
+        name: `${formData.firstName} ${formData.lastName}`,
+        email: formData.email,
+        phone: formData.mobile,
+        company: formData.companyUrl,
+        planType: formData.planType || 'Basic',
+      })
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong'
       setError(msg)
