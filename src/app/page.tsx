@@ -1718,6 +1718,14 @@ export default function Home() {
 
   const openForm = useCallback(() => setFormOpen(true), [])
 
+  // Auto-open lead form when URL has ?consult=true or #contact
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('consult') === 'true' || window.location.hash === '#contact') {
+      setFormOpen(true)
+    }
+  }, [])
+
   return (
     <div className="min-h-screen flex flex-col">
       <Navbar onOpenForm={openForm} />

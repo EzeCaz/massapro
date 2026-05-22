@@ -1447,6 +1447,14 @@ export default function HairSalonPage() {
 
   const openForm = useCallback(() => setFormOpen(true), [])
 
+  // Auto-open lead form when URL has ?consult=true or #contact
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('consult') === 'true' || window.location.hash === '#contact') {
+      setFormOpen(true)
+    }
+  }, [])
+
   // Fire Meta Pixel CompleteRegistration on page load
   useEffect(() => {
     if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
