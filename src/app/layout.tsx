@@ -28,7 +28,11 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "MassaPro" }],
   icons: {
-    icon: "/massapro-logo.png",
+    icon: [
+      { url: "/favicon.ico", sizes: "48x48" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: "/apple-icon.png",
   },
   openGraph: {
     title: "MassaPro — AI Agentic Receptionist & Secretary Services",
