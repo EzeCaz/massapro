@@ -111,9 +111,17 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
 
-  // Track form open event (Meta Pixel + Google Analytics)
+  // Track form open event (Meta Pixel + Google Analytics + MassaPro Affiliate)
   useEffect(() => {
     if (open) {
+      // MassaPro Affiliate Tracker: track form open
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+        try {
+          ;(window as any).MassaProAffiliate.trackLeadFormOpen()
+        } catch (e) {
+          console.warn('MassaPro Affiliate trackLeadFormOpen error:', e)
+        }
+      }
       // Meta Pixel: custom event
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
         ;(window as any).fbq('trackCustom', 'LeadFormOpen')
