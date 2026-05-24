@@ -116,31 +116,39 @@ export default function DashboardPage() {
   const [carts, setCarts] = useState<CartStats | null>(null)
   const [purchases, setPurchases] = useState<PurchaseStats | null>(null)
 
+  const [error, setError] = useState<string | null>(null)
+
   const fetchData = useCallback(async () => {
     setLoading(true)
+    setError(null)
     try {
-      const [dashRes, pvRes, clickRes, scrollRes, leadRes, cartRes, purchRes] = await Promise.all([
-        fetch(`/api/track/dashboard?days=${days}`),
-        fetch(`/api/track/pageview?days=${days}`),
-        fetch(`/api/track/click?days=${days}`),
-        fetch(`/api/track/scroll?days=${days}`),
-        fetch(`/api/track/lead?days=${days}`),
-        fetch(`/api/track/cart?days=${days}`),
-        fetch(`/api/track/purchase?days=${days}`),
+      const results = await Promise.allSettled([
+        fetch(`/api/track/dashboard?days=${days}`).then(r => r.ok ? r.json() : { summary: {}, pageViewsByPage: [], clicksByType: [], clicksById: [], leadsByAffid: [] }),
+        fetch(`/api/track/pageview?days=${days}`).then(r => r.ok ? r.json() : { total: 0, byPage: [], byAffid: [] }),
+        fetch(`/api/track/click?days=${days}`).then(r => r.ok ? r.json() : { total: 0, byEventType: [], byEventId: [], byAffid: [] }),
+        fetch(`/api/track/scroll?days=${days}`).then(r => r.ok ? r.json() : { totalSessions: 0, avgScroll: 0, buckets: {}, byPage: {} }),
+        fetch(`/api/track/lead?days=${days}`).then(r => r.ok ? r.json() : { total: 0, byAffid: [], byPlanType: [], recent: [] }),
+        fetch(`/api/track/cart?days=${days}`).then(r => r.ok ? r.json() : { total: 0, byPlanType: [], totalRevenueDollars: '0.00' }),
+        fetch(`/api/track/purchase?days=${days}`).then(r => r.ok ? r.json() : { total: 0, byPlanType: [], totalRevenueDollars: '0.00' }),
       ])
-      const [dash, pv, click, scroll, lead, cart, purch] = await Promise.all([
-        dashRes.json(), pvRes.json(), clickRes.json(), scrollRes.json(),
-        leadRes.json(), cartRes.json(), purchRes.json(),
-      ])
-      setDashboard(dash)
-      setPageViews(pv)
-      setClicks(click)
-      setScrolls(scroll)
-      setLeads(lead)
-      setCarts(cart)
-      setPurchases(purch)
-    } catch (e) {
+      const [dash, pv, click, scroll, lead, cart, purch] = results.map(r =>
+        r.status === 'fulfilled' ? r.value : null
+      )
+      setDashboard(dash as DashboardData | null)
+      setPageViews(pv as PageViewStats | null)
+      setClicks(click as ClickStats | null)
+      setScrolls(scroll as ScrollStats | null)
+      setLeads(lead as LeadStats | null)
+      setCarts(cart as CartStats | null)
+      setPurchases(purch as PurchaseStats | null)
+
+      const failedCount = results.filter(r => r.status === 'rejected').length
+      if (failedCount > 0) {
+        setError(`${failedCount} API request(s) failed. Database may not be initialized on this deployment.`)
+      }
+    } catch (e: any) {
       console.error('Dashboard fetch error:', e)
+      setError(`Failed to load dashboard data: ${e.message}`)
     } finally {
       setLoading(false)
     }
@@ -201,6 +209,14 @@ export default function DashboardPage() {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Error Banner */}
+        {error && (
+          <div className="mb-6 bg-amber-50 border border-amber-200 rounded-lg p-4">
+            <p className="text-amber-800 text-sm font-medium">⚠️ {error}</p>
+            <p className="text-amber-600 text-xs mt-1">The local backup database may need to be initialized. Data will appear once the database is set up.</p>
+          </div>
+        )}
+
         {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
           <SummaryCard

@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import prisma, { ensureDb } from '@/lib/prisma'
 
 // GET /api/track/dashboard?days=7
 // Returns an aggregated dashboard summary of all tracking data
 export async function GET(req: NextRequest) {
   try {
+    await ensureDb()
     const { searchParams } = new URL(req.url)
     const days = parseInt(searchParams.get('days') || '7')
     const affid = searchParams.get('affid')

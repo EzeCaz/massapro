@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
+import prisma, { ensureDb } from '@/lib/prisma'
 
 export async function POST(req: NextRequest) {
   try {
+    await ensureDb()
     const body = await req.json()
     const {
       sessionId,
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
 // GET: retrieve purchase stats
 export async function GET(req: NextRequest) {
   try {
+    await ensureDb()
     const { searchParams } = new URL(req.url)
     const days = parseInt(searchParams.get('days') || '7')
     const affid = searchParams.get('affid')
