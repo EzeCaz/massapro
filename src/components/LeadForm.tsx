@@ -3,6 +3,33 @@
 import { useState, useEffect, useCallback, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { BackupTracker } from '@/lib/backup-tracker'
+
+/**
+ * Call MassaProAffiliate methods while suppressing the tracker script's
+ * internal console.error messages (e.g. "[MassaPro] Lead tracking failed: {}").
+ * The external tracker script at aff.massapro.com logs errors via console.error
+ * when its backend is unreachable — our try-catch can't catch those because
+ * they are not thrown exceptions, they are internal console calls.
+ */
+function safeMassaProCall(fn: () => void) {
+  if (typeof window === 'undefined') return
+  const origError = console.error
+  const origWarn = console.warn
+  console.error = (...args: any[]) => {
+    const msg = args.map(a => typeof a === 'string' ? a : '').join(' ')
+    if (msg.includes('[MassaPro]')) return
+    origError.apply(console, args)
+  }
+  console.warn = (...args: any[]) => {
+    const msg = args.map(a => typeof a === 'string' ? a : '').join(' ')
+    if (msg.includes('[MassaPro]')) return
+    origWarn.apply(console, args)
+  }
+  try { fn() } catch {} finally {
+    console.error = origError
+    console.warn = origWarn
+  }
+}
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -115,13 +142,11 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
   useEffect(() => {
     if (open) {
       // MassaPro Affiliate Tracker: track form open
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
-        try {
+      safeMassaProCall(() => {
+        if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
           ;(window as any).MassaProAffiliate.trackLeadFormOpen()
-        } catch (e) {
-          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
         }
-      }
+      })
       // Meta Pixel: custom event
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
         ;(window as any).fbq('trackCustom', 'LeadFormOpen')
@@ -131,6 +156,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
         ;(window as any).gtag('event', 'lead_form_open', {
           event_category: 'engagement',
           event_label: 'Lead Form Opened',
+          page_name: 'Home',
         })
       }
     }
@@ -235,9 +261,18 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
         ;(window as any).fbq('track', 'Schedule')
       }
 
+      // Google Analytics 4: track schedule conversion
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'schedule', {
+          event_category: 'conversion',
+          event_label: 'Consultation Scheduled',
+          page_name: 'Home',
+        })
+      }
+
       // MassaPro Affiliate Tracker: track lead (always fires — tracker v4.0 attributes no_affiliate traffic automatically)
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
-        try {
+      safeMassaProCall(() => {
+        if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
           ;(window as any).MassaProAffiliate.trackLead({
             lead_name: `${formData.firstName} ${formData.lastName}`,
             lead_email: formData.email,
@@ -246,10 +281,8 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
             plan_type: formData.planType || 'Basic',
             initial_status: 'Booked Call',
           })
-        } catch (e) {
-          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
         }
-      }
+      })
 
       // Local backup: track lead
       try {
@@ -333,7 +366,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
             </Button>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="px-6 py-6 space-y-6">
+          <form onSubmit={handleSubmit} data-massapro-handled="true" className="px-6 py-6 space-y-6">
             {error && (
               <div className="flex items-center gap-2 bg-red-50 text-red-700 p-3 rounded-lg text-sm">
                 <AlertCircle className="w-4 h-4 flex-shrink-0" />

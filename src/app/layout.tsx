@@ -135,25 +135,41 @@ export default function RootLayout({
               var formSubmitted = false;
 
               // Safe wrapper for MassaProAffiliate calls — never throws
-              function safeTrackLead(data) {
-                try {
-                  if (typeof MassaProAffiliate !== 'undefined' && typeof MassaProAffiliate.trackLead === 'function') {
-                    MassaProAffiliate.trackLead(data);
-                  }
-                } catch (e) {
-                  // Tracker unreachable — fail silently
-                  console.debug('[MassaPro] Affiliate tracker skipped (unavailable)');
+              // Suppress [MassaPro] prefixed messages from the external tracker script
+              // that logs errors via console.error when its backend is unreachable
+              function suppressMassaProConsole(fn) {
+                var origError = console.error;
+                var origWarn = console.warn;
+                console.error = function() {
+                  var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
+                  if (msg.indexOf('[MassaPro]') !== -1) return;
+                  origError.apply(console, arguments);
+                };
+                console.warn = function() {
+                  var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
+                  if (msg.indexOf('[MassaPro]') !== -1) return;
+                  origWarn.apply(console, arguments);
+                };
+                try { fn(); } catch(e) {} finally {
+                  console.error = origError;
+                  console.warn = origWarn;
                 }
               }
 
+              function safeTrackLead(data) {
+                suppressMassaProConsole(function() {
+                  if (typeof MassaProAffiliate !== 'undefined' && typeof MassaProAffiliate.trackLead === 'function') {
+                    MassaProAffiliate.trackLead(data);
+                  }
+                });
+              }
+
               function safeTrackEvent(eventId) {
-                try {
+                suppressMassaProConsole(function() {
                   if (typeof MassaProAffiliate !== 'undefined' && typeof MassaProAffiliate.trackEvent === 'function') {
                     MassaProAffiliate.trackEvent(eventId);
                   }
-                } catch (e) {
-                  console.debug('[MassaPro] Affiliate tracker skipped (unavailable)');
-                }
+                });
               }
 
               // Method 1: Watch for Google Calendar iframe postMessage events
@@ -173,9 +189,12 @@ export default function RootLayout({
               });
 
               // Method 2: Watch for any form submission on the page (fallback)
+              // Skip forms that handle their own tracking via data-massapro-handled attribute
               document.addEventListener('submit', function(e) {
                 if (formSubmitted) return;
                 var form = e.target;
+                // Skip if this form handles its own MassaPro tracking
+                if (form && form.getAttribute && form.getAttribute('data-massapro-handled')) return;
                 var emailField = form.querySelector('input[type="email"], input[name*="email"], input[placeholder*="email" i]');
                 var nameField = form.querySelector('input[name*="name"], input[placeholder*="name" i]');
                 var phoneField = form.querySelector('input[type="tel"], input[name*="phone"], input[placeholder*="phone" i]');

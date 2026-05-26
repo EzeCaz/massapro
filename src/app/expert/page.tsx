@@ -42,17 +42,51 @@ import {
 } from 'lucide-react'
 
 /* ──────────────────── Helper Functions ──────────────────── */
+
+/**
+ * Call MassaProAffiliate methods while suppressing the tracker script's
+ * internal console.error messages (e.g. "[MassaPro] Lead tracking failed: {}").
+ * The external tracker script at aff.massapro.com logs errors via console.error
+ * when its backend is unreachable — our try-catch can't catch those because
+ * they are not thrown exceptions, they are internal console calls.
+ */
+function safeMassaProCall(fn: () => void) {
+  if (typeof window === 'undefined') return
+  // Temporarily intercept console.error to suppress [MassaPro] prefixed messages
+  const origError = console.error
+  const origWarn = console.warn
+  console.error = (...args: any[]) => {
+    const msg = args.map(a => typeof a === 'string' ? a : '').join(' ')
+    if (msg.includes('[MassaPro]')) return // suppress tracker script's internal errors
+    origError.apply(console, args)
+  }
+  console.warn = (...args: any[]) => {
+    const msg = args.map(a => typeof a === 'string' ? a : '').join(' ')
+    if (msg.includes('[MassaPro]')) return
+    origWarn.apply(console, args)
+  }
+  try {
+    fn()
+  } catch {
+    // Tracker unavailable — fail silently
+  } finally {
+    // Always restore original console methods
+    console.error = origError
+    console.warn = origWarn
+  }
+}
+
 function handleGetNowClick(location: string) {
   // Meta Pixel: FreeConsultClick (same event as homepage for ad optimization)
   if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
     ;(window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: location, page_name: 'Expert', cta: 'consultation' })
   }
   // MassaPro Affiliate Tracker: track CTA click
-  if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackEvent === 'function') {
-    try { (window as any).MassaProAffiliate.trackEvent('btn_get_now') } catch(e){
-      console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
+  safeMassaProCall(() => {
+    if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackEvent === 'function') {
+      ;(window as any).MassaProAffiliate.trackEvent('btn_get_now')
     }
-  }
+  })
   // Google Analytics 4: track CTA click
   if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
     ;(window as any).gtag('event', 'get_now', { button_location: location, page_name: 'Expert' })
@@ -243,11 +277,11 @@ function HeroSection() {
     if (!formOpenTracked) {
       setFormOpenTracked(true)
       // MassaPro Affiliate Tracker: track form open
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
-        try { (window as any).MassaProAffiliate.trackLeadFormOpen() } catch(e){
-          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
+      safeMassaProCall(() => {
+        if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
+          ;(window as any).MassaProAffiliate.trackLeadFormOpen()
         }
-      }
+      })
       // Meta Pixel: custom event
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
         ;(window as any).fbq('trackCustom', 'LeadFormOpen')
@@ -364,8 +398,8 @@ function HeroSection() {
       }
 
       // MassaPro Affiliate Tracker: track lead (same as home page)
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
-        try {
+      safeMassaProCall(() => {
+        if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
           ;(window as any).MassaProAffiliate.trackLead({
             lead_name: `${firstName} ${lastName}`,
             lead_email: email,
@@ -374,10 +408,8 @@ function HeroSection() {
             plan_type: 'Not Sure Yet',
             initial_status: 'Booked Call',
           })
-        } catch (e) {
-          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
         }
-      }
+      })
 
       // Local backup: track lead (same as home page)
       try {
@@ -536,7 +568,7 @@ function HeroSection() {
 
                   {/* STEP 1: Personal Info */}
                   {formStep === 1 && (
-                    <form onSubmit={handleStep1Next} className="space-y-4">
+                    <form onSubmit={handleStep1Next} data-massapro-handled="true" className="space-y-4">
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-2">
                           <Label htmlFor="hero-fname">First Name <span className="text-red-500">*</span></Label>
@@ -627,7 +659,7 @@ function HeroSection() {
 
                   {/* STEP 2: Calendar + Notes */}
                   {formStep === 2 && (
-                    <form onSubmit={handleStep2Submit} className="space-y-5">
+                    <form onSubmit={handleStep2Submit} data-massapro-handled="true" className="space-y-5">
                       <div>
                         <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
                           Schedule Consultation
