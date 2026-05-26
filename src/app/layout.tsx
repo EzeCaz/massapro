@@ -134,14 +134,34 @@ export default function RootLayout({
             (function() {
               var formSubmitted = false;
 
+              // Safe wrapper for MassaProAffiliate calls — never throws
+              function safeTrackLead(data) {
+                try {
+                  if (typeof MassaProAffiliate !== 'undefined' && typeof MassaProAffiliate.trackLead === 'function') {
+                    MassaProAffiliate.trackLead(data);
+                  }
+                } catch (e) {
+                  // Tracker unreachable — fail silently
+                  console.debug('[MassaPro] Affiliate tracker skipped (unavailable)');
+                }
+              }
+
+              function safeTrackEvent(eventId) {
+                try {
+                  if (typeof MassaProAffiliate !== 'undefined' && typeof MassaProAffiliate.trackEvent === 'function') {
+                    MassaProAffiliate.trackEvent(eventId);
+                  }
+                } catch (e) {
+                  console.debug('[MassaPro] Affiliate tracker skipped (unavailable)');
+                }
+              }
+
               // Method 1: Watch for Google Calendar iframe postMessage events
               window.addEventListener('message', function(e) {
                 if (e.data && e.data.type === 'calendar-event-booked') {
                   if (formSubmitted) return;
                   formSubmitted = true;
-                  if (typeof MassaProAffiliate === 'undefined') return;
-                  // Always fire — tracker v4.0 attributes no_affiliate traffic automatically
-                  MassaProAffiliate.trackLead({
+                  safeTrackLead({
                     lead_name: e.data.name || 'Google Calendar Booking',
                     lead_email: e.data.email || '',
                     lead_phone: e.data.phone || '',
@@ -163,9 +183,7 @@ export default function RootLayout({
 
                 if (emailField || nameField) {
                   formSubmitted = true;
-                  if (typeof MassaProAffiliate === 'undefined') return;
-                  // Always fire — tracker v4.0 attributes no_affiliate traffic automatically
-                  MassaProAffiliate.trackLead({
+                  safeTrackLead({
                     lead_name: nameField ? nameField.value : 'Website Lead',
                     lead_email: emailField ? emailField.value : '',
                     lead_phone: phoneField ? phoneField.value : '',
@@ -180,7 +198,7 @@ export default function RootLayout({
               document.addEventListener('click', function(e) {
                 var target = e.target.closest('a[href*="calendar.google"], a[href*="calendly"], button[data-calendar], [data-book]');
                 if (target && !formSubmitted) {
-                  if (typeof MassaProAffiliate !== 'undefined') MassaProAffiliate.trackEvent('btn_book_calendar');
+                  safeTrackEvent('btn_book_calendar');
                 }
               });
             })();

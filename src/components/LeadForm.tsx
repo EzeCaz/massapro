@@ -115,11 +115,11 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
   useEffect(() => {
     if (open) {
       // MassaPro Affiliate Tracker: track form open
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
         try {
           ;(window as any).MassaProAffiliate.trackLeadFormOpen()
         } catch (e) {
-          console.warn('MassaPro Affiliate trackLeadFormOpen error:', e)
+          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
         }
       }
       // Meta Pixel: custom event
@@ -236,7 +236,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
       }
 
       // MassaPro Affiliate Tracker: track lead (always fires — tracker v4.0 attributes no_affiliate traffic automatically)
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
         try {
           ;(window as any).MassaProAffiliate.trackLead({
             lead_name: `${formData.firstName} ${formData.lastName}`,
@@ -247,18 +247,22 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
             initial_status: 'Booked Call',
           })
         } catch (e) {
-          console.warn('MassaPro Affiliate trackLead error:', e)
+          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
         }
       }
 
       // Local backup: track lead
-      BackupTracker.trackLead({
-        name: `${formData.firstName} ${formData.lastName}`,
-        email: formData.email,
-        phone: formData.mobile,
-        company: formData.companyUrl,
-        planType: formData.planType || 'Basic',
-      })
+      try {
+        BackupTracker.trackLead({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          phone: formData.mobile,
+          company: formData.companyUrl,
+          planType: formData.planType || 'Basic',
+        })
+      } catch (e) {
+        console.debug('[MassaPro] Backup tracker skipped')
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Something went wrong'
       setError(msg)

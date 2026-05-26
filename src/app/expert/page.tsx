@@ -46,8 +46,10 @@ function handleGetNowClick(location: string) {
   if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
     (window as any).fbq('trackCustom', 'GetNowClick', { button_location: location, page_name: 'Expert', cta: 'purchase' })
   }
-  if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
-    try { (window as any).MassaProAffiliate.trackEvent('btn_get_now') } catch(e){}
+  if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackEvent === 'function') {
+    try { (window as any).MassaProAffiliate.trackEvent('btn_get_now') } catch(e){
+      console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
+    }
   }
   if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
     (window as any).gtag('event', 'get_now', { button_location: location, page_name: 'Expert' })
@@ -307,7 +309,7 @@ function HeroSection() {
       }
 
       // MassaPro Affiliate Tracker: track lead (same as home page)
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
         try {
           ;(window as any).MassaProAffiliate.trackLead({
             lead_name: `${firstName} ${lastName}`,
@@ -318,22 +320,28 @@ function HeroSection() {
             initial_status: 'Booked Call',
           })
         } catch (e) {
-          console.warn('MassaPro Affiliate trackLead error:', e)
+          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
         }
       }
 
       // Local backup: track lead (same as home page)
-      BackupTracker.trackLead({
-        name: `${firstName} ${lastName}`,
-        email,
-        phone: mobile,
-        company: companyUrl,
-        planType: 'Not Sure Yet',
-      })
+      try {
+        BackupTracker.trackLead({
+          name: `${firstName} ${lastName}`,
+          email,
+          phone: mobile,
+          company: companyUrl,
+          planType: 'Not Sure Yet',
+        })
+      } catch (e) {
+        console.debug('[MassaPro] Backup tracker skipped')
+      }
 
       // Track form open event (same as home page)
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
-        try { (window as any).MassaProAffiliate.trackLeadFormOpen() } catch(e){}
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
+        try { (window as any).MassaProAffiliate.trackLeadFormOpen() } catch(e){
+          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
+        }
       }
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
         ;(window as any).fbq('trackCustom', 'LeadFormOpen')
