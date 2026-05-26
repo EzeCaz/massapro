@@ -37,3 +37,29 @@ Stage Summary:
 - Shared communication channel established at `/home/z/my-project/shared/`
 - Both chats can read/write to this directory
 - Dashboard chat should be told to read `pending-actions.md` and `dashboard-api-spec.md`
+
+---
+Task ID: favicon-update
+Agent: Main Agent
+Task: Update favicon on both receptionist.massapro.com and aff.massapro.com to use MassaPro logo
+
+Work Log:
+- Generated proper favicon files from massapro-logo.png (835x835 source)
+- Created favicon.ico (16/32/48px), icon.png (512x512), apple-icon.png (180x180)
+- Updated receptionist.massapro.com (my-project) layout.tsx icons metadata
+- Deployed to Vercel - favicon live and verified at https://receptionist.massapro.com/favicon.ico
+- Cloned aff-massapro repo from https://github.com/EzeCaz/aff-massapro
+- Replaced all favicon files in aff-massapro with MassaPro logo versions
+- Updated aff-massapro layout.tsx - replaced generic Z logo SVG with MassaPro favicon
+- Committed and pushed to GitHub (2 commits: 8a9f8e1, 81099c1)
+- VERCEL DEPLOYMENT BLOCKED: No Vercel auth token available
+  - aff-massapro was deployed via Vercel CLI by the other agent chat
+  - No GitHub webhook/Vercel integration for auto-deploy
+  - Vercel auth.json is empty - token was cleared after other chat session ended
+  - All code changes are pushed to GitHub and ready for deployment
+
+Stage Summary:
+- receptionist.massapro.com: ✅ Favicon updated and LIVE
+- aff.massapro.com: ⏳ Code pushed to GitHub, DEPLOYMENT PENDING
+  - Need to run `vercel deploy --prod` from the aff-massapro directory with valid credentials
+  - Or import the repo on Vercel dashboard (vercel.com/new) to enable auto-deploy
