@@ -4,43 +4,40 @@ import { useState, useEffect, useRef } from 'react'
 import { BackupTracker } from '@/lib/backup-tracker'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { LeadForm } from '@/components/LeadForm'
 import {
   Phone,
+  MessageSquare,
   Calendar,
+  CreditCard,
+  Users,
   Star,
-  ChevronDown,
+  ChevronRight,
   Check,
-  Zap,
   Globe,
+  Headphones,
   Sparkles,
   ArrowRight,
-  Menu,
-  X,
-  Mail,
-  MapPin,
-  Clock,
   Shield,
-  Headphones,
-  Users,
-  CreditCard,
-  Megaphone,
-  Bot,
-  AlertTriangle,
+  Zap,
+  Clock,
   TrendingUp,
-  Eye,
-  Gift,
+  AlertTriangle,
   Lock,
   Timer,
-  ChevronRight,
+  Award,
+  Heart,
+  Bot,
+  X,
+  Menu,
+  ChevronDown,
 } from 'lucide-react'
 
 /* ──────────────────── Helper Functions ──────────────────── */
-function scrollToPricing() {
-  document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })
-}
-
 function handleGetNowClick(location: string) {
   if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
     (window as any).fbq('trackCustom', 'GetNowClick', { button_location: location, page_name: 'Expert', cta: 'purchase' })
@@ -51,7 +48,30 @@ function handleGetNowClick(location: string) {
   if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
     (window as any).gtag('event', 'get_now', { button_location: location, page_name: 'Expert' })
   }
-  scrollToPricing()
+}
+
+/* ──────────────────── Countdown Timer Hook ──────────────────── */
+function useCountdown(minutes: number) {
+  const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 })
+
+  useEffect(() => {
+    const endTime = Date.now() + minutes * 60 * 1000
+
+    const tick = () => {
+      const diff = Math.max(0, endTime - Date.now())
+      setTimeLeft({
+        hours: Math.floor(diff / (1000 * 60 * 60)),
+        minutes: Math.floor((diff / (1000 * 60)) % 60),
+        seconds: Math.floor((diff / 1000) % 60),
+      })
+    }
+
+    tick()
+    const interval = setInterval(tick, 1000)
+    return () => clearInterval(interval)
+  }, [minutes])
+
+  return timeLeft
 }
 
 /* ──────────────────── Scroll Animation Hook ──────────────────── */
@@ -93,67 +113,7 @@ function FadeIn({ children, className = '', delay = 0 }: { children: React.React
   )
 }
 
-/* ──────────────────── Countdown Timer ──────────────────── */
-function CountdownTimer() {
-  const [timeLeft, setTimeLeft] = useState<{ days: number; hours: number; minutes: number; seconds: number } | null>(null)
-
-  useEffect(() => {
-    const STORAGE_KEY = 'massapro_expert_countdown_end'
-    let endTime: number
-
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored) {
-      endTime = parseInt(stored, 10)
-      if (endTime <= Date.now()) {
-        endTime = Date.now() + 48 * 60 * 60 * 1000
-        localStorage.setItem(STORAGE_KEY, endTime.toString())
-      }
-    } else {
-      endTime = Date.now() + 48 * 60 * 60 * 1000
-      localStorage.setItem(STORAGE_KEY, endTime.toString())
-    }
-
-    const tick = () => {
-      const diff = Math.max(0, endTime - Date.now())
-      setTimeLeft({
-        days: Math.floor(diff / (1000 * 60 * 60 * 24)),
-        hours: Math.floor((diff / (1000 * 60 * 60)) % 24),
-        minutes: Math.floor((diff / (1000 * 60)) % 60),
-        seconds: Math.floor((diff / 1000) % 60),
-      })
-    }
-
-    tick()
-    const interval = setInterval(tick, 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  if (!timeLeft) return null
-
-  const pad = (n: number) => n.toString().padStart(2, '0')
-
-  return (
-    <div className="inline-flex items-center gap-1.5 rounded-full purple-gradient px-4 py-2 shadow-lg shadow-purple-300/30">
-      <Timer className="w-4 h-4 text-white mr-1" />
-      {[
-        { label: 'D', value: timeLeft.days },
-        { label: 'H', value: timeLeft.hours },
-        { label: 'M', value: timeLeft.minutes },
-        { label: 'S', value: timeLeft.seconds },
-      ].map((unit, i) => (
-        <span key={unit.label} className="flex items-center gap-1">
-          <span className="bg-white/20 rounded-md px-2 py-1 text-white font-bold text-sm font-mono min-w-[2.25rem] text-center">
-            {pad(unit.value)}
-          </span>
-          <span className="text-white/70 text-xs font-medium">{unit.label}</span>
-          {i < 3 && <span className="text-white/50 text-xs mx-0.5">:</span>}
-        </span>
-      ))}
-    </div>
-  )
-}
-
-/* ──────────────────── Navbar ──────────────────── */
+/* ──────────────────── Navbar (minimal for pitch page) ──────────────────── */
 function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
@@ -163,14 +123,6 @@ function Navbar() {
     window.addEventListener('scroll', handleScroll)
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
-
-  const navLinks = [
-    { label: 'How It Works', href: '#mechanism' },
-    { label: 'What You Get', href: '#product-stack' },
-    { label: 'Compare', href: '#compare' },
-    { label: 'Guarantee', href: '#guarantee' },
-    { label: 'Pricing', href: '#pricing' },
-  ]
 
   return (
     <nav
@@ -182,7 +134,7 @@ function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
-          <a href="#" className="flex items-center gap-2">
+          <a href="/" className="flex items-center gap-2">
             <Image
               src="/massapro-logo-v2.png"
               alt="MassaPro Logo"
@@ -193,29 +145,12 @@ function Navbar() {
             />
           </a>
 
-          <div className="hidden lg:flex items-center gap-8">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                className="text-sm font-medium text-gray-600 hover:text-purple-700 transition-colors relative group"
-              >
-                {link.label}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-purple-600 transition-all group-hover:w-full" />
-              </a>
-            ))}
-          </div>
-
           <div className="hidden lg:flex items-center gap-3">
             <Button
-              variant="outline"
-              className="border-purple-300 text-purple-700 hover:bg-purple-50"
-              asChild
+              className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30 animate-pulse-glow"
+              onClick={() => handleGetNowClick('Header')}
             >
-              <a href="#pricing">View Plans</a>
-            </Button>
-            <Button className="purple-gradient text-white hover:opacity-90 transition-opacity shadow-lg shadow-purple-300/30" onClick={() => handleGetNowClick('Header')}>
-                Get Your AI Secretary <ArrowRight className="w-4 h-4 ml-1" />
+              Get Started Now <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
 
@@ -232,24 +167,9 @@ function Navbar() {
       {mobileOpen && (
         <div className="lg:hidden bg-white/95 backdrop-blur-xl border-b border-purple-100 shadow-lg">
           <div className="px-4 py-4 space-y-3">
-            {navLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onClick={() => setMobileOpen(false)}
-                className="block text-sm font-medium text-gray-600 hover:text-purple-700 py-2"
-              >
-                {link.label}
-              </a>
-            ))}
-            <div className="pt-2 flex flex-col gap-2">
-              <Button variant="outline" className="border-purple-300 text-purple-700 w-full" asChild>
-                <a href="#pricing">View Plans</a>
-              </Button>
-              <Button className="purple-gradient text-white w-full" onClick={() => { handleGetNowClick('Header'); setMobileOpen(false); }}>
-                  Get Your AI Secretary
-              </Button>
-            </div>
+            <Button className="purple-gradient text-white w-full" onClick={() => { handleGetNowClick('Header'); setMobileOpen(false); }}>
+              Get Started Now
+            </Button>
           </div>
         </div>
       )}
@@ -257,73 +177,96 @@ function Navbar() {
   )
 }
 
-/* ──────────────────── Section 1: Hero / Identity Fork ──────────────────── */
+/* ──────────────────── HERO SECTION (paidcreators.com/prompt style) ──────────────────── */
+/* Title above, picture on the left bottom, lead form on the right */
+
 function HeroSection() {
+  const [leadFormOpen, setLeadFormOpen] = useState(false)
+  const [quickName, setQuickName] = useState('')
+  const [quickEmail, setQuickEmail] = useState('')
+  const [quickPhone, setQuickPhone] = useState('')
+  const [quickSubmitting, setQuickSubmitting] = useState(false)
+  const [quickSubmitted, setQuickSubmitted] = useState(false)
+
+  const handleQuickSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setQuickSubmitting(true)
+
+    try {
+      const res = await fetch('/api/submit-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: quickName.split(' ')[0] || quickName,
+          lastName: quickName.split(' ').slice(1).join(' ') || '',
+          email: quickEmail,
+          mobile: quickPhone,
+          industry: 'Other',
+          country: 'United States',
+          serviceType: 'AI Secretary / Virtual Assistant',
+          planType: 'Not Sure Yet',
+          notes: 'Quick lead from /expert page hero form',
+        }),
+      })
+
+      if (res.ok) {
+        setQuickSubmitted(true)
+        if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+          (window as any).fbq('track', 'Lead')
+        }
+        if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+          try { (window as any).MassaProAffiliate.trackLead({ lead_name: quickName, lead_email: quickEmail, lead_phone: quickPhone, plan_type: 'Not Sure Yet', initial_status: 'Quick Lead' }) } catch(e){}
+        }
+        BackupTracker.trackLead({ name: quickName, email: quickEmail, phone: quickPhone, planType: 'Expert Lead' })
+      }
+    } catch {
+      // Silently fail
+    } finally {
+      setQuickSubmitting(false)
+    }
+  }
+
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-white via-purple-50 to-white">
+    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-purple-50 to-white pt-20 lg:pt-24">
+      {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl" />
         <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-purple-100/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-purple-100/20 rounded-full blur-3xl" />
       </div>
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16 lg:pt-32 lg:pb-24">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div className="space-y-8">
-            <FadeIn>
-              <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium">
-                <Sparkles className="w-4 h-4 mr-1" />
-                The Pitch Expert Formula
-              </Badge>
-            </FadeIn>
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Title above - spanning full width */}
+        <FadeIn>
+          <div className="text-center pt-8 pb-8 lg:pt-12 lg:pb-10">
+            <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium mb-6 inline-flex">
+              <Sparkles className="w-4 h-4 mr-1" />
+              VIP AI Secretary & Concierge Services
+            </Badge>
 
-            <FadeIn delay={0.1}>
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
-                Your{' '}
-                <span className="purple-gradient-text">AI Secretary</span>
-                <br />
-                That Never Sleeps
-              </h1>
-            </FadeIn>
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.1] mb-6 max-w-4xl mx-auto">
+              There Are Two Types of Business Owners:{' '}
+              <span className="purple-gradient-text">Those Who Never Miss a Call</span>
+              {' '}And Those Who Lose $43,200/Year
+            </h1>
 
-            <FadeIn delay={0.2}>
-              <p className="text-lg sm:text-xl text-gray-600 max-w-xl leading-relaxed">
-                There are two types of business owners reading this page: those who keep losing clients to missed calls and unanswered messages, and those who are ready to deploy a 24/7 AI that handles everything. You already know which one gets ahead...
-              </p>
-            </FadeIn>
-
-            <FadeIn delay={0.3}>
-              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center">
-                <Button
-                  size="lg"
-                  className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6 animate-pulse-glow"
-                  onClick={() => handleGetNowClick('Hero')}
-                >
-                    Get Your AI Secretary Now
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </div>
-            </FadeIn>
-
-            <FadeIn delay={0.35}>
-              <CountdownTimer />
-            </FadeIn>
-
-            <FadeIn delay={0.4}>
-              <div className="flex items-center gap-6 pt-2">
-                <Badge className="bg-green-100 text-green-800 hover:bg-green-100 px-4 py-2 text-sm font-semibold border border-green-200">
-                  <Check className="w-4 h-4 mr-1.5" />
-                  The Same System That&apos;s Managed 500,000+ Client Interactions Across 500+ Businesses
-                </Badge>
-              </div>
-            </FadeIn>
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Your AI Secretary handles calls, books appointments, and manages your entire front desk — 24/7.
+              No sick days. No salary. No missed opportunities.
+            </p>
           </div>
+        </FadeIn>
 
-          <FadeIn delay={0.2} className="relative">
+        {/* Below title: Image on the left, Lead Form on the right */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start pb-16 lg:pb-24">
+          {/* Left: Hero Image */}
+          <FadeIn delay={0.1} className="relative">
             <div className="relative">
-              <div className="absolute -top-6 -left-6 w-24 h-24 bg-purple-200/40 rounded-2xl rotate-12 blur-sm" />
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-purple-300/30 rounded-full blur-sm" />
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -left-4 w-20 h-20 bg-purple-200/40 rounded-2xl rotate-12 blur-sm" />
+              <div className="absolute -bottom-4 -right-4 w-28 h-28 bg-purple-300/30 rounded-full blur-sm" />
 
+              {/* Main image */}
               <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
                 <Image
                   src="/hero-secretary-v2.png"
@@ -336,7 +279,8 @@ function HeroSection() {
                 <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 via-transparent to-transparent" />
               </div>
 
-              <div className="absolute -bottom-4 -left-4 sm:bottom-8 sm:-left-8 glass-card rounded-2xl p-4 shadow-xl animate-float">
+              {/* Floating stat card */}
+              <div className="absolute -bottom-3 -left-3 sm:bottom-6 sm:-left-6 glass-card rounded-2xl p-4 shadow-xl animate-float">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full purple-gradient flex items-center justify-center">
                     <Phone className="w-5 h-5 text-white" />
@@ -348,257 +292,455 @@ function HeroSection() {
                 </div>
               </div>
 
-              <div className="absolute -top-4 -right-4 sm:top-8 sm:-right-8 glass-card rounded-2xl p-4 shadow-xl animate-float" style={{ animationDelay: '1s' }}>
+              {/* Floating stat card 2 */}
+              <div className="absolute -top-3 -right-3 sm:top-6 sm:-right-6 glass-card rounded-2xl p-4 shadow-xl animate-float" style={{ animationDelay: '1s' }}>
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
                     <Check className="w-5 h-5 text-green-600" />
                   </div>
                   <div>
-                    <p className="text-sm font-semibold text-gray-800">Appointments</p>
-                    <p className="text-xs text-green-600 font-medium">98.5% booked</p>
+                    <p className="text-sm font-semibold text-gray-800">No-Show Rate</p>
+                    <p className="text-xs text-green-600 font-medium">Down 40%</p>
                   </div>
                 </div>
               </div>
             </div>
           </FadeIn>
-        </div>
-      </div>
-    </section>
-  )
-}
 
-/* ──────────────────── Section 2: The Brutal Truth ──────────────────── */
-function BrutalTruthSection() {
-  const painPoints = [
-    {
-      icon: Phone,
-      text: 'Right now, someone just tried to call your business... and nobody answered. That\'s a $500 client walking straight to your competitor.',
-    },
-    {
-      icon: Clock,
-      text: 'Your receptionist goes home at 6 PM, but your customers don\'t. Every missed evening call is revenue vanishing into thin air.',
-    },
-    {
-      icon: Users,
-      text: 'You\'re paying $35,000+/year for a human receptionist who takes lunch breaks, sick days, and vacations — while your AI could work 24/7 for a fraction of the cost.',
-    },
-    {
-      icon: Calendar,
-      text: 'You\'re drowning in appointment no-shows because nobody sends reminders, confirmations, or follow-ups.',
-    },
-    {
-      icon: AlertTriangle,
-      text: 'You\'re paralyzed by the fear that your competitors are already using AI to steal your clients — and you\'re right.',
-    },
-  ]
-
-  return (
-    <section className="py-20 lg:py-28 bg-purple-900 text-white relative overflow-hidden">
-      <div className="absolute inset-0">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-purple-800/50 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-700/30 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeIn>
-          <div className="text-center mb-12">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-red-500/20 mb-6">
-              <AlertTriangle className="w-8 h-8 text-red-400" />
-            </div>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-4">
-              Here&apos;s the brutal truth nobody wants to admit:
-            </h2>
-          </div>
-        </FadeIn>
-
-        <div className="space-y-6">
-          {painPoints.map((point, i) => (
-            <FadeIn key={i} delay={i * 0.1}>
-              <div className="flex gap-4 items-start p-5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 transition-colors">
-                <div className="w-10 h-10 rounded-lg bg-purple-700/50 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <point.icon className="w-5 h-5 text-purple-300" />
+          {/* Right: Lead Capture Form */}
+          <FadeIn delay={0.2}>
+            <div className="bg-white rounded-3xl shadow-2xl shadow-purple-200/50 border border-purple-200 p-6 sm:p-8 lg:p-10 relative overflow-hidden">
+              {/* Form decorative badge */}
+              <div className="absolute top-0 right-0">
+                <div className="bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">
+                  LIMITED OFFER
                 </div>
-                <p className="text-lg text-purple-100 leading-relaxed">{point.text}</p>
               </div>
-            </FadeIn>
-          ))}
-        </div>
 
-        <FadeIn delay={0.6}>
-          <div className="mt-12 text-center">
-            <p className="text-2xl sm:text-3xl font-bold text-white">
-              But that struggle ends <span className="text-yellow-400">RIGHT NOW.</span>
-            </p>
-          </div>
-        </FadeIn>
+              <div className="mb-6">
+                <h2 className="text-2xl sm:text-3xl font-bold mb-2">
+                  Get Your <span className="purple-gradient-text">AI Secretary</span>
+                </h2>
+                <p className="text-gray-600">Free consultation. No setup fee. Deploy in 48 hours.</p>
+              </div>
+
+              {quickSubmitted ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                    <Check className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800">Thank You!</h3>
+                  <p className="text-gray-600">We&apos;ll reach out within 24 hours to schedule your consultation.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleQuickSubmit} className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="hero-name">Full Name <span className="text-red-500">*</span></Label>
+                    <Input
+                      id="hero-name"
+                      required
+                      value={quickName}
+                      onChange={(e) => setQuickName(e.target.value)}
+                      placeholder="John Smith"
+                      className="border-purple-200 focus:border-purple-500 h-12"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="hero-email">Business Email <span className="text-red-500">*</span></Label>
+                    <Input
+                      id="hero-email"
+                      type="email"
+                      required
+                      value={quickEmail}
+                      onChange={(e) => setQuickEmail(e.target.value)}
+                      placeholder="john@yourbusiness.com"
+                      className="border-purple-200 focus:border-purple-500 h-12"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="hero-phone">Phone Number <span className="text-red-500">*</span></Label>
+                    <Input
+                      id="hero-phone"
+                      type="tel"
+                      required
+                      value={quickPhone}
+                      onChange={(e) => setQuickPhone(e.target.value)}
+                      placeholder="+1 (555) 123-4567"
+                      className="border-purple-200 focus:border-purple-500 h-12"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={quickSubmitting}
+                    className="w-full purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-6 text-base font-semibold animate-pulse-glow"
+                  >
+                    {quickSubmitting ? 'Submitting...' : 'Get My Free Consultation'}
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+
+                  <div className="flex items-center justify-center gap-4 pt-2 text-xs text-gray-400">
+                    <div className="flex items-center gap-1">
+                      <Shield className="w-3.5 h-3.5" />
+                      <span>100% Secure</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>256-bit Encrypted</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>48hr Setup</span>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-gray-400 text-center">
+                    No spam. No obligation. Cancel anytime.
+                  </p>
+                </form>
+              )}
+            </div>
+          </FadeIn>
+        </div>
       </div>
+
+      <LeadForm open={leadFormOpen} onOpenChange={setLeadFormOpen} />
     </section>
   )
 }
 
-/* ──────────────────── Section 3: The Window Frame ──────────────────── */
-function WindowFrameSection() {
-  const dataPoints = [
-    { icon: Zap, text: 'We\'re in the first 18 months of the AI receptionist revolution — the Wild West phase' },
-    { icon: TrendingUp, text: 'The AI business services market will surpass $90 billion by 2028' },
-    { icon: Eye, text: '97% of small businesses STILL don\'t have AI answering their phones' },
-    { icon: Globe, text: 'Early adopters are capturing market share RIGHT NOW while competitors are still "thinking about it"' },
-  ]
-
+/* ──────────────────── Layer 1: Identity Fork ──────────────────── */
+function IdentityForkSection() {
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-b from-white to-purple-50/50">
+    <section className="py-16 lg:py-24 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
           <div className="text-center mb-12">
-            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 px-4 py-1.5 text-sm font-medium mb-4">
-              <Timer className="w-4 h-4 mr-1" />
-              The Window Is Open
+            <Badge className="bg-red-100 text-red-800 hover:bg-red-100 px-4 py-1.5 text-sm font-medium mb-4">
+              <AlertTriangle className="w-4 h-4 mr-1" />
+              The Hard Truth
             </Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Am I Too Late... <span className="purple-gradient-text">Again?</span>
-            </h2>
-            <p className="text-lg text-gray-600 leading-relaxed max-w-2xl mx-auto">
-              You remember the missed windows. Shopify in 2016. Crypto in 2017. NFTs in 2021. Every time you thought &ldquo;maybe next time&rdquo; — and watched someone else cash in.
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <div className="space-y-6 text-lg leading-relaxed text-gray-700">
+            <p className="text-xl sm:text-2xl font-semibold text-gray-900">
+              There are two types of business owners reading this page right now.
+            </p>
+
+            <p>
+              <strong>Type 1:</strong> The ones still answering every call themselves, juggling appointment books,
+              chasing no-shows, and watching their evenings disappear into voicemails and text threads. They&apos;re
+              working 12-hour days but their front desk is still a bottleneck. <span className="text-purple-700 font-semibold">They&apos;re losing
+              $43,200 a year in missed calls alone.</span>
+            </p>
+
+            <p>
+              <strong>Type 2:</strong> The ones who deployed an AI Secretary that answers every call in 2 seconds,
+              books appointments while they sleep, sends automatic reminders that cut no-shows by 40%, and handles
+              their entire front desk for a fraction of a human salary. <span className="text-purple-700 font-semibold">They&apos;re growing while
+              their competition is still playing phone tag.</span>
+            </p>
+
+            <p className="text-xl font-semibold text-gray-900 pt-4">
+              I bet you already know which type gets ahead.
+            </p>
+
+            <p className="text-gray-600">
+              And here&apos;s the thing — it&apos;s not about working harder. The second type didn&apos;t hire more staff.
+              They didn&apos;t find extra hours in the day. They just stopped doing work that a machine does <em>better</em>,
+              <em> faster</em>, and <em>cheaper</em>.
             </p>
           </div>
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <div className="rounded-2xl purple-gradient p-8 lg:p-10 text-white text-center mb-12 relative overflow-hidden">
-            <div className="absolute inset-0 bg-[url('/salon-interior-v2.png')] bg-cover bg-center opacity-5" />
-            <div className="relative">
-              <p className="text-2xl sm:text-3xl font-bold mb-2">But here&apos;s the truth that changes EVERYTHING:</p>
-              <p className="text-3xl sm:text-4xl font-extrabold text-yellow-300">You&apos;re NOT late. You&apos;re EARLY.</p>
-            </div>
+          <div className="mt-10 text-center">
+            <Button
+              size="lg"
+              className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
+              onClick={() => handleGetNowClick('IdentityFork')}
+            >
+              I Want to Be Type 2 <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
-        </FadeIn>
-
-        <div className="grid sm:grid-cols-2 gap-6">
-          {dataPoints.map((point, i) => (
-            <FadeIn key={i} delay={i * 0.1}>
-              <Card className="h-full border-purple-100 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-300 bg-white">
-                <CardContent className="p-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                      <point.icon className="w-5 h-5 text-purple-600" />
-                    </div>
-                    <p className="text-gray-700 leading-relaxed">{point.text}</p>
-                  </div>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          ))}
-        </div>
-
-        <FadeIn delay={0.4}>
-          <p className="text-center mt-10 text-xl font-semibold text-purple-800">
-            The window is wide open. But it won&apos;t stay open forever.
-          </p>
         </FadeIn>
       </div>
     </section>
   )
 }
 
-/* ──────────────────── Section 4: The Mechanism Reveal ──────────────────── */
-function MechanismSection() {
-  const positions = [
+/* ──────────────────── Layer 2: Brutal Truth ──────────────────── */
+function BrutalTruthSection() {
+  const painPoints = [
     {
-      title: 'AI Receptionist',
-      description: 'Answers calls, responds to messages, and routes inquiries 24/7. Never miss a customer again.',
+      stat: '$43,200',
+      label: 'lost per year from missed calls (avg. small business)',
       icon: Phone,
-      image: '/ai-receptionist-home.png',
     },
     {
-      title: 'AI Secretary',
-      description: 'Manages your calendar, books appointments, sends reminders, and handles administrative tasks around the clock.',
+      stat: '62%',
+      label: 'of callers won\'t call back if they reach voicemail',
+      icon: MessageSquare,
+    },
+    {
+      stat: '28%',
+      label: 'average no-show rate without automated reminders',
       icon: Calendar,
-      image: '/team-secretaries-v4.png',
     },
     {
-      title: 'AI Concierge',
-      description: 'Premium white-glove AI with personalized customer experiences, proactive outreach, and multi-language support.',
-      icon: Star,
-      image: '/ai-concierge-v4.png',
+      stat: '$4,800/mo',
+      label: 'average cost of a full-time human receptionist (salary + benefits)',
+      icon: CreditCard,
     },
-  ]
-
-  const proofStats = [
-    { value: '500+', label: 'Businesses' },
-    { value: '500,000+', label: 'Interactions Managed' },
-    { value: '98.5%', label: 'Appointment Fill Rate' },
-    { value: '<3s', label: 'Response Time' },
+    {
+      stat: '3.5 hrs',
+      label: 'wasted daily on manual scheduling, callbacks, and confirmations',
+      icon: Clock,
+    },
   ]
 
   return (
-    <section id="mechanism" className="py-20 lg:py-28 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-purple-950 to-purple-900 text-white">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <Badge className="bg-purple-100 text-purple-800 mb-4">The Mechanism</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              AI Is the Goldmine... <span className="purple-gradient-text">The Right System Is the Pickaxe</span>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+              The Brutal Truth Nobody Wants to Admit
             </h2>
-            <p className="text-lg text-gray-500">
-              Most business owners download ChatGPT, ask it to &ldquo;help with customer service,&rdquo; and 20 minutes later they&apos;re staring at generic, robotic garbage. Then they wonder why AI doesn&apos;t work for them.
+            <p className="text-purple-200 text-lg max-w-2xl mx-auto">
+              Right now, your business is bleeding money. Not from bad marketing or wrong pricing — from
+              the most basic operations that should run on autopilot.
+            </p>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <div className="space-y-4 mb-12">
+            <p className="text-purple-100 text-lg leading-relaxed">
+              You&apos;re watching competitors with <strong>half your experience</strong> book out their calendars
+              while you&apos;re stuck returning voicemails at 9 PM. You&apos;re sitting on a business that
+              could grow 40% — but the front desk can&apos;t handle the volume you already have. And the worst part?
+            </p>
+            <p className="text-2xl font-bold text-center py-4">
+              You&apos;re one missed call away from losing your next best client.
+            </p>
+          </div>
+        </FadeIn>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+          {painPoints.map((point, i) => (
+            <FadeIn key={point.stat} delay={i * 0.08}>
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 text-center border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300">
+                <point.icon className="w-8 h-8 mx-auto mb-3 text-purple-300" />
+                <p className="text-2xl lg:text-3xl font-bold text-white mb-1">{point.stat}</p>
+                <p className="text-xs sm:text-sm text-purple-200 leading-tight">{point.label}</p>
+              </div>
+            </FadeIn>
+          ))}
+        </div>
+
+        <FadeIn delay={0.3}>
+          <div className="mt-12 text-center">
+            <p className="text-purple-200 text-lg mb-6">
+              And you&apos;re paying $4,800/month for a human who takes lunch breaks, sick days, and quits without notice?
+            </p>
+            <Button
+              size="lg"
+              className="bg-white text-purple-900 hover:bg-purple-50 shadow-xl text-base px-8 py-6 font-semibold"
+              onClick={() => handleGetNowClick('BrutalTruth')}
+            >
+              There&apos;s a Better Way <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────────── Layer 3: Window Frame ──────────────────── */
+function WindowFrameSection() {
+  return (
+    <section className="py-16 lg:py-24 bg-white">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center mb-10">
+            <Badge className="bg-amber-100 text-amber-800 hover:bg-amber-100 px-4 py-1.5 text-sm font-medium mb-4">
+              <Timer className="w-4 h-4 mr-1" />
+              The Window Is Open
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              You Missed E-commerce. You Missed Crypto. <span className="purple-gradient-text">Don&apos;t Miss This.</span>
+            </h2>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <div className="space-y-6 text-lg leading-relaxed text-gray-700">
+            <p>
+              You remember the early days of every revolution. E-commerce in 2005. Social media marketing in 2010.
+              Crypto in 2016. The people who moved first didn&apos;t just get ahead — they <strong>defined the market</strong>.
+            </p>
+
+            <p>
+              You might be thinking: &ldquo;Another trend I&apos;m late to.&rdquo; But here&apos;s the reality that should
+              excite you:
+            </p>
+
+            <div className="bg-purple-50 border border-purple-200 rounded-2xl p-6 sm:p-8 space-y-4">
+              <p className="text-gray-800 font-semibold text-xl">4 reasons you&apos;re NOT late — you&apos;re EARLY:</p>
+              <ul className="space-y-3">
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full purple-gradient flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">1</span>
+                  </div>
+                  <span><strong>97% of small businesses</strong> still don&apos;t have AI-powered reception. Your competitors haven&apos;t even heard of this yet.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full purple-gradient flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">2</span>
+                  </div>
+                  <span>The AI receptionist market is projected to hit <strong>$4.5 billion by 2027</strong> — growing at 28% CAGR.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full purple-gradient flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">3</span>
+                  </div>
+                  <span>Early adopters are seeing <strong>3x ROI within 90 days</strong> — not from cost savings, but from revenue that was previously invisible.</span>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full purple-gradient flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <span className="text-white text-xs font-bold">4</span>
+                  </div>
+                  <span>Businesses using AI receptionists report <strong>40% fewer no-shows</strong> and <strong>35% more bookings</strong> in the first month.</span>
+                </li>
+              </ul>
+            </div>
+
+            <p className="text-xl font-semibold text-gray-900 pt-2">
+              The window is wide open. But it won&apos;t stay open forever.
+            </p>
+
+            <p className="text-gray-600">
+              Within 18 months, every serious business in your industry will have an AI front desk. The question
+              is whether you&apos;ll be the one setting the standard — or the one scrambling to catch up.
+            </p>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.2}>
+          <div className="mt-10 text-center">
+            <Button
+              size="lg"
+              className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
+              onClick={() => handleGetNowClick('WindowFrame')}
+            >
+              I&apos;m Ready to Move Now <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────────── Layer 4: Mechanism Reveal ──────────────────── */
+function MechanismRevealSection() {
+  return (
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-purple-50/50 to-white">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center mb-12">
+            <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium mb-4">
+              <Bot className="w-4 h-4 mr-1" />
+              The MassaPro Method
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+              AI Is the Goldmine. <span className="purple-gradient-text">MassaPro Is the Pickaxe.</span>
+            </h2>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <div className="space-y-6 text-lg leading-relaxed text-gray-700 mb-12">
+            <p>
+              See, most businesses are just buying a chatbot and hoping for the best. Then they&apos;re shocked
+              when it sounds robotic, can&apos;t book appointments, and their customers hate it.
+            </p>
+            <p>
+              It&apos;s like having the key to the world&apos;s biggest library... but not knowing which books to read.
+            </p>
+            <p>
+              <strong>MassaPro isn&apos;t a chatbot.</strong> It&apos;s a complete AI workforce system — trained on
+              500+ real business workflows, customized for your industry, and deployed with a dedicated AI
+              optimization team that constantly improves your results.
             </p>
           </div>
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <div className="rounded-2xl bg-purple-50 border border-purple-100 p-6 lg:p-8 mb-14 max-w-3xl mx-auto text-center">
-            <Bot className="w-10 h-10 text-purple-500 mx-auto mb-3" />
-            <p className="text-gray-700 text-lg leading-relaxed">
-              That&apos;s because a <strong>generic AI chatbot</strong> isn&apos;t a system. It&apos;s a toy. What works is a <strong>trained, industry-specific AI workforce</strong> that understands your business, your clients, and your workflows. That&apos;s what MassaPro delivers.
-            </p>
+          <div className="grid md:grid-cols-3 gap-6 mb-12">
+            {[
+              {
+                icon: Phone,
+                title: 'AI Receptionist',
+                desc: 'Answers every call in 2 seconds, routes intelligently, and never misses a lead — 24/7/365.',
+              },
+              {
+                icon: Calendar,
+                title: 'AI Secretary',
+                desc: 'Books appointments, sends reminders, handles rescheduling, and processes payments — all automatically.',
+              },
+              {
+                icon: Star,
+                title: 'AI Concierge',
+                desc: 'White-glove VIP service with multi-language support, proactive outreach, and personalized experiences.',
+              },
+            ].map((item, i) => (
+              <div key={item.title} className="bg-white rounded-2xl border border-purple-200 p-6 hover:shadow-xl hover:shadow-purple-100/50 hover:border-purple-300 transition-all duration-300">
+                <div className="w-12 h-12 rounded-xl purple-gradient flex items-center justify-center mb-4 shadow-lg shadow-purple-200/50">
+                  <item.icon className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-bold mb-2">{item.title}</h3>
+                <p className="text-gray-600 text-sm leading-relaxed">{item.desc}</p>
+              </div>
+            ))}
           </div>
         </FadeIn>
 
         <FadeIn delay={0.2}>
-          <h3 className="text-2xl sm:text-3xl font-bold text-center mb-10">
-            Introducing: <span className="purple-gradient-text">The 3-Position AI System</span>
-          </h3>
+          <div className="bg-purple-50 border border-purple-200 rounded-2xl p-6 sm:p-8 space-y-4">
+            <h3 className="text-xl font-bold text-gray-900">The Proof:</h3>
+            <ul className="space-y-3">
+              {[
+                '500+ businesses deployed — from hair salons to veterinary clinics',
+                '2.8M+ calls managed per month across all clients',
+                '98.5% appointment booking rate on the Professional tier',
+                '40% reduction in no-shows within the first 30 days',
+                'Industry-specific AI trained on your exact workflows',
+              ].map((proof) => (
+                <li key={proof} className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-purple-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Check className="w-3 h-3 text-white" />
+                  </div>
+                  <span className="text-gray-700">{proof}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
         </FadeIn>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-16">
-          {positions.map((pos, i) => (
-            <FadeIn key={pos.title} delay={i * 0.1}>
-              <Card className="group h-full border-purple-100 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-300 bg-white overflow-hidden">
-                <div className="relative h-48 overflow-hidden">
-                  <Image
-                    src={pos.image}
-                    alt={pos.title}
-                    width={600}
-                    height={300}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-purple-900/30 to-transparent" />
-                </div>
-                <CardHeader>
-                  <div className="flex items-center gap-3 mb-1">
-                    <div className="w-10 h-10 rounded-xl purple-gradient flex items-center justify-center shadow-lg shadow-purple-200/50">
-                      <pos.icon className="w-5 h-5 text-white" />
-                    </div>
-                    <CardTitle className="text-xl">{pos.title}</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-gray-600 leading-relaxed">{pos.description}</p>
-                </CardContent>
-              </Card>
-            </FadeIn>
-          ))}
-        </div>
-
-        {/* Proof Stats */}
         <FadeIn delay={0.3}>
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-            {proofStats.map((stat, i) => (
-              <div key={stat.label} className="text-center p-6 rounded-2xl bg-purple-50 border border-purple-100">
-                <div className="text-3xl sm:text-4xl font-extrabold purple-gradient-text mb-1">{stat.value}</div>
-                <div className="text-sm text-gray-600 font-medium">{stat.label}</div>
-              </div>
-            ))}
+          <div className="mt-10 text-center">
+            <Button
+              size="lg"
+              className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-base px-8 py-6"
+              onClick={() => handleGetNowClick('MechanismReveal')}
+            >
+              Deploy My AI Secretary Now <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
         </FadeIn>
       </div>
@@ -606,486 +748,213 @@ function MechanismSection() {
   )
 }
 
-/* ──────────────────── Section 5: Product Stack / Value Architecture ──────────────────── */
+/* ──────────────────── Layer 5: Product Stack (Value Architecture) ──────────────────── */
 function ProductStackSection() {
-  const stackItems = [
-    { name: 'AI Receptionist (24/7 Call Answering)', value: '$800', icon: Phone },
-    { name: 'AI Secretary (Calendar & Appointments)', value: '$600', icon: Calendar },
-    { name: 'AI Concierge (VIP Client Experience)', value: '$500', icon: Star },
-    { name: 'Industry-Customized Workflows', value: '$400', icon: Globe },
-    { name: 'Multi-Channel Integration (Phone, SMS, WhatsApp, Social)', value: '$300', icon: Phone },
-    { name: 'Payment & Deposit Handling', value: '$200', icon: CreditCard },
-    { name: 'Lead Qualification & Routing', value: '$300', icon: Users },
-    { name: 'Post-Service Follow-up Automation', value: '$200', icon: Megaphone },
-    { name: 'No-Show Recovery System', value: '$150', icon: Clock },
-    { name: 'Dedicated Optimization Team', value: '$500', icon: Headphones },
+  const stack = [
+    { name: 'AI Receptionist — 24/7 Call Answering', value: 1500, desc: 'Never miss another call. Your AI answers in 2 seconds, routes intelligently, and captures every lead.' },
+    { name: 'AI Secretary — Full Appointment Management', value: 1200, desc: 'Book, confirm, remind, and reschedule — all automated. Reduce no-shows by 40%.' },
+    { name: 'Multi-Channel Orchestration', value: 800, desc: 'Phone, SMS, WhatsApp, Telegram, web chat — one AI, every channel, seamless experience.' },
+    { name: 'Industry-Customized Workflow Engine', value: 900, desc: 'Pre-built flows for salons, clinics, and shops — or we customize for your exact business.' },
+    { name: 'Payment & Deposit Handling', value: 600, desc: 'Secure payment processing, deposit collection, and cancellation fee automation.' },
+    { name: 'Smart Lead Qualification', value: 700, desc: 'Automatically score and route hot leads to your team for immediate follow-up.' },
+    { name: 'Marketing & Follow-up Automation', value: 600, desc: 'Post-visit follow-ups, review requests, loyalty campaigns — all on autopilot.' },
+    { name: 'Custom AI Personality & Brand Voice', value: 500, desc: 'Your AI sounds like YOUR business — professional, warm, and on-brand.' },
+    { name: 'Dedicated AI Optimization Team', value: 1200, desc: 'Real humans who monitor and improve your AI performance every week.' },
+    { name: 'Analytics Dashboard & Reporting', value: 400, desc: 'Track every call, booking, and dollar earned — full visibility into your AI ROI.' },
   ]
 
-  const bonusItems = [
-    { name: 'BONUS: Custom Voice Cloning', value: '$750', icon: Sparkles },
-    { name: 'BONUS: 24/7 Human Escalation Safety Net', value: '$300', icon: Shield },
-  ]
-
-  const tiers = [
-    {
-      name: 'Basic',
-      price: '$500',
-      period: '/month',
-      description: 'Perfect for small single-location businesses.',
-      features: [
-        '1 Skill included',
-        'Up to 3 Flows/Tasks',
-        '2,000 interactions/month',
-        'Full platform connectivity',
-        'Standard AI voice & text',
-        'No setup fee (min 3 months)',
-      ],
-      highlight: false,
-      badge: '',
-      value: 500,
-      contentName: 'Basic Plan',
-      affiliateEvent: 'btn_buy_basic',
-      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=1000',
-    },
-    {
-      name: 'Professional',
-      price: '$1,200',
-      period: '/month',
-      description: 'Ideal for growing businesses with moderate volume.',
-      features: [
-        '2 Skills included',
-        'Up to 8 Flows/Tasks',
-        '5,000 interactions/month',
-        'Priority support',
-        'Advanced analytics & no-show tracking',
-        'Custom AI personality for your brand',
-        'Deposit & cancellation fee handling',
-        'No setup fee (min 3 months)',
-      ],
-      highlight: true,
-      badge: 'Most Popular',
-      value: 1200,
-      contentName: 'Professional Plan',
-      affiliateEvent: 'btn_buy_professional',
-      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=1001',
-    },
-    {
-      name: 'Enterprise',
-      price: '$2,000',
-      period: '/month',
-      description: 'For multi-location businesses and VIP concierge service.',
-      features: [
-        '3+ Skills included',
-        'Unlimited Flows/Tasks',
-        '10,000+ interactions/month',
-        'Dedicated AI optimization team',
-        'Custom integrations',
-        'Multi-language support (2+ languages)',
-        'White-glove VIP concierge service',
-        'Multi-location management',
-        'No setup fee (min 3 months)',
-      ],
-      highlight: false,
-      badge: '',
-      value: 2000,
-      contentName: 'Enterprise Plan',
-      affiliateEvent: 'btn_buy_enterprise',
-      cbUrl: 'https://aireceptio.pay.clickbank.net/?cbitems=1002',
-    },
-  ]
+  const totalValue = stack.reduce((sum, item) => sum + item.value, 0)
 
   return (
-    <section id="product-stack" className="py-20 lg:py-28 bg-gradient-to-b from-purple-50/50 to-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <Badge className="bg-purple-100 text-purple-800 mb-4">Value Architecture</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Here&apos;s <span className="purple-gradient-text">EVERYTHING</span> You Get When You Start Today
-            </h2>
-          </div>
-        </FadeIn>
-
-        <FadeIn delay={0.1}>
-          <p className="text-center text-gray-600 text-lg mb-10 max-w-2xl mx-auto">
-            Let&apos;s break down the <strong>Professional plan ($1,200/mo)</strong> into its individually-valued components:
-          </p>
-        </FadeIn>
-
-        <div className="grid lg:grid-cols-2 gap-8 mb-8">
-          {/* Core Stack */}
-          <div>
-            <FadeIn delay={0.15}>
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-purple-600" /> Core System Components
-              </h3>
-            </FadeIn>
-            <div className="space-y-3">
-              {stackItems.map((item, i) => (
-                <FadeIn key={item.name} delay={i * 0.04}>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-white border border-purple-100 hover:border-purple-300 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
-                        <item.icon className="w-4 h-4 text-purple-600" />
-                      </div>
-                      <span className="text-gray-700 text-sm sm:text-base">{item.name}</span>
-                    </div>
-                    <span className="text-purple-700 font-bold text-sm whitespace-nowrap ml-2">{item.value} value</span>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-          </div>
-
-          {/* Bonuses */}
-          <div>
-            <FadeIn delay={0.2}>
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Gift className="w-5 h-5 text-purple-600" /> Exclusive Bonuses
-              </h3>
-            </FadeIn>
-            <div className="space-y-3 mb-8">
-              {bonusItems.map((item, i) => (
-                <FadeIn key={item.name} delay={0.3 + i * 0.04}>
-                  <div className="flex items-center justify-between p-4 rounded-xl bg-purple-50 border-2 border-purple-300 hover:shadow-md transition-all">
-                    <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg purple-gradient flex items-center justify-center flex-shrink-0">
-                        <item.icon className="w-4 h-4 text-white" />
-                      </div>
-                      <span className="text-gray-800 font-medium">{item.name}</span>
-                    </div>
-                    <span className="text-purple-700 font-bold whitespace-nowrap ml-2">{item.value} value</span>
-                  </div>
-                </FadeIn>
-              ))}
-            </div>
-
-            <FadeIn delay={0.4}>
-              <div className="rounded-2xl purple-gradient p-6 lg:p-8 text-white text-center relative overflow-hidden">
-                <div className="relative">
-                  <p className="text-purple-200 text-sm font-medium uppercase tracking-wider mb-2">Total Value</p>
-                  <p className="text-4xl sm:text-5xl font-extrabold mb-1">$5,000<span className="text-lg font-normal">/mo</span></p>
-                  <div className="h-px bg-white/30 my-4" />
-                  <p className="text-purple-200 text-sm font-medium uppercase tracking-wider mb-2">Today From</p>
-                  <p className="text-3xl sm:text-4xl font-extrabold text-yellow-300">$500<span className="text-lg font-normal">/mo</span></p>
-                  <p className="text-purple-200 text-sm mt-2">or $1,200/mo for Professional</p>
-                  <div className="h-px bg-white/30 my-4" />
-                  <p className="text-2xl font-bold">YOU&apos;RE SAVING <span className="text-yellow-300">$3,800+/month</span> TODAY</p>
-                </div>
-              </div>
-            </FadeIn>
-          </div>
-        </div>
-
-        {/* Countdown before pricing */}
-        <FadeIn delay={0.1}>
-          <div className="text-center my-10">
-            <CountdownTimer />
-          </div>
-        </FadeIn>
-
-        {/* Pricing Cards */}
-        <div id="pricing" className="scroll-mt-24">
-          <FadeIn>
-            <div className="text-center max-w-3xl mx-auto mb-12">
-              <Badge className="bg-purple-100 text-purple-800 mb-4">Pricing</Badge>
-              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-                Choose Your <span className="purple-gradient-text">Plan</span>
-              </h2>
-              <p className="text-lg text-gray-500">
-                No setup fee. Minimum 3-month agreement. Inbound communications included.
-              </p>
-            </div>
-          </FadeIn>
-
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {tiers.map((tier, i) => (
-              <FadeIn key={tier.name} delay={i * 0.1}>
-                <Card
-                  className={`relative h-full flex flex-col ${
-                    tier.highlight
-                      ? 'border-purple-400 shadow-2xl shadow-purple-200/50 scale-105 z-10 bg-gradient-to-b from-white to-purple-50/30'
-                      : 'border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all duration-300'
-                  }`}
-                >
-                  {tier.badge && (
-                    <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                      <Badge className="purple-gradient text-white px-4 py-1 shadow-lg shadow-purple-300/30">
-                        {tier.badge}
-                      </Badge>
-                    </div>
-                  )}
-                  <CardHeader className="text-center pb-2">
-                    <CardTitle className="text-xl font-bold">{tier.name}</CardTitle>
-                    <div className="flex items-baseline justify-center gap-1 mt-2">
-                      <span className="text-4xl sm:text-5xl font-extrabold purple-gradient-text">{tier.price}</span>
-                      <span className="text-gray-500">{tier.period}</span>
-                    </div>
-                    <CardDescription className="text-gray-600 mt-3 min-h-[3rem]">{tier.description}</CardDescription>
-                  </CardHeader>
-                  <CardContent className="flex-grow">
-                    <ul className="space-y-3">
-                      {tier.features.map((feature) => (
-                        <li key={feature} className="flex items-start gap-3">
-                          <Check className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" />
-                          <span className="text-gray-700 text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </CardContent>
-                  <CardFooter>
-                    <a
-                      href={tier.cbUrl}
-                      className={`w-full inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                        tier.highlight
-                          ? 'purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30'
-                          : 'bg-purple-50 text-purple-700 hover:bg-purple-100'
-                      }`}
-                      onClick={(e) => {
-                        e.preventDefault()
-                        if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-                          (window as any).fbq('track', 'AddToCart', { value: tier.value, currency: 'USD', content_name: tier.contentName, cta: 'add_to_cart' })
-                        }
-                        if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
-                          try {
-                            (window as any).MassaProAffiliate.trackEvent(tier.affiliateEvent)
-                            ;(window as any).MassaProAffiliate.trackCart({ plan_type: tier.name, quantity: 1, cart_value: tier.value, currency: 'USD' })
-                          } catch(e){}
-                        }
-                        BackupTracker.trackClick('button_click', tier.affiliateEvent, { plan: tier.name, page: '/expert' })
-                        BackupTracker.trackCart(tier.name, tier.value)
-                        if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-                          (window as any).gtag('event', 'add_to_cart', { value: tier.value, currency: 'USD', items: [{ name: tier.contentName, price: tier.value }] })
-                        }
-                        let finalUrl = tier.cbUrl
-                        if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
-                          try {
-                            const hasAff = (window as any).MassaProAffiliate.hasAffiliate()
-                            if (hasAff) {
-                              const attr = (window as any).MassaProAffiliate.getAttribution()
-                              if (attr && attr.affid) {
-                                finalUrl = finalUrl + '&cvendthru=' + encodeURIComponent(attr.affid)
-                              }
-                            }
-                          } catch(e){}
-                        }
-                        window.location.href = finalUrl
-                      }}
-                    >
-                        Buy Now <ArrowRight className="w-4 h-4 ml-2" />
-                    </a>
-                  </CardFooter>
-                </Card>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ──────────────────── Section 6: Old Way vs New Way ──────────────────── */
-function CompareSection() {
-  const oldWay = [
-    'Hiring $35K/yr receptionist',
-    'Missed calls after 6 PM',
-    'Manual appointment book',
-    'No-shows eating profits',
-    'Client complaints about slow response',
-  ]
-
-  const newWay = [
-    '24/7 AI that never sleeps',
-    'Every call answered in <3 seconds',
-    'Automated booking & reminders',
-    '40% fewer no-shows',
-    'Instant multi-channel response',
-  ]
-
-  return (
-    <section id="compare" className="py-20 lg:py-28 bg-white">
+    <section id="pricing" className="py-16 lg:py-24 bg-white">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <Badge className="bg-purple-100 text-purple-800 mb-4">Compare</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Old Way vs <span className="purple-gradient-text">New Way</span>
+          <div className="text-center mb-12">
+            <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium mb-4">
+              <Award className="w-4 h-4 mr-1" />
+              Complete AI Secretary System
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4">
+              The Full <span className="purple-gradient-text">Product Stack</span>
             </h2>
-          </div>
-        </FadeIn>
-
-        <div className="grid md:grid-cols-2 gap-0 rounded-2xl overflow-hidden shadow-xl shadow-purple-100/50 border border-purple-100">
-          {/* Old Way */}
-          <FadeIn delay={0.1}>
-            <div className="bg-gray-900 text-white p-8 lg:p-10">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
-                  <X className="w-5 h-5 text-red-400" />
-                </div>
-                <h3 className="text-2xl font-bold">OLD WAY</h3>
-              </div>
-              <ul className="space-y-5">
-                {oldWay.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-red-500/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <X className="w-3.5 h-3.5 text-red-400" />
-                    </div>
-                    <span className="text-gray-300 text-lg">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </FadeIn>
-
-          {/* New Way */}
-          <FadeIn delay={0.2}>
-            <div className="bg-gradient-to-br from-purple-50 to-white p-8 lg:p-10 border-l border-purple-100">
-              <div className="flex items-center gap-3 mb-8">
-                <div className="w-10 h-10 rounded-lg purple-gradient flex items-center justify-center shadow-lg shadow-purple-200/50">
-                  <Check className="w-5 h-5 text-white" />
-                </div>
-                <h3 className="text-2xl font-bold purple-gradient-text">NEW WAY</h3>
-              </div>
-              <ul className="space-y-5">
-                {newWay.map((item, i) => (
-                  <li key={i} className="flex items-start gap-3">
-                    <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <Check className="w-3.5 h-3.5 text-green-600" />
-                    </div>
-                    <span className="text-gray-800 text-lg font-medium">{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </FadeIn>
-        </div>
-      </div>
-    </section>
-  )
-}
-
-/* ──────────────────── Section 7: Future Self Visualization ──────────────────── */
-function FutureSelfSection() {
-  const visions = [
-    {
-      icon: Phone,
-      text: 'You hear the familiar chime of your phone — but this time, it\'s not another complaint about missed calls. It\'s your dashboard: "12 new appointments booked overnight."',
-    },
-    {
-      icon: Clock,
-      text: 'While you were having dinner with your family, your AI Secretary handled 47 client interactions, booked 8 appointments, and sent 23 reminders.',
-    },
-    {
-      icon: TrendingUp,
-      text: 'Your no-show rate dropped from 22% to 8%. Your front desk finally has breathing room.',
-    },
-    {
-      icon: Star,
-      text: 'A competitor\'s client just called YOU because nobody answered at their salon.',
-    },
-  ]
-
-  return (
-    <section className="py-20 lg:py-28 bg-gradient-to-b from-purple-50/50 to-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <FadeIn>
-          <div className="text-center mb-14">
-            <Badge className="bg-purple-100 text-purple-800 mb-4">Picture This</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-              Picture Your Business <span className="purple-gradient-text">30 Days From Now...</span>
-            </h2>
-          </div>
-        </FadeIn>
-
-        <div className="space-y-6 mb-14">
-          {visions.map((vision, i) => (
-            <FadeIn key={i} delay={i * 0.1}>
-              <div className="flex gap-4 items-start p-5 rounded-xl bg-white border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:shadow-purple-100/50 transition-all">
-                <div className="w-10 h-10 rounded-lg purple-gradient flex items-center justify-center flex-shrink-0 shadow-lg shadow-purple-200/50">
-                  <vision.icon className="w-5 h-5 text-white" />
-                </div>
-                <p className="text-gray-700 text-lg leading-relaxed">{vision.text}</p>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
-
-        <FadeIn delay={0.5}>
-          <div className="rounded-2xl border-2 border-purple-200 overflow-hidden">
-            <div className="grid sm:grid-cols-2">
-              {/* Choice A */}
-              <div className="p-6 lg:p-8 bg-gray-50 border-b sm:border-b-0 sm:border-r border-purple-100">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center">
-                    <X className="w-4 h-4 text-red-600" />
-                  </div>
-                  <h4 className="font-bold text-gray-800">Choice A</h4>
-                </div>
-                <p className="text-gray-600 leading-relaxed">
-                  Close this page, keep losing $500+ clients to missed calls, and wonder &ldquo;what if&rdquo; six months from now.
-                </p>
-              </div>
-
-              {/* Choice B */}
-              <div className="p-6 lg:p-8 bg-purple-50">
-                <div className="flex items-center gap-2 mb-4">
-                  <div className="w-8 h-8 rounded-full purple-gradient flex items-center justify-center shadow-md">
-                    <Check className="w-4 h-4 text-white" />
-                  </div>
-                  <h4 className="font-bold purple-gradient-text">Choice B</h4>
-                </div>
-                <p className="text-gray-700 leading-relaxed font-medium">
-                  Start today, deploy your AI Secretary this week, and see results in 30 days.
-                </p>
-                <Button
-                  className="mt-4 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 w-full"
-                  onClick={() => handleGetNowClick('FutureSelf')}
-                >
-                    I Choose B — Get Started <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            </div>
-          </div>
-        </FadeIn>
-      </div>
-    </section>
-  )
-}
-
-/* ──────────────────── Section 8: The Guarantee ──────────────────── */
-function GuaranteeSection() {
-  return (
-    <section id="guarantee" className="py-20 lg:py-28 bg-white">
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <FadeIn>
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-green-100 mb-8">
-            <Shield className="w-10 h-10 text-green-600" />
           </div>
         </FadeIn>
 
         <FadeIn delay={0.1}>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6">
-            Our &ldquo;Results in <span className="purple-gradient-text">30 Days</span>&rdquo; Guarantee
-          </h2>
-        </FadeIn>
+          <div className="bg-gradient-to-b from-purple-50 to-white rounded-3xl border border-purple-200 overflow-hidden mb-8">
+            <div className="divide-y divide-purple-100">
+              {stack.map((item, i) => (
+                <div key={item.name} className="flex items-center justify-between p-4 sm:p-5 hover:bg-purple-50/50 transition-colors">
+                  <div className="flex-1 pr-4">
+                    <div className="flex items-center gap-2 mb-1">
+                      <Check className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                      <span className="font-semibold text-gray-900 text-sm sm:text-base">{item.name}</span>
+                    </div>
+                    <p className="text-gray-500 text-xs sm:text-sm ml-6">{item.desc}</p>
+                  </div>
+                  <div className="text-right flex-shrink-0">
+                    <span className="text-purple-700 font-bold text-sm">VALUE: ${item.value.toLocaleString()}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
 
-        <FadeIn delay={0.2}>
-          <div className="rounded-2xl bg-green-50 border border-green-200 p-8 lg:p-10 mb-8">
-            <p className="text-lg text-gray-700 leading-relaxed mb-6">
-              If in 30 days your AI Secretary hasn&apos;t handled at least <strong>500 client interactions</strong>, booked appointments, and reduced your no-show rate, we&apos;ll optimize your system at no extra cost for another 30 days. If it still doesn&apos;t work, <strong>we&apos;ll refund your first month</strong>.
-            </p>
-            <p className="text-base text-gray-600 leading-relaxed">
-              There&apos;s only one condition: <strong>You must DEPLOY the system.</strong> We can&apos;t help you if we&apos;re not connected.
-            </p>
+            {/* Total Value Bar */}
+            <div className="bg-purple-900 text-white p-5 sm:p-6">
+              <div className="flex items-center justify-between">
+                <span className="text-lg font-semibold">TOTAL REAL-WORLD VALUE:</span>
+                <span className="text-2xl sm:text-3xl font-bold">${totalValue.toLocaleString()}/month</span>
+              </div>
+            </div>
           </div>
         </FadeIn>
 
-        <FadeIn delay={0.3}>
-          <div className="flex flex-wrap justify-center gap-4 text-sm text-gray-500">
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-600" /> No questions</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-600" /> No drama</span>
-            <span className="flex items-center gap-1.5"><Check className="w-4 h-4 text-green-600" /> No runaround</span>
+        {/* Pricing Tiers */}
+        <FadeIn delay={0.2}>
+          <div className="text-center mb-8">
+            <p className="text-xl text-gray-700 mb-2">But you won&apos;t pay anywhere near that.</p>
+            <p className="text-gray-500">Choose the plan that fits your business:</p>
+          </div>
+        </FadeIn>
+
+        <div className="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+          {/* Basic */}
+          <FadeIn delay={0.2}>
+            <Card className="h-full flex flex-col border-purple-100 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-300">
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Basic</CardTitle>
+                <div className="mt-2">
+                  <span className="text-4xl font-bold">$500</span>
+                  <span className="text-gray-500">/month</span>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">1 Skill | 3 Flows | 2,000 interactions/mo</p>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                <ul className="space-y-2 text-sm flex-1">
+                  {['1 AI Skill included', 'Up to 3 Flows/Tasks', '2,000 interactions/month', 'Full platform connectivity', 'Standard AI voice & text', 'No setup fee (min 3 months)'].map((f) => (
+                    <li key={f} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                      <span className="text-gray-700">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 text-center">
+                  <p className="text-xs text-gray-400 mb-2">Value: $3,400/mo — You save $2,900</p>
+                  <a
+                    href="https://aireceptio.pay.clickbank.net/?cbitems=1000"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block w-full"
+                    onClick={() => handleGetNowClick('Basic')}
+                  >
+                    <Button variant="outline" className="w-full border-purple-300 text-purple-700 hover:bg-purple-50 py-5">
+                      Get Basic Plan <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
+
+          {/* Professional - highlighted */}
+          <FadeIn delay={0.25}>
+            <Card className="h-full flex flex-col border-purple-400 shadow-2xl shadow-purple-200/50 scale-105 z-10 bg-gradient-to-b from-white to-purple-50/30 relative">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
+                <Badge className="purple-gradient text-white px-4 py-1 shadow-lg shadow-purple-300/30">
+                  Most Popular
+                </Badge>
+              </div>
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Professional</CardTitle>
+                <div className="mt-2">
+                  <span className="text-4xl font-bold">$1,200</span>
+                  <span className="text-gray-500">/month</span>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">2 Skills | 8 Flows | 5,000 interactions/mo</p>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                <ul className="space-y-2 text-sm flex-1">
+                  {['2 AI Skills included', 'Up to 8 Flows/Tasks', '5,000 interactions/month', 'Priority support', 'Advanced analytics & no-show tracking', 'Custom AI personality for your brand', 'Deposit & cancellation fee handling', 'No setup fee (min 3 months)'].map((f) => (
+                    <li key={f} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                      <span className="text-gray-700">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 text-center">
+                  <p className="text-xs text-gray-400 mb-2">Value: $6,800/mo — You save $5,600</p>
+                  <a
+                    href="https://aireceptio.pay.clickbank.net/?cbitems=1001"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block w-full"
+                    onClick={() => handleGetNowClick('Professional')}
+                  >
+                    <Button className="w-full purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-5 animate-pulse-glow">
+                      Get Professional Plan <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
+
+          {/* Enterprise */}
+          <FadeIn delay={0.3}>
+            <Card className="h-full flex flex-col border-purple-100 hover:border-purple-300 hover:shadow-xl hover:shadow-purple-100/50 transition-all duration-300">
+              <CardHeader className="text-center">
+                <CardTitle className="text-xl">Enterprise</CardTitle>
+                <div className="mt-2">
+                  <span className="text-4xl font-bold">$2,000</span>
+                  <span className="text-gray-500">/month</span>
+                </div>
+                <p className="text-sm text-gray-500 mt-2">3+ Skills | Unlimited Flows | 10,000+ interactions/mo</p>
+              </CardHeader>
+              <CardContent className="flex-1 flex flex-col">
+                <ul className="space-y-2 text-sm flex-1">
+                  {['3+ AI Skills included', 'Unlimited Flows/Tasks', '10,000+ interactions/month', 'Dedicated AI optimization team', 'Custom integrations', 'Multi-language support (2+ languages)', 'White-glove VIP concierge service', 'Multi-location management', 'No setup fee (min 3 months)'].map((f) => (
+                    <li key={f} className="flex items-center gap-2">
+                      <Check className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                      <span className="text-gray-700">{f}</span>
+                    </li>
+                  ))}
+                </ul>
+                <div className="mt-6 text-center">
+                  <p className="text-xs text-gray-400 mb-2">Value: $8,400/mo — You save $6,400</p>
+                  <a
+                    href="https://aireceptio.pay.clickbank.net/?cbitems=1002"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block w-full"
+                    onClick={() => handleGetNowClick('Enterprise')}
+                  >
+                    <Button variant="outline" className="w-full border-purple-300 text-purple-700 hover:bg-purple-50 py-5">
+                      Get Enterprise Plan <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+          </FadeIn>
+        </div>
+
+        {/* Urgency countdown */}
+        <FadeIn delay={0.35}>
+          <div className="mt-12 bg-gradient-to-r from-purple-600 to-purple-800 rounded-2xl p-6 sm:p-8 text-white text-center">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <Timer className="w-5 h-5" />
+              <span className="text-sm font-semibold uppercase tracking-wider">Limited Time Offer</span>
+            </div>
+            <h3 className="text-2xl sm:text-3xl font-bold mb-2">No Setup Fee — Ends Soon</h3>
+            <p className="text-purple-200 mb-4">The $500 setup fee is waived for new clients who sign up this month.</p>
+            <CountdownTimer />
+            <Button
+              size="lg"
+              className="bg-white text-purple-900 hover:bg-purple-50 shadow-xl text-base px-8 py-6 font-semibold mt-4"
+              onClick={() => handleGetNowClick('Urgency')}
+            >
+              Claim My No-Fee Setup <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
           </div>
         </FadeIn>
       </div>
@@ -1093,53 +962,250 @@ function GuaranteeSection() {
   )
 }
 
-/* ──────────────────── Section 9: FAQ ──────────────────── */
+/* ──────────────────── Countdown Timer Component ──────────────────── */
+function CountdownTimer() {
+  const timeLeft = useCountdown(180) // 3 hours
+
+  return (
+    <div className="flex items-center justify-center gap-3 sm:gap-4">
+      {[
+        { value: timeLeft.hours, label: 'Hours' },
+        { value: timeLeft.minutes, label: 'Minutes' },
+        { value: timeLeft.seconds, label: 'Seconds' },
+      ].map((unit) => (
+        <div key={unit.label} className="flex flex-col items-center">
+          <div className="bg-white/20 backdrop-blur-sm rounded-xl px-4 py-3 min-w-[70px]">
+            <span className="text-2xl sm:text-3xl font-bold">{String(unit.value).padStart(2, '0')}</span>
+          </div>
+          <span className="text-xs text-purple-200 mt-1">{unit.label}</span>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+/* ──────────────────── Layer 6: Future Self Visualization ──────────────────── */
+function FutureSelfSection() {
+  return (
+    <section className="py-16 lg:py-24 bg-gradient-to-b from-white to-purple-50/50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center mb-10">
+            <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium mb-4">
+              <Sparkles className="w-4 h-4 mr-1" />
+              Imagine This
+            </Badge>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <div className="space-y-6 text-lg leading-relaxed text-gray-700">
+            <p className="text-xl sm:text-2xl font-semibold text-gray-900">
+              30 days from now, you wake up to the familiar ping of your phone.
+            </p>
+
+            <p>
+              But this time, it&apos;s different. Instead of 12 missed calls and a voicemail inbox full of
+              frustrated clients, you see a clean notification: <strong>&ldquo;8 new appointments booked
+              overnight. $2,400 in deposits collected. Zero no-shows.&rdquo;</strong>
+            </p>
+
+            <p>
+              Your AI Secretary handled everything while you slept. A client texted at 11 PM to reschedule —
+              handled instantly. A new lead called at 7 AM — booked before your first coffee. Your
+              calendar is full, your clients are happy, and you haven&apos;t lifted a finger.
+            </p>
+
+            <p>
+              You walk into your business at 9 AM and everything is already running. Your AI has sent
+              reminders for today&apos;s appointments, confirmed the deposits, and flagged one cancellation
+              — but don&apos;t worry, it already filled the slot from the waitlist.
+            </p>
+
+            <p>
+              Your competitor down the street? They&apos;re still returning yesterday&apos;s voicemails.
+            </p>
+
+            <div className="bg-purple-50 border border-purple-200 rounded-2xl p-6 sm:p-8 mt-8">
+              <p className="text-xl font-semibold text-gray-900 mb-4">Now you have a choice:</p>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <div className="bg-white rounded-xl p-4 border border-red-200">
+                  <p className="font-semibold text-red-700 mb-1">Option A</p>
+                  <p className="text-gray-600 text-sm">Close this page. Keep doing everything yourself. Miss calls. Chase no-shows. Stay stuck in the same place 6 months from now.</p>
+                </div>
+                <div className="bg-white rounded-xl p-4 border border-purple-300 shadow-lg shadow-purple-100/50">
+                  <p className="font-semibold text-purple-700 mb-1">Option B</p>
+                  <p className="text-gray-600 text-sm">Deploy your AI Secretary today. Get your first automated booking in 48 hours. Watch your revenue grow while you sleep.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.2}>
+          <div className="mt-10 text-center">
+            <Button
+              size="lg"
+              className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-lg px-10 py-7"
+              onClick={() => handleGetNowClick('FutureSelf')}
+            >
+              I Choose Option B — Get Started <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────────── Layer 7: Guarantee + Risk Reversal ──────────────────── */
+function GuaranteeSection() {
+  return (
+    <section className="py-16 lg:py-24 bg-white">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <FadeIn>
+          <div className="text-center mb-10">
+            <Badge className="bg-green-100 text-green-800 hover:bg-green-100 px-4 py-1.5 text-sm font-medium mb-4">
+              <Shield className="w-4 h-4 mr-1" />
+              Iron-Clad Guarantee
+            </Badge>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Our &ldquo;First Booking in 48 Hours&rdquo; <span className="purple-gradient-text">Guarantee</span>
+            </h2>
+          </div>
+        </FadeIn>
+
+        <FadeIn delay={0.1}>
+          <div className="bg-gradient-to-br from-purple-50 to-green-50 rounded-3xl border border-purple-200 p-8 sm:p-12 text-center">
+            <div className="w-20 h-20 rounded-full purple-gradient flex items-center justify-center mx-auto mb-6 shadow-xl shadow-purple-200/50">
+              <Shield className="w-10 h-10 text-white" />
+            </div>
+
+            <p className="text-xl leading-relaxed text-gray-700 max-w-2xl mx-auto mb-6">
+              If within <strong>30 days</strong> of deploying your MassaPro AI Secretary, you don&apos;t have your
+              first automated booking, we&apos;ll work with you 1-on-1 until you do — at no extra cost. If after
+              60 days you&apos;re not seeing measurable improvement in your booking rate and no-show reduction,
+              we&apos;ll refund every penny.
+            </p>
+
+            <p className="text-gray-500 text-sm mb-8">
+              There&apos;s only one condition: <strong>You must TRY the system.</strong> We can&apos;t help
+              you if you don&apos;t turn it on. But if you give it an honest shot and it doesn&apos;t deliver,
+              email us at <span className="text-purple-700 font-semibold">support@massapro.com</span> and
+              we&apos;ll refund 100% of your money. No drama. No runaround.
+            </p>
+
+            <Button
+              size="lg"
+              className="purple-gradient text-white hover:opacity-90 shadow-xl shadow-purple-300/30 text-lg px-10 py-7"
+              onClick={() => handleGetNowClick('Guarantee')}
+            >
+              Start Risk-Free <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+
+            <div className="flex items-center justify-center gap-4 mt-6 text-xs text-gray-400">
+              <div className="flex items-center gap-1">
+                <Shield className="w-3.5 h-3.5" />
+                <span>100% Secure</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Lock className="w-3.5 h-3.5" />
+                <span>256-bit SSL</span>
+              </div>
+              <div className="flex items-center gap-1">
+                <Zap className="w-3.5 h-3.5" />
+                <span>Deploy in 48hrs</span>
+              </div>
+            </div>
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────────── Social Proof Bar ──────────────────── */
+function SocialProofBar() {
+  return (
+    <section className="py-10 bg-white border-y border-purple-50">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
+          <div className="text-center">
+            <p className="text-3xl font-bold purple-gradient-text">500+</p>
+            <p className="text-sm text-gray-500">Businesses</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold purple-gradient-text">2.8M+</p>
+            <p className="text-sm text-gray-500">Calls/Month</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold purple-gradient-text">98.5%</p>
+            <p className="text-sm text-gray-500">Booking Rate</p>
+          </div>
+          <div className="text-center">
+            <div className="flex items-center gap-1 justify-center">
+              {[1, 2, 3, 4, 5].map((i) => (
+                <Star key={i} className="w-5 h-5 fill-purple-500 text-purple-500" />
+              ))}
+            </div>
+            <p className="text-sm text-gray-500 mt-1">4.9/5 Rating</p>
+          </div>
+          <div className="text-center">
+            <p className="text-3xl font-bold purple-gradient-text">40%</p>
+            <p className="text-sm text-gray-500">Fewer No-Shows</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────────── FAQ Section ──────────────────── */
 function FAQSection() {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
 
   const faqs = [
     {
-      q: 'Who is this for?',
-      a: 'Small and medium service businesses: salons, spas, clinics, vet offices, and any business that relies on appointments and client communication.',
+      q: 'How is this different from a regular chatbot?',
+      a: 'A chatbot sits on your website and answers basic questions. MassaPro is a complete AI workforce — it answers phone calls, sends text messages, books appointments, processes payments, and handles your entire front desk across every channel your customers use. It\'s not a widget; it\'s an employee that never sleeps.',
     },
     {
-      q: 'How long until I see results?',
-      a: 'Most businesses see impact within 48 hours of deployment. Your AI starts handling calls, booking appointments, and sending reminders from day one.',
-    },
-    {
-      q: 'What if I already have a receptionist?',
-      a: 'Your AI handles the overflow, after-hours, and repetitive tasks so your human can focus on high-value interactions. They make a great team.',
-    },
-    {
-      q: 'Can I use this in any country?',
-      a: 'Yes! MassaPro supports multi-language communication and works in any timezone. Your AI is global.',
+      q: 'How quickly can I get started?',
+      a: 'Most businesses are fully deployed within 48 hours. We handle the setup, train your AI on your specific workflows, and connect it to your existing tools (calendar, CRM, payment gateway). You just need to tell us how your business works — we do the rest.',
     },
     {
       q: 'What if I\'m not tech-savvy?',
-      a: 'We handle ALL the setup. You just tell us about your business, and we configure everything. Zero technical skills required.',
+      a: 'You don\'t need to be. We set everything up for you. Your AI optimization team monitors performance and makes improvements weekly. You just watch the bookings come in. If you can check your email, you can use MassaPro.',
     },
     {
-      q: 'How is this different from a chatbot?',
-      a: 'Chatbots follow scripts. Our AI understands context, handles multi-turn conversations, books real appointments, processes payments, and escalates to humans when needed. It\'s an intelligent workforce, not a FAQ bot.',
+      q: 'Will it sound robotic on the phone?',
+      a: 'No. Our AI uses natural language processing with human-quality voice synthesis. Your clients won\'t know they\'re talking to AI unless you tell them. We customize the personality and tone to match your brand voice.',
+    },
+    {
+      q: 'What industries does this work for?',
+      a: 'We specialize in service businesses: hair salons, nail studios, beauty shops, med spas, veterinary clinics, and similar businesses. Our AI is pre-trained on industry-specific workflows, so it knows the difference between a balayage and a blowout, or a vaccination and a wellness check.',
     },
     {
       q: 'What happens if the AI can\'t handle something?',
-      a: 'Seamless human escalation. Your AI knows when to hand off — it will never leave a client stranded. You stay in control at all times.',
+      a: 'Your AI is trained to recognize when a conversation needs a human. It seamlessly transfers the call or message to you or your team with full context — so your customer never has to repeat themselves. Think of it as a filter that handles 90% of inquiries and only escalates the ones that truly need you.',
     },
     {
-      q: 'Is my client data secure?',
-      a: '256-bit encryption, HIPAA-aware infrastructure, and GDPR-compliant data handling. Your clients\' information is protected at the highest level.',
+      q: 'Can I cancel if it doesn\'t work?',
+      a: 'Yes. There\'s a minimum 3-month agreement (because it takes about 30 days to fully optimize your AI), and after that you can cancel anytime. But with our 60-day money-back guarantee, you have zero risk. If it doesn\'t deliver, you get every penny back.',
+    },
+    {
+      q: 'What countries does MassaPro support?',
+      a: 'MassaPro currently supports businesses in the United States, Canada, UK, Australia, EU, and Israel. We\'re expanding rapidly — contact us if you\'re in a different region and we\'ll see what we can do.',
     },
   ]
 
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-b from-white to-purple-50/30">
+    <section className="py-16 lg:py-24 bg-white">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         <FadeIn>
-          <div className="text-center mb-14">
-            <Badge className="bg-purple-100 text-purple-800 mb-4">FAQ</Badge>
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight">
-              Got <span className="purple-gradient-text">Questions?</span>
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Frequently Asked <span className="purple-gradient-text">Questions</span>
             </h2>
           </div>
         </FadeIn>
@@ -1147,22 +1213,19 @@ function FAQSection() {
         <div className="space-y-3">
           {faqs.map((faq, i) => (
             <FadeIn key={i} delay={i * 0.05}>
-              <div className="rounded-xl border border-purple-100 overflow-hidden bg-white hover:border-purple-300 transition-colors">
+              <div className="border border-purple-100 rounded-xl overflow-hidden hover:border-purple-300 transition-colors">
                 <button
-                  className="w-full flex items-center justify-between p-5 text-left"
+                  className="w-full text-left p-5 flex items-center justify-between gap-4"
                   onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                  aria-expanded={openIndex === i}
                 >
-                  <span className="font-semibold text-gray-800 pr-4">{faq.q}</span>
+                  <span className="font-semibold text-gray-900">{faq.q}</span>
                   <ChevronDown
-                    className={`w-5 h-5 text-purple-500 flex-shrink-0 transition-transform ${
-                      openIndex === i ? 'rotate-180' : ''
-                    }`}
+                    className={`w-5 h-5 text-purple-600 flex-shrink-0 transition-transform ${openIndex === i ? 'rotate-180' : ''}`}
                   />
                 </button>
                 {openIndex === i && (
-                  <div className="px-5 pb-5">
-                    <p className="text-gray-600 leading-relaxed">{faq.a}</p>
+                  <div className="px-5 pb-5 text-gray-600 leading-relaxed border-t border-purple-50 pt-4">
+                    {faq.a}
                   </div>
                 )}
               </div>
@@ -1174,40 +1237,64 @@ function FAQSection() {
   )
 }
 
-/* ──────────────────── Section 10: Final CTA ──────────────────── */
+/* ──────────────────── Final CTA Section ──────────────────── */
 function FinalCTASection() {
   return (
-    <section className="py-20 lg:py-28 purple-gradient relative overflow-hidden">
-      <div className="absolute inset-0 bg-[url('/multi-channel-v2.png')] bg-cover bg-center opacity-5" />
-      <div className="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white">
+    <section className="py-16 lg:py-24 purple-gradient text-white relative overflow-hidden">
+      <div className="absolute inset-0 bg-[url('/salon-interior-v2.png')] bg-cover bg-center opacity-5" />
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <FadeIn>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-6 leading-tight">
-            Your Competitors Are Already Answering Their Phones.<br />
-            <span className="text-yellow-300">Are You?</span>
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6">
+            Stop Losing $43,200/Year to Missed Calls.
           </h2>
-        </FadeIn>
+          <p className="text-xl text-purple-100 max-w-2xl mx-auto mb-8">
+            Deploy your AI Secretary today. Get your first automated booking in 48 hours. Or keep playing
+            phone tag. The choice is yours.
+          </p>
 
-        <FadeIn delay={0.1}>
-          <div className="mb-8">
-            <CountdownTimer />
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a
+              href="https://aireceptio.pay.clickbank.net/?cbitems=1001"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => handleGetNowClick('FinalCTA')}
+            >
+              <Button
+                size="lg"
+                className="bg-white text-purple-900 hover:bg-purple-50 shadow-xl text-lg px-10 py-7 font-semibold"
+              >
+                Get Professional Plan — $1,200/mo <ArrowRight className="w-5 h-5 ml-2" />
+              </Button>
+            </a>
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white/30 text-white hover:bg-white/10 text-base px-8 py-6"
+              onClick={() => document.getElementById('pricing')?.scrollIntoView({ behavior: 'smooth' })}
+            >
+              View All Plans
+            </Button>
           </div>
-        </FadeIn>
 
-        <FadeIn delay={0.2}>
-          <Button
-            size="lg"
-            className="bg-white text-purple-800 hover:bg-gray-100 shadow-xl shadow-purple-900/30 text-lg px-10 py-7 font-bold animate-pulse-glow"
-            onClick={() => handleGetNowClick('FinalCTA')}
-          >
-            <Lock className="w-5 h-5 mr-2" />
-            100% Secure — Start Your AI Secretary Today
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-        </FadeIn>
+          <div className="mt-8 flex items-center justify-center gap-6 text-sm text-purple-200">
+            <div className="flex items-center gap-1">
+              <Shield className="w-4 h-4" />
+              <span>60-Day Money-Back</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Lock className="w-4 h-4" />
+              <span>256-bit Encrypted</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Zap className="w-4 h-4" />
+              <span>Deploy in 48hrs</span>
+            </div>
+          </div>
 
-        <FadeIn delay={0.3}>
-          <p className="mt-10 text-purple-200 text-base leading-relaxed max-w-xl mx-auto">
-            <strong>P.S.</strong> When you sign up, your onboarding specialist will help you choose the perfect AI skills and workflows for your specific industry — at no extra cost.
+          <p className="mt-8 text-sm text-purple-300 max-w-xl mx-auto">
+            P.S. When you get started, head straight to the onboarding call — that&apos;s where we customize
+            your AI for your exact business. The businesses that see the fastest results are the ones
+            who jump on that call within 24 hours.
           </p>
         </FadeIn>
       </div>
@@ -1218,65 +1305,22 @@ function FinalCTASection() {
 /* ──────────────────── Footer ──────────────────── */
 function Footer() {
   return (
-    <footer className="bg-gray-950 text-gray-300">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="sm:col-span-2 lg:col-span-1">
-            <Image
-              src="/massapro-logo-v2.png"
-              alt="MassaPro Logo"
-              width={160}
-              height={48}
-              className="h-10 w-auto mb-4"
-            />
-            <p className="text-sm text-gray-400 leading-relaxed">
-              Intelligent AI receptionists and secretaries for businesses that never want to miss a customer again.
-            </p>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-white mb-4">Services</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#mechanism" className="hover:text-purple-400 transition-colors">AI Receptionist</a></li>
-              <li><a href="#mechanism" className="hover:text-purple-400 transition-colors">AI Secretary</a></li>
-              <li><a href="#mechanism" className="hover:text-purple-400 transition-colors">AI Concierge</a></li>
-              <li><a href="#pricing" className="hover:text-purple-400 transition-colors">Pricing</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-white mb-4">Industries</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="/hair-salon" className="hover:text-purple-400 transition-colors">Hair Salons</a></li>
-              <li><a href="/nail-studio" className="hover:text-purple-400 transition-colors">Nail Studios</a></li>
-              <li><a href="/beauty-shop" className="hover:text-purple-400 transition-colors">Beauty Shops</a></li>
-              <li><a href="/vet-clinic" className="hover:text-purple-400 transition-colors">Veterinary Clinics</a></li>
-              <li><a href="/med-spa" className="hover:text-purple-400 transition-colors">Med Spa</a></li>
-            </ul>
-          </div>
-
-          <div>
-            <h4 className="font-semibold text-white mb-4">Contact</h4>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-purple-400" />
-                <a href="mailto:hello@massapro.com" className="hover:text-purple-400 transition-colors">hello@massapro.com</a>
-              </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-purple-400" />
-                Remote-First Company
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="border-t border-gray-800 mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-gray-500">
+    <footer className="bg-gray-900 text-gray-400 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <Image
+            src="/massapro-logo-v2.png"
+            alt="MassaPro Logo"
+            width={120}
+            height={36}
+            className="h-8 w-auto opacity-70"
+          />
+          <p className="text-sm text-center">
             &copy; {new Date().getFullYear()} MassaPro. All rights reserved.
           </p>
-          <div className="flex items-center gap-6 text-sm text-gray-500">
-            <a href="#" className="hover:text-purple-400 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-purple-400 transition-colors">Terms of Service</a>
+          <div className="flex items-center gap-4 text-sm">
+            <a href="/all" className="hover:text-purple-400 transition-colors">All Services</a>
+            <a href="mailto:support@massapro.com" className="hover:text-purple-400 transition-colors">Support</a>
           </div>
         </div>
       </div>
@@ -1284,43 +1328,24 @@ function Footer() {
   )
 }
 
-/* ──────────────────── Main Page ──────────────────── */
+/* ──────────────────── MAIN PAGE COMPONENT ──────────────────── */
 export default function ExpertPage() {
-  useEffect(() => {
-    BackupTracker.trackPageView()
-    const thresholds = [25, 50, 75, 90]
-    const fired = new Set<number>()
-    const onScroll = () => {
-      const scrollH = document.documentElement.scrollHeight - window.innerHeight
-      if (scrollH <= 0) return
-      const pct = Math.round((window.scrollY / scrollH) * 100)
-      for (const t of thresholds) {
-        if (pct >= t && !fired.has(t)) {
-          fired.add(t)
-          BackupTracker.trackScroll(t)
-        }
-      }
-    }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
   return (
-    <div className="min-h-screen flex flex-col">
+    <main className="min-h-screen">
       <Navbar />
-      <main className="flex-grow">
-        <HeroSection />
-        <BrutalTruthSection />
-        <WindowFrameSection />
-        <MechanismSection />
-        <ProductStackSection />
-        <CompareSection />
-        <FutureSelfSection />
-        <GuaranteeSection />
-        <FAQSection />
-        <FinalCTASection />
-      </main>
+      {/* 7-Layer Pitch Architecture */}
+      <HeroSection />              {/* Title above, image left, form right */}
+      <SocialProofBar />           {/* Social proof metrics */}
+      <IdentityForkSection />      {/* Layer 1: Identity Fork */}
+      <BrutalTruthSection />       {/* Layer 2: Brutal Truth */}
+      <WindowFrameSection />       {/* Layer 3: Window Frame */}
+      <MechanismRevealSection />   {/* Layer 4: Mechanism Reveal */}
+      <ProductStackSection />      {/* Layer 5: Product Stack + Pricing */}
+      <FutureSelfSection />        {/* Layer 6: Future Self */}
+      <GuaranteeSection />         {/* Layer 7: Guarantee */}
+      <FAQSection />               {/* Objection handling */}
+      <FinalCTASection />          {/* Final push with P.S. */}
       <Footer />
-    </div>
+    </main>
   )
 }
