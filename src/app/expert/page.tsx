@@ -441,7 +441,7 @@ function HeroSection() {
             </Badge>
 
             <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-[1.05] mb-3 max-w-4xl mx-auto">
-              There Are Two Types of Business Owners:{' '}
+              There Are Two Types of Hair-Salon Owners:{' '}
               <span className="purple-gradient-text">Those Who Never Miss a Call</span>
               {' '}And Those Who Lose $43,200/Year
             </h1>
@@ -739,7 +739,7 @@ function IdentityForkSection() {
         <FadeIn delay={0.1}>
           <div className="space-y-6 text-lg leading-relaxed text-gray-700">
             <p className="text-xl sm:text-2xl font-semibold text-gray-900">
-              There are two types of business owners reading this page right now.
+              There are two types of hair-salon owners reading this page right now.
             </p>
 
             <p>
