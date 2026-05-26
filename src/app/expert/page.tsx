@@ -227,7 +227,7 @@ function HeroSection() {
   }
 
   return (
-    <section className="relative min-h-screen overflow-hidden bg-gradient-to-br from-white via-purple-50 to-white pt-20 lg:pt-24">
+    <section className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50 to-white pt-16 lg:pt-18">
       {/* Background decorations */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl" />
@@ -238,19 +238,19 @@ function HeroSection() {
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Title above - spanning full width */}
         <FadeIn>
-          <div className="text-center pt-8 pb-8 lg:pt-12 lg:pb-10">
+          <div className="text-center pt-2 pb-4 lg:pt-4 lg:pb-5">
             <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium mb-6 inline-flex">
               <Sparkles className="w-4 h-4 mr-1" />
               VIP AI Secretary & Concierge Services
             </Badge>
 
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-bold tracking-tight leading-[1.1] mb-6 max-w-4xl mx-auto">
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-[1.05] mb-3 max-w-4xl mx-auto">
               There Are Two Types of Business Owners:{' '}
               <span className="purple-gradient-text">Those Who Never Miss a Call</span>
               {' '}And Those Who Lose $43,200/Year
             </h1>
 
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Your AI Secretary handles calls, books appointments, and manages your entire front desk — 24/7.
               No sick days. No salary. No missed opportunities.
             </p>
@@ -258,7 +258,7 @@ function HeroSection() {
         </FadeIn>
 
         {/* Below title: Image on the left, Lead Form on the right */}
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start pb-16 lg:pb-24">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start pb-10 lg:pb-16">
           {/* Left: Hero Image */}
           <FadeIn delay={0.1} className="relative">
             <div className="relative">
