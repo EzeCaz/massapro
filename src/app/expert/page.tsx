@@ -1,6 +1,7 @@
 'use client'
 
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { BackupTracker } from '@/lib/backup-tracker'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -9,7 +10,6 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
-import { LeadForm } from '@/components/LeadForm'
 import WeeklySlotPicker from '@/components/WeeklySlotPicker'
 import {
   Phone,
@@ -43,16 +43,24 @@ import {
 
 /* ──────────────────── Helper Functions ──────────────────── */
 function handleGetNowClick(location: string) {
+  // Meta Pixel: FreeConsultClick (same event as homepage for ad optimization)
   if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-    (window as any).fbq('trackCustom', 'GetNowClick', { button_location: location, page_name: 'Expert', cta: 'purchase' })
+    ;(window as any).fbq('trackCustom', 'FreeConsultClick', { button_location: location, page_name: 'Expert', cta: 'consultation' })
   }
+  // MassaPro Affiliate Tracker: track CTA click
   if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackEvent === 'function') {
     try { (window as any).MassaProAffiliate.trackEvent('btn_get_now') } catch(e){
       console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
     }
   }
+  // Google Analytics 4: track CTA click
   if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-    (window as any).gtag('event', 'get_now', { button_location: location, page_name: 'Expert' })
+    ;(window as any).gtag('event', 'get_now', { button_location: location, page_name: 'Expert' })
+  }
+  // Scroll to the hero form
+  const formEl = document.getElementById('expert-lead-form')
+  if (formEl) {
+    formEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
   }
 }
 
@@ -187,11 +195,23 @@ function Navbar() {
 /* Title above, picture on the left bottom, lead form on the right — 2-step form */
 
 function HeroSection() {
+  const searchParams = useSearchParams()
+
+  // Capture UTM parameters from URL on mount (same as homepage LeadForm)
+  const [utmParams] = useState(() => ({
+    utm_source: searchParams.get('utm_source') || '',
+    utm_medium: searchParams.get('utm_medium') || '',
+    utm_campaign: searchParams.get('utm_campaign') || '',
+    utm_content: searchParams.get('utm_content') || '',
+    utm_term: searchParams.get('utm_term') || '',
+  }))
+
   // Step state: 1 = personal info, 2 = calendar + notes
   const [formStep, setFormStep] = useState<1 | 2>(1)
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [error, setError] = useState('')
+  const [formOpenTracked, setFormOpenTracked] = useState(false)
 
   // Step 1 fields
   const [firstName, setFirstName] = useState('')
@@ -217,6 +237,31 @@ function HeroSection() {
       setTimezone('America/New_York')
     }
   }, [])
+
+  // Track form open event on first mount (same as homepage LeadForm)
+  useEffect(() => {
+    if (!formOpenTracked) {
+      setFormOpenTracked(true)
+      // MassaPro Affiliate Tracker: track form open
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
+        try { (window as any).MassaProAffiliate.trackLeadFormOpen() } catch(e){
+          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
+        }
+      }
+      // Meta Pixel: custom event
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        ;(window as any).fbq('trackCustom', 'LeadFormOpen')
+      }
+      // Google Analytics 4: custom event
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'lead_form_open', {
+          event_category: 'engagement',
+          event_label: 'Lead Form Opened',
+          page_name: 'Expert',
+        })
+      }
+    }
+  }, [formOpenTracked])
 
   // Fetch booked slots when step 2 appears
   useEffect(() => {
@@ -285,6 +330,7 @@ function HeroSection() {
           serviceType: 'AI Secretary / Virtual Assistant',
           planType: 'Not Sure Yet',
           notes: notes || 'Lead from /expert page',
+          ...utmParams,
         }),
       })
 
@@ -305,7 +351,16 @@ function HeroSection() {
 
       // Meta Pixel: track Schedule event (same as home page)
       if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-        (window as any).fbq('track', 'Schedule')
+        ;(window as any).fbq('track', 'Schedule')
+      }
+
+      // Google Analytics 4: track schedule conversion
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'schedule', {
+          event_category: 'conversion',
+          event_label: 'Consultation Scheduled',
+          page_name: 'Expert',
+        })
       }
 
       // MassaPro Affiliate Tracker: track lead (same as home page)
@@ -335,22 +390,6 @@ function HeroSection() {
         })
       } catch (e) {
         console.debug('[MassaPro] Backup tracker skipped')
-      }
-
-      // Track form open event (same as home page)
-      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
-        try { (window as any).MassaProAffiliate.trackLeadFormOpen() } catch(e){
-          console.debug('[MassaPro] Affiliate tracker skipped (unavailable)')
-        }
-      }
-      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-        ;(window as any).fbq('trackCustom', 'LeadFormOpen')
-      }
-      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-        ;(window as any).gtag('event', 'lead_form_open', {
-          event_category: 'engagement',
-          event_label: 'Lead Form Opened',
-        })
       }
 
     } catch (err: unknown) {
@@ -444,7 +483,7 @@ function HeroSection() {
 
           {/* Right: 2-Step Lead Capture Form */}
           <FadeIn delay={0.2}>
-            <div className="bg-white rounded-3xl shadow-2xl shadow-purple-200/50 border border-purple-200 p-6 sm:p-8 lg:p-10 relative overflow-hidden">
+            <div id="expert-lead-form" className="bg-white rounded-3xl shadow-2xl shadow-purple-200/50 border border-purple-200 p-6 sm:p-8 lg:p-10 relative overflow-hidden">
               {/* Form decorative badge */}
               <div className="absolute top-0 right-0">
                 <div className="bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">
@@ -1586,7 +1625,9 @@ export default function ExpertPage() {
     <main className="min-h-screen">
       <Navbar />
       {/* 7-Layer Pitch Architecture */}
-      <HeroSection />              {/* Title above, image left, form right */}
+      <Suspense fallback={null}>
+        <HeroSection />              {/* Title above, image left, form right */}
+      </Suspense>
       <SocialProofBar />           {/* Social proof metrics */}
       <IdentityForkSection />      {/* Layer 1: Identity Fork */}
       <BrutalTruthSection />       {/* Layer 2: Brutal Truth */}
