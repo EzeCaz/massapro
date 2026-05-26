@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { BackupTracker } from '@/lib/backup-tracker'
 import Image from 'next/image'
 import { Button } from '@/components/ui/button'
@@ -8,7 +8,9 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 import { LeadForm } from '@/components/LeadForm'
+import WeeklySlotPicker from '@/components/WeeklySlotPicker'
 import {
   Phone,
   MessageSquare,
@@ -35,6 +37,8 @@ import {
   X,
   Menu,
   ChevronDown,
+  Loader2,
+  AlertCircle,
 } from 'lucide-react'
 
 /* ──────────────────── Helper Functions ──────────────────── */
@@ -178,51 +182,174 @@ function Navbar() {
 }
 
 /* ──────────────────── HERO SECTION (paidcreators.com/prompt style) ──────────────────── */
-/* Title above, picture on the left bottom, lead form on the right */
+/* Title above, picture on the left bottom, lead form on the right — 2-step form */
 
 function HeroSection() {
-  const [leadFormOpen, setLeadFormOpen] = useState(false)
-  const [quickName, setQuickName] = useState('')
-  const [quickEmail, setQuickEmail] = useState('')
-  const [quickPhone, setQuickPhone] = useState('')
-  const [quickSubmitting, setQuickSubmitting] = useState(false)
-  const [quickSubmitted, setQuickSubmitted] = useState(false)
+  // Step state: 1 = personal info, 2 = calendar + notes
+  const [formStep, setFormStep] = useState<1 | 2>(1)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
 
-  const handleQuickSubmit = async (e: React.FormEvent) => {
+  // Step 1 fields
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [companyUrl, setCompanyUrl] = useState('')
+  const [timezone, setTimezone] = useState('America/New_York')
+
+  // Step 2 fields
+  const [appointmentSlotId, setAppointmentSlotId] = useState('')
+  const [appointmentDate, setAppointmentDate] = useState('')
+  const [appointmentTime, setAppointmentTime] = useState('')
+  const [notes, setNotes] = useState('')
+  const [bookedRanges, setBookedRanges] = useState<Array<{ startMs: number; endMs: number }>>([])
+
+  // Auto-detect timezone on mount
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      setTimezone(tz)
+    } catch {
+      setTimezone('America/New_York')
+    }
+  }, [])
+
+  // Fetch booked slots when step 2 appears
+  useEffect(() => {
+    if (formStep === 2) {
+      fetchBookedSlots()
+    }
+  }, [formStep])
+
+  const fetchBookedSlots = async () => {
+    try {
+      const res = await fetch('/api/available-slots')
+      if (res.ok) {
+        const data = await res.json()
+        setBookedRanges(data.bookedRanges || [])
+      }
+    } catch {
+      console.warn('Could not fetch booked slots')
+    }
+  }
+
+  // Handle slot selection from WeeklySlotPicker
+  const handleSlotSelect = useCallback((slotId: string, dateISO: string, timeIsrael: string) => {
+    setAppointmentSlotId(slotId)
+    setAppointmentDate(dateISO)
+    setAppointmentTime(timeIsrael)
+  }, [])
+
+  // Step 1 → Step 2 (just validates, no API call)
+  const handleStep1Next = (e: React.FormEvent) => {
     e.preventDefault()
-    setQuickSubmitting(true)
+    if (!firstName.trim() || !email.trim() || !mobile.trim()) {
+      setError('Please fill in all required fields.')
+      return
+    }
+    setError('')
+    setFormStep(2)
+  }
+
+  // Step 2 → Submit (same API + tracking as home page LeadForm)
+  const handleStep2Submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!appointmentSlotId) {
+      setError('Please select a time slot for your consultation.')
+      return
+    }
+
+    setError('')
+    setSubmitting(true)
 
     try {
       const res = await fetch('/api/submit-lead', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          firstName: quickName.split(' ')[0] || quickName,
-          lastName: quickName.split(' ').slice(1).join(' ') || '',
-          email: quickEmail,
-          mobile: quickPhone,
+          firstName,
+          lastName,
+          email,
+          mobile,
+          companyUrl,
           industry: 'Other',
           country: 'United States',
+          appointmentDate,
+          appointmentTime,
+          appointmentSlotId,
+          timezone,
           serviceType: 'AI Secretary / Virtual Assistant',
           planType: 'Not Sure Yet',
-          notes: 'Quick lead from /expert page hero form',
+          notes: notes || 'Lead from /expert page',
         }),
       })
 
-      if (res.ok) {
-        setQuickSubmitted(true)
-        if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-          (window as any).fbq('track', 'Lead')
+      const data = await res.json()
+
+      if (!res.ok) {
+        if (data.error?.includes('already booked') || data.error?.includes('slot')) {
+          fetchBookedSlots()
         }
-        if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
-          try { (window as any).MassaProAffiliate.trackLead({ lead_name: quickName, lead_email: quickEmail, lead_phone: quickPhone, plan_type: 'Not Sure Yet', initial_status: 'Quick Lead' }) } catch(e){}
-        }
-        BackupTracker.trackLead({ name: quickName, email: quickEmail, phone: quickPhone, planType: 'Expert Lead' })
+        throw new Error(data.error || 'Submission failed')
       }
-    } catch {
-      // Silently fail
+
+      setSubmitted(true)
+
+      // Add the newly booked slot locally
+      const slotStartMs = new Date(appointmentSlotId).getTime()
+      setBookedRanges(prev => [...prev, { startMs: slotStartMs, endMs: slotStartMs + 30 * 60 * 1000 }])
+
+      // Meta Pixel: track Schedule event (same as home page)
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        (window as any).fbq('track', 'Schedule')
+      }
+
+      // MassaPro Affiliate Tracker: track lead (same as home page)
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+        try {
+          ;(window as any).MassaProAffiliate.trackLead({
+            lead_name: `${firstName} ${lastName}`,
+            lead_email: email,
+            lead_phone: mobile,
+            lead_company: companyUrl || '',
+            plan_type: 'Not Sure Yet',
+            initial_status: 'Booked Call',
+          })
+        } catch (e) {
+          console.warn('MassaPro Affiliate trackLead error:', e)
+        }
+      }
+
+      // Local backup: track lead (same as home page)
+      BackupTracker.trackLead({
+        name: `${firstName} ${lastName}`,
+        email,
+        phone: mobile,
+        company: companyUrl,
+        planType: 'Not Sure Yet',
+      })
+
+      // Track form open event (same as home page)
+      if (typeof window !== 'undefined' && typeof (window as any).MassaProAffiliate === 'object') {
+        try { (window as any).MassaProAffiliate.trackLeadFormOpen() } catch(e){}
+      }
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        ;(window as any).fbq('trackCustom', 'LeadFormOpen')
+      }
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'lead_form_open', {
+          event_category: 'engagement',
+          event_label: 'Lead Form Opened',
+        })
+      }
+
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Something went wrong'
+      setError(msg)
     } finally {
-      setQuickSubmitting(false)
+      setSubmitting(false)
     }
   }
 
@@ -307,7 +434,7 @@ function HeroSection() {
             </div>
           </FadeIn>
 
-          {/* Right: Lead Capture Form */}
+          {/* Right: 2-Step Lead Capture Form */}
           <FadeIn delay={0.2}>
             <div className="bg-white rounded-3xl shadow-2xl shadow-purple-200/50 border border-purple-200 p-6 sm:p-8 lg:p-10 relative overflow-hidden">
               {/* Form decorative badge */}
@@ -324,87 +451,204 @@ function HeroSection() {
                 <p className="text-gray-600">Free consultation. No setup fee. Deploy in 48 hours.</p>
               </div>
 
-              {quickSubmitted ? (
+              {/* Step indicator */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className={`flex items-center gap-2 text-sm font-medium ${formStep === 1 ? 'text-purple-700' : 'text-green-600'}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${formStep === 1 ? 'purple-gradient text-white' : 'bg-green-100 text-green-600'}`}>
+                    {formStep > 1 ? <Check className="w-4 h-4" /> : '1'}
+                  </div>
+                  Your Details
+                </div>
+                <div className="flex-1 h-0.5 bg-purple-100">
+                  <div className={`h-full purple-gradient transition-all duration-500 ${formStep === 2 ? 'w-full' : 'w-0'}`} />
+                </div>
+                <div className={`flex items-center gap-2 text-sm font-medium ${formStep === 2 ? 'text-purple-700' : 'text-gray-400'}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${formStep === 2 ? 'purple-gradient text-white' : 'bg-purple-100 text-purple-400'}`}>
+                    2
+                  </div>
+                  Schedule
+                </div>
+              </div>
+
+              {submitted ? (
                 <div className="text-center py-8 space-y-4">
                   <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
                     <Check className="w-8 h-8 text-green-600" />
                   </div>
                   <h3 className="text-xl font-bold text-gray-800">Thank You!</h3>
-                  <p className="text-gray-600">We&apos;ll reach out within 24 hours to schedule your consultation.</p>
+                  <p className="text-gray-600">Your consultation has been scheduled. A Google Meet link and confirmation email will be sent to <span className="font-semibold text-purple-700">{email}</span> shortly.</p>
                 </div>
               ) : (
-                <form onSubmit={handleQuickSubmit} className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="hero-name">Full Name <span className="text-red-500">*</span></Label>
-                    <Input
-                      id="hero-name"
-                      required
-                      value={quickName}
-                      onChange={(e) => setQuickName(e.target.value)}
-                      placeholder="John Smith"
-                      className="border-purple-200 focus:border-purple-500 h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="hero-email">Business Email <span className="text-red-500">*</span></Label>
-                    <Input
-                      id="hero-email"
-                      type="email"
-                      required
-                      value={quickEmail}
-                      onChange={(e) => setQuickEmail(e.target.value)}
-                      placeholder="john@yourbusiness.com"
-                      className="border-purple-200 focus:border-purple-500 h-12"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="hero-phone">Phone Number <span className="text-red-500">*</span></Label>
-                    <Input
-                      id="hero-phone"
-                      type="tel"
-                      required
-                      value={quickPhone}
-                      onChange={(e) => setQuickPhone(e.target.value)}
-                      placeholder="+1 (555) 123-4567"
-                      className="border-purple-200 focus:border-purple-500 h-12"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={quickSubmitting}
-                    className="w-full purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-6 text-base font-semibold animate-pulse-glow"
-                  >
-                    {quickSubmitting ? 'Submitting...' : 'Get My Free Consultation'}
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-
-                  <div className="flex items-center justify-center gap-4 pt-2 text-xs text-gray-400">
-                    <div className="flex items-center gap-1">
-                      <Shield className="w-3.5 h-3.5" />
-                      <span>100% Secure</span>
+                <>
+                  {error && (
+                    <div className="flex items-center gap-2 bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                      {error}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Lock className="w-3.5 h-3.5" />
-                      <span>256-bit Encrypted</span>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5" />
-                      <span>48hr Setup</span>
-                    </div>
-                  </div>
+                  )}
 
-                  <p className="text-xs text-gray-400 text-center">
-                    No spam. No obligation. Cancel anytime.
-                  </p>
-                </form>
+                  {/* STEP 1: Personal Info */}
+                  {formStep === 1 && (
+                    <form onSubmit={handleStep1Next} className="space-y-4">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="hero-fname">First Name <span className="text-red-500">*</span></Label>
+                          <Input
+                            id="hero-fname"
+                            required
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder="John"
+                            className="border-purple-200 focus:border-purple-500 h-11"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="hero-lname">Last Name</Label>
+                          <Input
+                            id="hero-lname"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder="Smith"
+                            className="border-purple-200 focus:border-purple-500 h-11"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="hero-email">Business Email <span className="text-red-500">*</span></Label>
+                        <Input
+                          id="hero-email"
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="john@yourbusiness.com"
+                          className="border-purple-200 focus:border-purple-500 h-11"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="hero-phone">Phone Number <span className="text-red-500">*</span></Label>
+                        <Input
+                          id="hero-phone"
+                          type="tel"
+                          required
+                          value={mobile}
+                          onChange={(e) => setMobile(e.target.value)}
+                          placeholder="+1 (555) 123-4567"
+                          className="border-purple-200 focus:border-purple-500 h-11"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="hero-url">Company URL</Label>
+                        <Input
+                          id="hero-url"
+                          type="text"
+                          value={companyUrl}
+                          onChange={(e) => setCompanyUrl(e.target.value)}
+                          placeholder="www.example.com"
+                          className="border-purple-200 focus:border-purple-500 h-11"
+                        />
+                      </div>
+
+                      <Button
+                        type="submit"
+                        className="w-full purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-5 text-base font-semibold"
+                      >
+                        Next: Schedule Consultation
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                      </Button>
+
+                      <div className="flex items-center justify-center gap-4 pt-2 text-xs text-gray-400">
+                        <div className="flex items-center gap-1">
+                          <Shield className="w-3.5 h-3.5" />
+                          <span>100% Secure</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Lock className="w-3.5 h-3.5" />
+                          <span>256-bit Encrypted</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>48hr Setup</span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-gray-400 text-center">
+                        No spam. No obligation. Cancel anytime.
+                      </p>
+                    </form>
+                  )}
+
+                  {/* STEP 2: Calendar + Notes */}
+                  {formStep === 2 && (
+                    <form onSubmit={handleStep2Submit} className="space-y-5">
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
+                          Schedule Consultation
+                        </h3>
+                        <WeeklySlotPicker
+                          selectedSlot={appointmentSlotId}
+                          onSelectSlot={handleSlotSelect}
+                          bookedRanges={bookedRanges}
+                        />
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
+                          Task & Flow Details
+                        </h3>
+                        <div className="space-y-2">
+                          <Label htmlFor="hero-notes">
+                            Describe the tasks and flows you need
+                          </Label>
+                          <Textarea
+                            id="hero-notes"
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            placeholder="e.g., We need appointment booking with SMS reminders, payment deposit handling, and post-visit follow-up for our salon..."
+                            className="border-purple-200 focus:border-purple-500 min-h-[100px]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="border-purple-300 text-purple-700 hover:bg-purple-50 py-5"
+                          onClick={() => { setFormStep(1); setError(''); }}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          type="submit"
+                          disabled={submitting || !appointmentSlotId}
+                          className="flex-1 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-5 text-base font-semibold disabled:opacity-50"
+                        >
+                          {submitting ? (
+                            <>
+                              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                              Scheduling...
+                            </>
+                          ) : (
+                            <>
+                              Schedule Consultation
+                              <ChevronRight className="w-5 h-5 ml-2" />
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
+                      <p className="text-xs text-gray-400 text-center">
+                        No setup fee &bull; Free consultation &bull; Google Meet link sent to your email
+                      </p>
+                    </form>
+                  )}
+                </>
               )}
             </div>
           </FadeIn>
         </div>
       </div>
-
-      <LeadForm open={leadFormOpen} onOpenChange={setLeadFormOpen} />
     </section>
   )
 }
