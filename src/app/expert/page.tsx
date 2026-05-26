@@ -255,6 +255,9 @@ function HeroSection() {
   const [companyUrl, setCompanyUrl] = useState('')
   const [timezone, setTimezone] = useState('America/New_York')
 
+  // Ensure lastName has a fallback for API validation (API requires lastName)
+  const effectiveLastName = lastName.trim() || 'N/A'
+
   // Step 2 fields
   const [appointmentSlotId, setAppointmentSlotId] = useState('')
   const [appointmentDate, setAppointmentDate] = useState('')
@@ -297,7 +300,12 @@ function HeroSection() {
     }
   }, [formOpenTracked])
 
-  // Fetch booked slots when step 2 appears
+  // Fetch booked slots on mount AND when step 2 appears
+  // (same as homepage LeadForm which fetches on dialog open)
+  useEffect(() => {
+    fetchBookedSlots()
+  }, [])
+
   useEffect(() => {
     if (formStep === 2) {
       fetchBookedSlots()
@@ -327,7 +335,7 @@ function HeroSection() {
   const handleStep1Next = (e: React.FormEvent) => {
     e.preventDefault()
     if (!firstName.trim() || !email.trim() || !mobile.trim()) {
-      setError('Please fill in all required fields.')
+      setError('Please fill in all required fields (First Name, Email, Phone).')
       return
     }
     setError('')
@@ -351,7 +359,7 @@ function HeroSection() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           firstName,
-          lastName,
+          lastName: effectiveLastName,
           email,
           mobile,
           companyUrl,
@@ -401,7 +409,7 @@ function HeroSection() {
       safeMassaProCall(() => {
         if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
           ;(window as any).MassaProAffiliate.trackLead({
-            lead_name: `${firstName} ${lastName}`,
+            lead_name: `${firstName} ${effectiveLastName}`,
             lead_email: email,
             lead_phone: mobile,
             lead_company: companyUrl || '',
@@ -414,7 +422,7 @@ function HeroSection() {
       // Local backup: track lead (same as home page)
       try {
         BackupTracker.trackLead({
-          name: `${firstName} ${lastName}`,
+          name: `${firstName} ${effectiveLastName}`,
           email,
           phone: mobile,
           company: companyUrl,

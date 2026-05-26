@@ -130,3 +130,24 @@ Stage Summary:
 - GA4 tracking parity achieved between expert page and homepage LeadForm
 - All 3 files modified: expert/page.tsx, LeadForm.tsx, layout.tsx
 - Build passes successfully
+
+---
+Task ID: 2
+Agent: Main
+Task: Ensure /expert page form triggers ALL the same events as homepage LeadForm
+
+Work Log:
+- Verified all PHASE 1 (CTA click) events are present: Meta Pixel FreeConsultClick, MassaProAffiliate trackEvent, GA4 get_now ✅
+- Verified all PHASE 2 (Form open) events are present: MassaProAffiliate trackLeadFormOpen, Meta Pixel LeadFormOpen, GA4 lead_form_open ✅
+- Fixed booked slots fetch timing — now fetches on page mount AND when step 2 appears (was only on step 2 before)
+- Fixed lastName API validation issue — added effectiveLastName fallback ('N/A') since API requires lastName but the expert form makes it optional
+- Verified PHASE 4 (Submit) — POST /api/submit-lead is called with all required fields + UTM params ✅
+- Verified server-side PHASE 4c sequence: validate → isSlotAvailable (Google Calendar) → createCalendarEvent (with Meet link) → sendConfirmationEmail (Gmail SMTP) → Google Sheet submission — all handled by same /api/submit-lead endpoint ✅
+- Verified PHASE 4d post-submit tracking: Meta Pixel Schedule, GA4 schedule, MassaProAffiliate trackLead, BackupTracker ✅
+- Verified PHASE 5 automations: Google Calendar invite email, calendar reminders, confirmation email, Google Sheet row — all triggered server-side ✅
+
+Stage Summary:
+- Expert page now has full parity with homepage LeadForm for ALL events
+- lastName fallback prevents 400 API errors when user skips last name field
+- Booked slots now pre-fetch on page load for faster slot display
+- All 5 phases of the lead form sequence are correctly triggered on /expert
