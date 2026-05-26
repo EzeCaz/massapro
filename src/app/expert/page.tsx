@@ -44,35 +44,17 @@ import {
 /* ──────────────────── Helper Functions ──────────────────── */
 
 /**
- * Call MassaProAffiliate methods while suppressing the tracker script's
- * internal console.error messages (e.g. "[MassaPro] Lead tracking failed: {}").
- * The external tracker script at aff.massapro.com logs errors via console.error
- * when its backend is unreachable — our try-catch can't catch those because
- * they are not thrown exceptions, they are internal console calls.
+ * Safely call MassaProAffiliate methods without throwing.
+ * [MassaPro] console errors are already suppressed globally by the
+ * permanent interceptor in layout.tsx (runs before the tracker script loads).
+ * This wrapper just prevents thrown exceptions from breaking the form flow.
  */
 function safeMassaProCall(fn: () => void) {
   if (typeof window === 'undefined') return
-  // Temporarily intercept console.error to suppress [MassaPro] prefixed messages
-  const origError = console.error
-  const origWarn = console.warn
-  console.error = (...args: any[]) => {
-    const msg = args.map(a => typeof a === 'string' ? a : '').join(' ')
-    if (msg.includes('[MassaPro]')) return // suppress tracker script's internal errors
-    origError.apply(console, args)
-  }
-  console.warn = (...args: any[]) => {
-    const msg = args.map(a => typeof a === 'string' ? a : '').join(' ')
-    if (msg.includes('[MassaPro]')) return
-    origWarn.apply(console, args)
-  }
   try {
     fn()
   } catch {
     // Tracker unavailable — fail silently
-  } finally {
-    // Always restore original console methods
-    console.error = origError
-    console.warn = origWarn
   }
 }
 

@@ -110,6 +110,30 @@ export default function RootLayout({
           `}
         </Script>
 
+        {/* Permanent console interceptor: suppress [MassaPro] errors from the external tracker script.
+             The tracker at aff.massapro.com calls console.error('[MassaPro] Lead tracking failed: {}')
+             asynchronously in a .catch() callback when its backend is unreachable.
+             Temporary interception doesn't work because the error fires after the wrapper restores.
+             This MUST run BEFORE the tracker script loads. */}
+        <Script id="massapro-console-suppress" strategy="beforeInteractive">
+          {`
+            (function() {
+              var origError = console.error;
+              var origWarn = console.warn;
+              console.error = function() {
+                var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
+                if (msg.indexOf('[MassaPro]') !== -1) return;
+                origError.apply(console, arguments);
+              };
+              console.warn = function() {
+                var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
+                if (msg.indexOf('[MassaPro]') !== -1) return;
+                origWarn.apply(console, arguments);
+              };
+            })();
+          `}
+        </Script>
+
         {/* MassaPro Affiliate Tracker - Step 1: Tracker Script */}
         <Script
           id="massapro-affiliate-tracker"
@@ -134,42 +158,23 @@ export default function RootLayout({
             (function() {
               var formSubmitted = false;
 
-              // Safe wrapper for MassaProAffiliate calls — never throws
-              // Suppress [MassaPro] prefixed messages from the external tracker script
-              // that logs errors via console.error when its backend is unreachable
-              function suppressMassaProConsole(fn) {
-                var origError = console.error;
-                var origWarn = console.warn;
-                console.error = function() {
-                  var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
-                  if (msg.indexOf('[MassaPro]') !== -1) return;
-                  origError.apply(console, arguments);
-                };
-                console.warn = function() {
-                  var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
-                  if (msg.indexOf('[MassaPro]') !== -1) return;
-                  origWarn.apply(console, arguments);
-                };
-                try { fn(); } catch(e) {} finally {
-                  console.error = origError;
-                  console.warn = origWarn;
-                }
-              }
-
+              // Safe wrappers — [MassaPro] console errors are already suppressed globally
+              // by the permanent interceptor installed before the tracker script loads.
+              // These wrappers just prevent thrown exceptions.
               function safeTrackLead(data) {
-                suppressMassaProConsole(function() {
+                try {
                   if (typeof MassaProAffiliate !== 'undefined' && typeof MassaProAffiliate.trackLead === 'function') {
                     MassaProAffiliate.trackLead(data);
                   }
-                });
+                } catch(e) {}
               }
 
               function safeTrackEvent(eventId) {
-                suppressMassaProConsole(function() {
+                try {
                   if (typeof MassaProAffiliate !== 'undefined' && typeof MassaProAffiliate.trackEvent === 'function') {
                     MassaProAffiliate.trackEvent(eventId);
                   }
-                });
+                } catch(e) {}
               }
 
               // Method 1: Watch for Google Calendar iframe postMessage events
