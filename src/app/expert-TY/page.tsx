@@ -207,18 +207,12 @@ function Navbar() {
   )
 }
 
-/* ──────────────────── HERO SECTION (Thank You) ──────────────────── */
+/* ──────────────────── CHECK INBOX BANNER ──────────────────── */
 
-function HeroSection() {
+function CheckInboxSection() {
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden bg-gradient-to-br from-white via-purple-50 to-white pt-24">
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl" />
-        <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-purple-100/20 rounded-full blur-3xl" />
-      </div>
-
-      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <section className="bg-gradient-to-br from-white via-purple-50 to-white pt-20 pb-0">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-6">
         <FadeIn>
           <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight leading-[1.1]">
             Check your inbox!
@@ -234,6 +228,519 @@ function HeroSection() {
             Your guide is on the way. Now, want to skip the manual work entirely? Here&apos;s how hair-salon owners are doing it automatically.
           </p>
         </FadeIn>
+      </div>
+    </section>
+  )
+}
+
+/* ──────────────────── HERO SECTION (with Lead Form — same as /expert) ──────────────────── */
+
+function HeroSection() {
+  const searchParams = useSearchParams()
+
+  // Capture UTM parameters from URL on mount (same as homepage LeadForm)
+  const [utmParams] = useState(() => ({
+    utm_source: searchParams.get('utm_source') || '',
+    utm_medium: searchParams.get('utm_medium') || '',
+    utm_campaign: searchParams.get('utm_campaign') || '',
+    utm_content: searchParams.get('utm_content') || '',
+    utm_term: searchParams.get('utm_term') || '',
+  }))
+
+  // Step state: 1 = personal info, 2 = calendar + notes
+  const [formStep, setFormStep] = useState<1 | 2>(1)
+  const [submitting, setSubmitting] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [error, setError] = useState('')
+  const [formOpenTracked, setFormOpenTracked] = useState(false)
+
+  // Step 1 fields
+  const [firstName, setFirstName] = useState('')
+  const [lastName, setLastName] = useState('')
+  const [email, setEmail] = useState('')
+  const [mobile, setMobile] = useState('')
+  const [companyUrl, setCompanyUrl] = useState('')
+  const [timezone, setTimezone] = useState('America/New_York')
+
+  // Ensure lastName has a fallback for API validation (API requires lastName)
+  const effectiveLastName = lastName.trim() || 'N/A'
+
+  // Step 2 fields
+  const [appointmentSlotId, setAppointmentSlotId] = useState('')
+  const [appointmentDate, setAppointmentDate] = useState('')
+  const [appointmentTime, setAppointmentTime] = useState('')
+  const [notes, setNotes] = useState('')
+  const [bookedRanges, setBookedRanges] = useState<Array<{ startMs: number; endMs: number }>>([])
+
+  // Auto-detect timezone on mount
+  useEffect(() => {
+    try {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone
+      setTimezone(tz)
+    } catch {
+      setTimezone('America/New_York')
+    }
+  }, [])
+
+  // Track form open event on first mount (same as homepage LeadForm)
+  useEffect(() => {
+    if (!formOpenTracked) {
+      setFormOpenTracked(true)
+      // MassaPro Affiliate Tracker: track form open
+      safeMassaProCall(() => {
+        if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLeadFormOpen === 'function') {
+          ;(window as any).MassaProAffiliate.trackLeadFormOpen()
+        }
+      })
+      // Meta Pixel: custom event
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        ;(window as any).fbq('trackCustom', 'LeadFormOpen')
+      }
+      // Google Analytics 4: custom event
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'lead_form_open', {
+          event_category: 'engagement',
+          event_label: 'Lead Form Opened',
+          page_name: 'Expert_TY',
+        })
+      }
+    }
+  }, [formOpenTracked])
+
+  // Fetch booked slots on mount AND when step 2 appears
+  useEffect(() => {
+    fetchBookedSlots()
+  }, [])
+
+  useEffect(() => {
+    if (formStep === 2) {
+      fetchBookedSlots()
+    }
+  }, [formStep])
+
+  const fetchBookedSlots = async () => {
+    try {
+      const res = await fetch('/api/available-slots')
+      if (res.ok) {
+        const data = await res.json()
+        setBookedRanges(data.bookedRanges || [])
+      }
+    } catch {
+      console.warn('Could not fetch booked slots')
+    }
+  }
+
+  // Handle slot selection from WeeklySlotPicker
+  const handleSlotSelect = useCallback((slotId: string, dateISO: string, timeIsrael: string) => {
+    setAppointmentSlotId(slotId)
+    setAppointmentDate(dateISO)
+    setAppointmentTime(timeIsrael)
+  }, [])
+
+  // Step 1 → Step 2 (just validates, no API call)
+  const handleStep1Next = (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!firstName.trim() || !email.trim() || !mobile.trim()) {
+      setError('Please fill in all required fields (First Name, Email, Phone).')
+      return
+    }
+    setError('')
+    setFormStep(2)
+  }
+
+  // Step 2 → Submit (same API + tracking as home page LeadForm)
+  const handleStep2Submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!appointmentSlotId) {
+      setError('Please select a time slot for your consultation.')
+      return
+    }
+
+    setError('')
+    setSubmitting(true)
+
+    try {
+      const res = await fetch('/api/submit-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName,
+          lastName: effectiveLastName,
+          email,
+          mobile,
+          companyUrl,
+          industry: 'Other',
+          country: 'United States',
+          appointmentDate,
+          appointmentTime,
+          appointmentSlotId,
+          timezone,
+          serviceType: 'AI Secretary / Virtual Assistant',
+          planType: 'Not Sure Yet',
+          notes: notes || 'Lead from /expert-TY page',
+          ...utmParams,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        if (data.error?.includes('already booked') || data.error?.includes('slot')) {
+          fetchBookedSlots()
+        }
+        throw new Error(data.error || 'Submission failed')
+      }
+
+      setSubmitted(true)
+
+      // Add the newly booked slot locally
+      const slotStartMs = new Date(appointmentSlotId).getTime()
+      setBookedRanges(prev => [...prev, { startMs: slotStartMs, endMs: slotStartMs + 30 * 60 * 1000 }])
+
+      // Meta Pixel: track Schedule event (same as home page)
+      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
+        ;(window as any).fbq('track', 'Schedule')
+      }
+
+      // Google Analytics 4: track schedule conversion
+      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+        ;(window as any).gtag('event', 'schedule', {
+          event_category: 'conversion',
+          event_label: 'Consultation Scheduled',
+          page_name: 'Expert_TY',
+        })
+      }
+
+      // MassaPro Affiliate Tracker: track lead (same as home page)
+      safeMassaProCall(() => {
+        if (typeof (window as any).MassaProAffiliate === 'object' && typeof (window as any).MassaProAffiliate.trackLead === 'function') {
+          ;(window as any).MassaProAffiliate.trackLead({
+            lead_name: `${firstName} ${effectiveLastName}`,
+            lead_email: email,
+            lead_phone: mobile,
+            lead_company: companyUrl || '',
+            plan_type: 'Not Sure Yet',
+            initial_status: 'Booked Call',
+          })
+        }
+      })
+
+      // Local backup: track lead (same as home page)
+      try {
+        BackupTracker.trackLead({
+          name: `${firstName} ${effectiveLastName}`,
+          email,
+          phone: mobile,
+          company: companyUrl,
+          planType: 'Not Sure Yet',
+        })
+      } catch (e) {
+        console.debug('[MassaPro] Backup tracker skipped')
+      }
+
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Something went wrong'
+      setError(msg)
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  return (
+    <section className="relative overflow-hidden bg-gradient-to-br from-white via-purple-50 to-white pt-4 pb-10 lg:pt-6 lg:pb-16">
+      {/* Background decorations */}
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-purple-200/30 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-purple-300/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/4 w-[400px] h-[400px] bg-purple-100/20 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Title above - spanning full width */}
+        <FadeIn>
+          <div className="text-center pt-2 pb-4 lg:pt-4 lg:pb-5">
+            <Badge className="bg-purple-100 text-purple-800 hover:bg-purple-100 px-4 py-1.5 text-sm font-medium mb-6 inline-flex">
+              <Sparkles className="w-4 h-4 mr-1" />
+              VIP AI Secretary &amp; Concierge Services
+            </Badge>
+
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold tracking-tight leading-[1.05] mb-3 max-w-4xl mx-auto">
+              There Are Two Types of Hair-Salon Owners:{' '}
+              <span className="purple-gradient-text">Those Who Never Miss a Call</span>
+              {' '}And Those Who Lose $43,200/Year
+            </h2>
+
+            <p className="text-base sm:text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
+              Your AI Secretary handles calls, books appointments, and manages your entire front desk — 24/7.
+              No sick days. No salary. No missed opportunities.
+            </p>
+          </div>
+        </FadeIn>
+
+        {/* Below title: Image on the left, Lead Form on the right */}
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-start pb-4 lg:pb-8">
+          {/* Left: Hero Image */}
+          <FadeIn delay={0.1} className="relative">
+            <div className="relative">
+              {/* Decorative elements */}
+              <div className="absolute -top-4 -left-4 w-20 h-20 bg-purple-200/40 rounded-2xl rotate-12 blur-sm" />
+              <div className="absolute -bottom-4 -right-4 w-28 h-28 bg-purple-300/30 rounded-full blur-sm" />
+
+              {/* Main image */}
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl shadow-purple-200/50 border border-purple-100">
+                <Image
+                  src="/hero-secretary-v2.png"
+                  alt="Professional AI Secretary That Never Sleeps"
+                  width={864}
+                  height={1152}
+                  className="w-full h-auto object-cover"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-purple-900/20 via-transparent to-transparent" />
+              </div>
+
+              {/* Floating stat card */}
+              <div className="absolute -bottom-3 -left-3 sm:bottom-6 sm:-left-6 glass-card rounded-2xl p-4 shadow-xl animate-float">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full purple-gradient flex items-center justify-center">
+                    <Phone className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">Calls Managed</p>
+                    <p className="text-xs text-purple-600 font-medium">2,847 this month</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Floating stat card 2 */}
+              <div className="absolute -top-3 -right-3 sm:top-6 sm:-right-6 glass-card rounded-2xl p-4 shadow-xl animate-float" style={{ animationDelay: '1s' }}>
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-green-100 flex items-center justify-center">
+                    <Check className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">No-Show Rate</p>
+                    <p className="text-xs text-green-600 font-medium">Down 40%</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </FadeIn>
+
+          {/* Right: 2-Step Lead Capture Form */}
+          <FadeIn delay={0.2}>
+            <div id="expert-ty-cta" className="bg-white rounded-3xl shadow-2xl shadow-purple-200/50 border border-purple-200 p-6 sm:p-8 lg:p-10 relative overflow-hidden">
+              {/* Form decorative badge */}
+              <div className="absolute top-0 right-0">
+                <div className="bg-red-500 text-white text-xs font-bold px-4 py-1.5 rounded-bl-xl">
+                  LIMITED OFFER
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <h3 className="text-2xl sm:text-3xl font-bold mb-2">
+                  Get Your <span className="purple-gradient-text">AI Secretary</span>
+                </h3>
+                <p className="text-gray-600">Free consultation. No setup fee. Deploy in 48 hours.</p>
+              </div>
+
+              {/* Step indicator */}
+              <div className="flex items-center gap-3 mb-6">
+                <div className={`flex items-center gap-2 text-sm font-medium ${formStep === 1 ? 'text-purple-700' : 'text-green-600'}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${formStep === 1 ? 'purple-gradient text-white' : 'bg-green-100 text-green-600'}`}>
+                    {formStep > 1 ? <Check className="w-4 h-4" /> : '1'}
+                  </div>
+                  Your Details
+                </div>
+                <div className="flex-1 h-0.5 bg-purple-100">
+                  <div className={`h-full purple-gradient transition-all duration-500 ${formStep === 2 ? 'w-full' : 'w-0'}`} />
+                </div>
+                <div className={`flex items-center gap-2 text-sm font-medium ${formStep === 2 ? 'text-purple-700' : 'text-gray-400'}`}>
+                  <div className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${formStep === 2 ? 'purple-gradient text-white' : 'bg-purple-100 text-purple-400'}`}>
+                    2
+                  </div>
+                  Schedule
+                </div>
+              </div>
+
+              {submitted ? (
+                <div className="text-center py-8 space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto">
+                    <Check className="w-8 h-8 text-green-600" />
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-800">Thank You!</h4>
+                  <p className="text-gray-600">Your consultation has been scheduled. A Google Meet link and confirmation email will be sent to <span className="font-semibold text-purple-700">{email}</span> shortly.</p>
+                </div>
+              ) : (
+                <>
+                  {error && (
+                    <div className="flex items-center gap-2 bg-red-50 text-red-700 p-3 rounded-lg text-sm mb-4">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0" />
+                      {error}
+                    </div>
+                  )}
+
+                  {/* STEP 1: Personal Info */}
+                  {formStep === 1 && (
+                    <form onSubmit={handleStep1Next} data-massapro-handled="true" className="space-y-4">
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="ty-hero-fname">First Name <span className="text-red-500">*</span></Label>
+                          <Input
+                            id="ty-hero-fname"
+                            required
+                            value={firstName}
+                            onChange={(e) => setFirstName(e.target.value)}
+                            placeholder="John"
+                            className="border-purple-200 focus:border-purple-500 h-11"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="ty-hero-lname">Last Name</Label>
+                          <Input
+                            id="ty-hero-lname"
+                            value={lastName}
+                            onChange={(e) => setLastName(e.target.value)}
+                            placeholder="Smith"
+                            className="border-purple-200 focus:border-purple-500 h-11"
+                          />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ty-hero-email">Business Email <span className="text-red-500">*</span></Label>
+                        <Input
+                          id="ty-hero-email"
+                          type="email"
+                          required
+                          value={email}
+                          onChange={(e) => setEmail(e.target.value)}
+                          placeholder="john@yourbusiness.com"
+                          className="border-purple-200 focus:border-purple-500 h-11"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ty-hero-phone">Phone Number <span className="text-red-500">*</span></Label>
+                        <Input
+                          id="ty-hero-phone"
+                          type="tel"
+                          required
+                          value={mobile}
+                          onChange={(e) => setMobile(e.target.value)}
+                          placeholder="+1 (555) 123-4567"
+                          className="border-purple-200 focus:border-purple-500 h-11"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="ty-hero-url">Company URL</Label>
+                        <Input
+                          id="ty-hero-url"
+                          type="text"
+                          value={companyUrl}
+                          onChange={(e) => setCompanyUrl(e.target.value)}
+                          placeholder="www.example.com"
+                          className="border-purple-200 focus:border-purple-500 h-11"
+                        />
+                      </div>
+
+                      <Button
+                        type="submit"
+                        className="w-full purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-5 text-base font-semibold"
+                      >
+                        Next: Schedule Consultation
+                        <ArrowRight className="w-5 h-5 ml-2" />
+                      </Button>
+
+                      <div className="flex items-center justify-center gap-4 pt-2 text-xs text-gray-400">
+                        <div className="flex items-center gap-1">
+                          <Shield className="w-3.5 h-3.5" />
+                          <span>100% Secure</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Lock className="w-3.5 h-3.5" />
+                          <span>256-bit Encrypted</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                          <Clock className="w-3.5 h-3.5" />
+                          <span>48hr Setup</span>
+                        </div>
+                      </div>
+
+                      <p className="text-xs text-gray-400 text-center">
+                        No spam. No obligation. Cancel anytime.
+                      </p>
+                    </form>
+                  )}
+
+                  {/* STEP 2: Calendar + Notes */}
+                  {formStep === 2 && (
+                    <form onSubmit={handleStep2Submit} data-massapro-handled="true" className="space-y-5">
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
+                          Schedule Consultation
+                        </h3>
+                        <WeeklySlotPicker
+                          selectedSlot={appointmentSlotId}
+                          onSelectSlot={handleSlotSelect}
+                          bookedRanges={bookedRanges}
+                        />
+                      </div>
+
+                      <div>
+                        <h3 className="text-sm font-semibold text-purple-700 uppercase tracking-wider mb-3">
+                          Task &amp; Flow Details
+                        </h3>
+                        <div className="space-y-2">
+                          <Label htmlFor="ty-hero-notes">
+                            Describe the tasks and flows you need
+                          </Label>
+                          <Textarea
+                            id="ty-hero-notes"
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            placeholder="e.g., We need appointment booking with SMS reminders, payment deposit handling, and post-visit follow-up for our salon..."
+                            className="border-purple-200 focus:border-purple-500 min-h-[100px]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex gap-3">
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="border-purple-300 text-purple-700 hover:bg-purple-50 py-5"
+                          onClick={() => { setFormStep(1); setError(''); }}
+                        >
+                          Back
+                        </Button>
+                        <Button
+                          type="submit"
+                          disabled={submitting || !appointmentSlotId}
+                          className="flex-1 purple-gradient text-white hover:opacity-90 shadow-lg shadow-purple-200/30 py-5 text-base font-semibold disabled:opacity-50"
+                        >
+                          {submitting ? (
+                            <>
+                              <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                              Scheduling...
+                            </>
+                          ) : (
+                            <>
+                              Schedule Consultation
+                              <ChevronRight className="w-5 h-5 ml-2" />
+                            </>
+                          )}
+                        </Button>
+                      </div>
+
+                      <p className="text-xs text-gray-400 text-center">
+                        No setup fee &bull; Free consultation &bull; Google Meet link sent to your email
+                      </p>
+                    </form>
+                  )}
+                </>
+              )}
+            </div>
+          </FadeIn>
+        </div>
       </div>
     </section>
   )
@@ -1178,9 +1685,12 @@ export default function ExpertTYPage() {
   return (
     <main className="min-h-screen">
       <Navbar />
+      {/* Check Inbox banner — narrow, above the hero */}
+      <CheckInboxSection />
+      <div className="h-3 lg:h-4" />  {/* narrow spacer below inbox */}
       {/* 7-Layer Pitch Architecture — Thank You Variant */}
       <Suspense fallback={null}>
-        <HeroSection />              {/* Thank You hero — no form */}
+        <HeroSection />              {/* Hero with lead form — same as /expert */}
       </Suspense>
       <SocialProofBar />           {/* Social proof metrics */}
       <IdentityForkSection />      {/* Layer 1: Identity Fork */}
