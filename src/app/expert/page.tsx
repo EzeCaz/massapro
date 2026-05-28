@@ -401,20 +401,6 @@ function HeroSection() {
         }
       })
 
-      // Meta Pixel: CompleteRegistration (standard conversion event)
-      if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
-        ;(window as any).fbq('track', 'CompleteRegistration')
-      }
-
-      // Google Analytics 4: Complete Registration conversion event
-      if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
-        ;(window as any).gtag('event', 'complete_registration', {
-          event_category: 'conversion',
-          event_label: 'Consultation Booked — Expert Page',
-          page_name: 'Expert',
-        })
-      }
-
       // Local backup: track lead (same as home page)
       try {
         BackupTracker.trackLead({
