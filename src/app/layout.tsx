@@ -110,26 +110,41 @@ export default function RootLayout({
           `}
         </Script>
 
-        {/* Permanent console interceptor: suppress [MassaPro] errors from the external tracker script.
+        {/* Persistent console interceptor: suppress [MassaPro] errors from the external tracker script.
              The tracker at aff.massapro.com calls console.error('[MassaPro] Lead tracking failed: {}')
              asynchronously in a .catch() callback when its backend is unreachable.
-             Temporary interception doesn't work because the error fires after the wrapper restores.
-             This MUST run BEFORE the tracker script loads. */}
-        <Script id="massapro-console-suppress" strategy="beforeInteractive">
+             Next.js dev tools re-wraps console.error AFTER our initial setup, so we must
+             re-apply our filter periodically to stay on top of the chain. */}
+        <Script id="massapro-console-suppress" strategy="afterInteractive">
           {`
             (function() {
-              var origError = console.error;
-              var origWarn = console.warn;
-              console.error = function() {
-                var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
-                if (msg.indexOf('[MassaPro]') !== -1) return;
-                origError.apply(console, arguments);
-              };
-              console.warn = function() {
-                var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
-                if (msg.indexOf('[MassaPro]') !== -1) return;
-                origWarn.apply(console, arguments);
-              };
+              function applyMassaProFilter() {
+                var curErr = console.error;
+                if (curErr._mpFiltered) return;
+                console.error = function() {
+                  var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
+                  if (msg.indexOf('[MassaPro]') !== -1) return;
+                  curErr.apply(console, arguments);
+                };
+                console.error._mpFiltered = true;
+
+                var curWarn = console.warn;
+                if (curWarn._mpFiltered) return;
+                console.warn = function() {
+                  var msg = Array.prototype.slice.call(arguments).map(function(a) { return typeof a === 'string' ? a : ''; }).join(' ');
+                  if (msg.indexOf('[MassaPro]') !== -1) return;
+                  curWarn.apply(console, arguments);
+                };
+                console.warn._mpFiltered = true;
+              }
+
+              applyMassaProFilter();
+              setTimeout(applyMassaProFilter, 0);
+              setTimeout(applyMassaProFilter, 50);
+              setTimeout(applyMassaProFilter, 200);
+              setTimeout(applyMassaProFilter, 500);
+              setTimeout(applyMassaProFilter, 1000);
+              setInterval(applyMassaProFilter, 2000);
             })();
           `}
         </Script>
