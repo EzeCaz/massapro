@@ -1461,6 +1461,14 @@ export default function HairSalonPage() {
     if (typeof window !== 'undefined' && typeof (window as any).fbq === 'function') {
       ;(window as any).fbq('track', 'CompleteRegistration')
     }
+    // Google Analytics 4: Complete Registration
+    if (typeof window !== 'undefined' && typeof (window as any).gtag === 'function') {
+      ;(window as any).gtag('event', 'complete_registration', {
+        event_category: 'conversion',
+        event_label: 'Hair Salon TY Page Load',
+        page_name: 'Hair_Salon_TY',
+      })
+    }
   }, [])
 
   // Backup tracker: pageview + scroll tracking
