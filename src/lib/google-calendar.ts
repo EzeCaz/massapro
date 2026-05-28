@@ -21,6 +21,7 @@ import { google } from 'googleapis'
 function getAuth() {
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL
   let privateKey = process.env.GOOGLE_PRIVATE_KEY || ''
+  const calendarId = process.env.GOOGLE_CALENDAR_ID || 'eze@massapro.com'
 
   // Remove surrounding quotes if present
   if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
@@ -30,6 +31,7 @@ function getAuth() {
   privateKey = privateKey.replace(/\\n/g, '\n')
 
   if (!clientEmail || !privateKey) {
+    console.warn('[google-calendar] Auth not configured. Set GOOGLE_CLIENT_EMAIL and GOOGLE_PRIVATE_KEY.')
     return null
   }
 
@@ -40,7 +42,7 @@ function getAuth() {
       'https://www.googleapis.com/auth/calendar',
       'https://www.googleapis.com/auth/calendar.events',
     ],
-    subject: process.env.GOOGLE_CALENDAR_ID || 'eze@massapro.com',
+    subject: calendarId,
   })
 }
 
@@ -58,7 +60,7 @@ function getCalendar() {
 export async function getBookedSlots(startDate: string, endDate: string): Promise<Array<{ startMs: number; endMs: number }>> {
   const calendar = getCalendar()
   if (!calendar) {
-    console.warn('Google Calendar not configured — returning empty booked slots')
+    console.warn('[google-calendar] getBookedSlots: Google Calendar not configured — returning empty booked slots')
     return []
   }
 
@@ -92,7 +94,7 @@ export async function getBookedSlots(startDate: string, endDate: string): Promis
         endMs: new Date(e.end.dateTime!).getTime(),
       }))
   } catch (error) {
-    console.error('Error fetching booked slots from Google Calendar:', error)
+    console.error('[google-calendar] getBookedSlots FAILED:', error)
     return []
   }
 }
@@ -118,7 +120,7 @@ export async function createCalendarEvent({
 }): Promise<{ eventId: string; meetLink: string; htmlLink: string } | null> {
   const calendar = getCalendar()
   if (!calendar) {
-    console.warn('Google Calendar not configured — skipping event creation')
+    console.warn('[google-calendar] createCalendarEvent: Google Calendar not configured — skipping event creation. Set GOOGLE_CLIENT_EMAIL, GOOGLE_PRIVATE_KEY, and GOOGLE_CALENDAR_ID.')
     return null
   }
 
@@ -171,8 +173,10 @@ export async function createCalendarEvent({
       meetLink,
       htmlLink: event.htmlLink || '',
     }
-  } catch (error) {
-    console.error('Error creating Google Calendar event:', error)
+  } catch (error: any) {
+    console.error('[google-calendar] createCalendarEvent FAILED:', error?.message || error)
+    if (error?.code) console.error('[google-calendar] Error code:', error.code)
+    if (error?.errors) console.error('[google-calendar] Error details:', JSON.stringify(error.errors))
     return null
   }
 }
@@ -184,7 +188,10 @@ export async function createCalendarEvent({
  */
 export async function isSlotAvailable(startTime: string, endTime: string): Promise<boolean> {
   const calendar = getCalendar()
-  if (!calendar) return true // If not configured, assume available
+  if (!calendar) {
+    console.warn('[google-calendar] isSlotAvailable: Google Calendar not configured — assuming available')
+    return true
+  }
 
   try {
     const slotStart = new Date(startTime).getTime()
@@ -239,7 +246,7 @@ export async function isSlotAvailable(startTime: string, endTime: string): Promi
 
     return conflictingEvents.length === 0
   } catch (error) {
-    console.error('Error checking slot availability:', error)
+    console.error('[google-calendar] isSlotAvailable FAILED:', error)
     return true // Assume available on error
   }
 }
