@@ -71,9 +71,29 @@ async function sendConfirmationEmail(
   }
 }
 
+/**
+ * Sanitize mobile number: remove +, 00 prefix, -, spaces, parentheses.
+ * Examples:
+ *   "+1 (555) 123-4567" → "15551234567"
+ *   "+44 20 7946 0958" → "442079460958"
+ *   "0049 30 1234567"  → "49301234567"
+ *   "15551234567"       → "15551234567"
+ */
+function sanitizeMobile(raw: string): string {
+  let phone = raw.trim()
+  // Remove +, -, spaces, parentheses
+  phone = phone.replace(/[+\-\s()]/g, '')
+  // Remove leading 00 (international prefix)
+  phone = phone.replace(/^00+/, '')
+  return phone
+}
+
 export async function POST(request: NextRequest) {
   const body = await request.json()
   const leadName = `${body.firstName || ''} ${body.lastName || ''}`.trim()
+
+  // Sanitize mobile number (strip +, 00, -, spaces, parentheses)
+  const sanitizedMobile = sanitizeMobile(body.mobile || '')
 
   try {
     // ─── STEP 1: Validate Required Fields ───
@@ -124,8 +144,9 @@ export async function POST(request: NextRequest) {
           `Plan: ${body.planType || 'N/A'}`,
           body.notes ? `Notes: ${body.notes}` : '',
           `Company: ${body.companyUrl || 'N/A'}`,
-          `Phone: ${body.mobile}`,
+          `Phone: ${sanitizedMobile}`,
           `Country: ${body.country}`,
+          `Affiliate: ${body.affId || 'no_affiliate'}`,
         ].filter(Boolean).join('\n'),
         startTime: slotStart.toISOString(),
         endTime: slotEnd.toISOString(),
@@ -178,7 +199,7 @@ export async function POST(request: NextRequest) {
             companyUrl: body.companyUrl || '',
             industry: body.industry || '',
             email: body.email,
-            mobile: body.mobile,
+            mobile: sanitizedMobile,
             country: body.country,
             state: body.state || '',
             appointmentDate: formattedDate,

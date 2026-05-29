@@ -38,7 +38,7 @@
  *   D  = Company URL
  *   E  = Industry
  *   F  = Email
- *   G  = Mobile
+ *   G  = Mobile          (sanitized: no +, 00, -, spaces, parentheses)
  *   H  = Country
  *   I  = State
  *   J  = Appointment Date
@@ -87,7 +87,6 @@ function getOrCreateSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
 
-  // If the "Site" sheet doesn't exist, create it
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
   }
@@ -96,11 +95,9 @@ function getOrCreateSheet() {
 }
 
 function ensureHeaders(sheet) {
-  // Check if headers exist and are complete
   var lastColumn = sheet.getLastColumn();
   var firstCellValue = sheet.getRange(1, 1).getValue();
 
-  // If sheet has no headers at all, initialize everything
   if (firstCellValue === '' || lastColumn === 0) {
     sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
     sheet.getRange(1, 1, 1, HEADERS.length)
@@ -115,12 +112,8 @@ function ensureHeaders(sheet) {
     return;
   }
 
-  // If headers exist but are missing columns (e.g. old sheet without Affiliate ID column)
   if (lastColumn < HEADERS.length) {
-    // Get existing headers
     var existingHeaders = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-
-    // Add only the missing headers starting from the next column
     var newHeaders = HEADERS.slice(lastColumn);
     sheet.getRange(1, lastColumn + 1, 1, newHeaders.length).setValues([newHeaders]);
     sheet.getRange(1, lastColumn + 1, 1, newHeaders.length)
@@ -128,8 +121,6 @@ function ensureHeaders(sheet) {
       .setBackground('#7e22ce')
       .setFontColor('#ffffff')
       .setWrap(true);
-
-    // Auto-resize new columns
     for (var j = lastColumn + 1; j <= HEADERS.length; j++) {
       sheet.autoResizeColumn(j);
     }
@@ -137,10 +128,25 @@ function ensureHeaders(sheet) {
 }
 
 /**
+ * Sanitize mobile number: remove +, 00 prefix, -, spaces, parentheses.
+ * Examples:
+ *   "+1 (555) 123-4567" → "15551234567"
+ *   "+44 20 7946 0958"  → "442079460958"
+ *   "0049 30 1234567"   → "49301234567"
+ *   "15551234567"        → "15551234567"
+ */
+function sanitizeMobile(raw) {
+  var phone = (raw || '').toString().trim();
+  phone = phone.replace(/[+\-\s()]/g, '');
+  phone = phone.replace(/^00+/, '');
+  return phone;
+}
+
+/**
  * Resolve the Affiliate ID from the request data.
- * Checks three URL parameter formats in priority order:
- *   1. affId — directly passed from the frontend (already resolved)
- *   2. Fallback: check the raw UTM params for affiliate-style values
+ * Priority order:
+ *   1. affId — directly passed from the frontend (already resolved from URL params)
+ *   2. Fallback: utm_source matching MP-XXXX pattern
  *
  * On the frontend, the affiliate ID is extracted from URL params:
  *   ?Aff-Id=MP-ROBERTO-001  (highest priority)
@@ -149,13 +155,13 @@ function ensureHeaders(sheet) {
  */
 function resolveAffiliateId(data) {
   // 1. Direct affId field from frontend (preferred — already resolved)
-  if (data.affId && data.affId.trim() !== '') {
-    return data.affId.trim();
+  if (data.affId && data.affId.toString().trim() !== '') {
+    return data.affId.toString().trim();
   }
 
   // 2. Fallback: check utm_source for known affiliate patterns (MP-XXXX-NNN)
-  if (data.utm_source && /^MP-/i.test(data.utm_source.trim())) {
-    return data.utm_source.trim();
+  if (data.utm_source && /^MP-/i.test(data.utm_source.toString().trim())) {
+    return data.utm_source.toString().trim();
   }
 
   // 3. No affiliate ID found
@@ -165,14 +171,22 @@ function resolveAffiliateId(data) {
 function doPost(e) {
   try {
     var sheet = getOrCreateSheet();
-
-    // Ensure headers are complete (adds UTM + Affiliate ID columns if missing)
     ensureHeaders(sheet);
 
     var data = JSON.parse(e.postData.contents);
 
-    // Resolve the Affiliate ID from the three supported URL param formats
+    // Sanitize mobile number
+    var mobile = sanitizeMobile(data.mobile || '');
+
+    // Resolve the Affiliate ID
     var affiliateId = resolveAffiliateId(data);
+
+    // Log what we received for debugging
+    console.log('Lead received: ' + data.firstName + ' ' + data.lastName +
+      ' | Mobile: ' + data.mobile + ' → ' + mobile +
+      ' | affId: ' + JSON.stringify(data.affId) +
+      ' | resolved: ' + affiliateId +
+      ' | UTMs: src=' + data.utm_source + ' med=' + data.utm_medium + ' cmp=' + data.utm_campaign);
 
     // Append the data as a new row to the "Site" sheet (columns A–V)
     sheet.appendRow([
@@ -182,7 +196,7 @@ function doPost(e) {
       data.companyUrl || '',
       data.industry || '',
       data.email || '',
-      data.mobile || '',
+      mobile,
       data.country || '',
       data.state || '',
       data.appointmentDate || '',
@@ -201,7 +215,12 @@ function doPost(e) {
     ]);
 
     return ContentService
-      .createTextOutput(JSON.stringify({ success: true, message: 'Lead added successfully to Site tab', affiliateId: affiliateId }))
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Lead added successfully to Site tab',
+        mobile: mobile,
+        affiliateId: affiliateId
+      }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
