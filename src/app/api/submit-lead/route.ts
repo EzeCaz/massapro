@@ -196,6 +196,7 @@ export async function POST(request: NextRequest) {
             utm_campaign: body.utm_campaign || '',
             utm_content: body.utm_content || '',
             utm_term: body.utm_term || '',
+            affId: body.affId || '',
           }),
         })
         console.log('[submit-lead] Step 5 ✓ — Google Sheet updated')

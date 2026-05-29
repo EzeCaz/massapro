@@ -91,7 +91,8 @@ interface UtmParams {
 function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefillIndustry }: LeadFormProps) {
   const searchParams = useSearchParams()
 
-  // Capture UTM parameters from URL on mount
+  // Capture UTM parameters + Affiliate ID from URL on mount
+  // Affiliate ID is resolved from 3 URL param formats (priority: Aff-Id > Aff Id > utm)
   const [utmParams] = useState<UtmParams>(() => ({
     utm_source: searchParams.get('utm_source') || '',
     utm_medium: searchParams.get('utm_medium') || '',
@@ -99,6 +100,20 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
     utm_content: searchParams.get('utm_content') || '',
     utm_term: searchParams.get('utm_term') || '',
   }))
+
+  // Resolve Affiliate ID from URL params:
+  //   ?Aff-Id=MP-ROBERTO-001  (highest priority)
+  //   ?Aff+Id=MP-ROBERTO-001  (medium priority, space encoded as +)
+  //   ?utm=MP-ROBERTO-001     (lowest priority, generic utm param)
+  const [affId] = useState<string>(() => {
+    const affIdHyphen = searchParams.get('Aff-Id')
+    if (affIdHyphen) return affIdHyphen
+    const affIdSpace = searchParams.get('Aff Id')
+    if (affIdSpace) return affIdSpace
+    const utmGeneric = searchParams.get('utm')
+    if (utmGeneric) return utmGeneric
+    return ''
+  })
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -222,6 +237,7 @@ function LeadFormInner({ open, onOpenChange, prefillService, prefillPlan, prefil
         body: JSON.stringify({
           ...formData,
           ...utmParams,
+          affId,
         }),
       })
       const data = await res.json()

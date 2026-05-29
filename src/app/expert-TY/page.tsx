@@ -238,7 +238,7 @@ function CheckInboxSection() {
 function HeroSection() {
   const searchParams = useSearchParams()
 
-  // Capture UTM parameters from URL on mount (same as homepage LeadForm)
+  // Capture UTM parameters + Affiliate ID from URL on mount (same as homepage LeadForm)
   const [utmParams] = useState(() => ({
     utm_source: searchParams.get('utm_source') || '',
     utm_medium: searchParams.get('utm_medium') || '',
@@ -246,6 +246,20 @@ function HeroSection() {
     utm_content: searchParams.get('utm_content') || '',
     utm_term: searchParams.get('utm_term') || '',
   }))
+
+  // Resolve Affiliate ID from URL params:
+  //   ?Aff-Id=MP-ROBERTO-001  (highest priority)
+  //   ?Aff+Id=MP-ROBERTO-001  (medium priority, space encoded as +)
+  //   ?utm=MP-ROBERTO-001     (lowest priority, generic utm param)
+  const [affId] = useState<string>(() => {
+    const affIdHyphen = searchParams.get('Aff-Id')
+    if (affIdHyphen) return affIdHyphen
+    const affIdSpace = searchParams.get('Aff Id')
+    if (affIdSpace) return affIdSpace
+    const utmGeneric = searchParams.get('utm')
+    if (utmGeneric) return utmGeneric
+    return ''
+  })
 
   // Step state: 1 = personal info, 2 = calendar + notes
   const [formStep, setFormStep] = useState<1 | 2>(1)
@@ -379,6 +393,7 @@ function HeroSection() {
           planType: 'Not Sure Yet',
           notes: notes || 'Lead from /expert-TY page',
           ...utmParams,
+          affId,
         }),
       })
 

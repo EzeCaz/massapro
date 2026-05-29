@@ -1,8 +1,16 @@
 /**
  * MassaPro Lead Form — Google Apps Script
- * 
+ *
  * This script writes form submissions to the "Site" tab of your Google Sheet.
- * Columns A–P = form data, Columns Q–U = UTM tracking parameters.
+ * Columns A–P = form data, Columns Q–U = UTM tracking parameters, Column V = Affiliate ID.
+ *
+ * COLUMN V — AFFILIATE ID:
+ *   The Affiliate ID is captured from the URL in three different UTM parameter formats:
+ *     1. ?utm=MP-ROBERTO-001          (generic utm param)
+ *     2. ?Aff+Id=MP-ROBERTO-001       (Aff Id with space encoded as +)
+ *     3. ?Aff-Id=MP-ROBERTO-001       (Aff-Id with hyphen)
+ *   All three resolve to the same Affiliate ID value in column V.
+ *   Priority: Aff-Id > Aff Id > utm  (most specific wins)
  *
  * HOW TO DEPLOY:
  * 1. Open your Google Sheet: https://docs.google.com/spreadsheets/d/1Pzm2p-QrgqYY-98SIQDWIvY8igF1ex22qdQ6BnEvleQ/edit
@@ -21,14 +29,31 @@
  *
  * IMPORTANT: The script writes to the sheet named "Site".
  *           If that sheet doesn't exist, it will be created automatically.
- *           If UTM headers are missing, they will be added automatically.
+ *           If UTM/Affiliate headers are missing, they will be added automatically.
  *
- * UTM COLUMNS (Q–U):
- *   Q = UTM Source    (e.g. facebook, google, instagram)
- *   R = UTM Medium    (e.g. paid_social, cpc, email, organic)
- *   S = UTM Campaign  (e.g. spring_sale, medspa_q2_launch)
- *   T = UTM Content   (e.g. hero_cta, sidebar_ad, video_v2)
- *   U = UTM Term      (e.g. ai+receptionist+med+spa)
+ * COLUMNS:
+ *   A  = First Name
+ *   B  = Last Name
+ *   C  = Company Name
+ *   D  = Company URL
+ *   E  = Industry
+ *   F  = Email
+ *   G  = Mobile
+ *   H  = Country
+ *   I  = State
+ *   J  = Appointment Date
+ *   K  = Appointment Time
+ *   L  = Timezone
+ *   M  = Service Type
+ *   N  = Plan Type
+ *   O  = Notes
+ *   P  = Submitted At
+ *   Q  = UTM Source      (e.g. facebook, google, instagram)
+ *   R  = UTM Medium      (e.g. paid_social, cpc, email, organic)
+ *   S  = UTM Campaign    (e.g. spring_sale, medspa_q2_launch)
+ *   T  = UTM Content     (e.g. hero_cta, sidebar_ad, video_v2)
+ *   U  = UTM Term        (e.g. ai+receptionist+med+spa)
+ *   V  = Affiliate ID    (e.g. MP-ROBERTO-001, from ?utm= / ?Aff+Id= / ?Aff-Id=)
  */
 
 var SHEET_NAME = 'Site';
@@ -54,18 +79,19 @@ var HEADERS = [
   'UTM Medium',
   'UTM Campaign',
   'UTM Content',
-  'UTM Term'
+  'UTM Term',
+  'Affiliate ID'
 ];
 
 function getOrCreateSheet() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var sheet = ss.getSheetByName(SHEET_NAME);
-  
+
   // If the "Site" sheet doesn't exist, create it
   if (!sheet) {
     sheet = ss.insertSheet(SHEET_NAME);
   }
-  
+
   return sheet;
 }
 
@@ -89,11 +115,11 @@ function ensureHeaders(sheet) {
     return;
   }
 
-  // If headers exist but are missing UTM columns (only 16 columns = no UTMs)
+  // If headers exist but are missing columns (e.g. old sheet without Affiliate ID column)
   if (lastColumn < HEADERS.length) {
     // Get existing headers
     var existingHeaders = sheet.getRange(1, 1, 1, lastColumn).getValues()[0];
-    
+
     // Add only the missing headers starting from the next column
     var newHeaders = HEADERS.slice(lastColumn);
     sheet.getRange(1, lastColumn + 1, 1, newHeaders.length).setValues([newHeaders]);
@@ -102,7 +128,7 @@ function ensureHeaders(sheet) {
       .setBackground('#7e22ce')
       .setFontColor('#ffffff')
       .setWrap(true);
-    
+
     // Auto-resize new columns
     for (var j = lastColumn + 1; j <= HEADERS.length; j++) {
       sheet.autoResizeColumn(j);
@@ -110,16 +136,45 @@ function ensureHeaders(sheet) {
   }
 }
 
+/**
+ * Resolve the Affiliate ID from the request data.
+ * Checks three URL parameter formats in priority order:
+ *   1. affId — directly passed from the frontend (already resolved)
+ *   2. Fallback: check the raw UTM params for affiliate-style values
+ *
+ * On the frontend, the affiliate ID is extracted from URL params:
+ *   ?Aff-Id=MP-ROBERTO-001  (highest priority)
+ *   ?Aff+Id=MP-ROBERTO-001  (medium priority, space encoded as +)
+ *   ?utm=MP-ROBERTO-001     (lowest priority, generic utm param)
+ */
+function resolveAffiliateId(data) {
+  // 1. Direct affId field from frontend (preferred — already resolved)
+  if (data.affId && data.affId.trim() !== '') {
+    return data.affId.trim();
+  }
+
+  // 2. Fallback: check utm_source for known affiliate patterns (MP-XXXX-NNN)
+  if (data.utm_source && /^MP-/i.test(data.utm_source.trim())) {
+    return data.utm_source.trim();
+  }
+
+  // 3. No affiliate ID found
+  return '';
+}
+
 function doPost(e) {
   try {
     var sheet = getOrCreateSheet();
 
-    // Ensure headers are complete (adds UTM columns if missing)
+    // Ensure headers are complete (adds UTM + Affiliate ID columns if missing)
     ensureHeaders(sheet);
 
     var data = JSON.parse(e.postData.contents);
 
-    // Append the data as a new row to the "Site" sheet (columns Q–U = UTM params)
+    // Resolve the Affiliate ID from the three supported URL param formats
+    var affiliateId = resolveAffiliateId(data);
+
+    // Append the data as a new row to the "Site" sheet (columns A–V)
     sheet.appendRow([
       data.firstName || '',
       data.lastName || '',
@@ -141,11 +196,12 @@ function doPost(e) {
       data.utm_medium || '',
       data.utm_campaign || '',
       data.utm_content || '',
-      data.utm_term || ''
+      data.utm_term || '',
+      affiliateId
     ]);
 
     return ContentService
-      .createTextOutput(JSON.stringify({ success: true, message: 'Lead added successfully to Site tab' }))
+      .createTextOutput(JSON.stringify({ success: true, message: 'Lead added successfully to Site tab', affiliateId: affiliateId }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (error) {
@@ -157,6 +213,6 @@ function doPost(e) {
 
 function doGet() {
   return ContentService
-    .createTextOutput(JSON.stringify({ status: 'ok', service: 'MassaPro Lead Form', sheet: SHEET_NAME }))
+    .createTextOutput(JSON.stringify({ status: 'ok', service: 'MassaPro Lead Form', sheet: SHEET_NAME, columns: HEADERS.length }))
     .setMimeType(ContentService.MimeType.JSON);
 }
