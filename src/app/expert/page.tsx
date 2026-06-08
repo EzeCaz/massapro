@@ -598,7 +598,7 @@ function HeroSection() {
                         </div>
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="hero-email">Business Email <span className="text-red-500">*</span></Label>
+                        <Label htmlFor="hero-email">E-mail <span className="text-red-500">*</span></Label>
                         <Input
                           id="hero-email"
                           type="email"
