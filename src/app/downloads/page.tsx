@@ -2,6 +2,22 @@
 
 const FILES = [
   {
+    name: "Massapro-Growth-Pitch-Deck.pptx",
+    size: "12 MB",
+    title: "MassaPro Growth Pitch Deck — PPTX",
+    description:
+      "10-slide MassaPro pitch deck focused on growth: Problem → Solution → Proprietary LLM → Omni-Channel → All-in-One Replacement → Agentic Workforce → Pay-Per-Agent Pricing → Business Impact → Close. Rebranded from the ConnexAI Enterprise Brochure content with MassaPro brand book (purple palette, Inter/Playfair Display typography).",
+    kind: "PPTX" as const,
+  },
+  {
+    name: "Massapro-Growth-Pitch-Deck.pdf",
+    size: "12 MB",
+    title: "MassaPro Growth Pitch Deck — PDF",
+    description:
+      "PDF version of the 10-slide MassaPro growth pitch deck. Best for previewing in browser — no PowerPoint required.",
+    kind: "PDF" as const,
+  },
+  {
     name: "Massapro-IVR-Sales-Pitch-Deck-Compact.pptx",
     size: "2.4 MB",
     title: "MassaPro IVR Sales Pitch Deck — PPTX",
