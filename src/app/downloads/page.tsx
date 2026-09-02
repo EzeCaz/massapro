@@ -2,11 +2,27 @@
 
 const FILES = [
   {
+    name: "Massapro-Enterprise-Brochure-Rebranded.pdf",
+    size: "5.3 MB",
+    title: "MassaPro Enterprise Brochure — PDF",
+    description:
+      "30 slides, 16:9. Rebranded from the ConnexAI Enterprise Product Brochure (2026). Best for previewing in browser — no PowerPoint required.",
+    kind: "PDF" as const,
+  },
+  {
     name: "Massapro-Enterprise-Brochure-Rebranded-Compact.pptx",
     size: "4.2 MB",
     title: "MassaPro Enterprise Brochure — Compact PPTX",
     description:
-      "30 slides, 16:9. Rebranded from the ConnexAI Enterprise Product Brochure (2026). Optimized images (~80% smaller than full). Best for editing in PowerPoint.",
+      "30 slides, 16:9. Optimized images (~80% smaller than full). Best for editing in PowerPoint — opens reliably without size-cap errors.",
+    kind: "PPTX" as const,
+  },
+  {
+    name: "Massapro-Enterprise-Brochure-Rebranded.pptx",
+    size: "4.2 MB",
+    title: "MassaPro Enterprise Brochure — Full PPTX",
+    description:
+      "30 slides, 16:9. Same content as Compact, available as a separate download for redundancy.",
     kind: "PPTX" as const,
   },
   {
@@ -14,14 +30,7 @@ const FILES = [
     size: "20 MB",
     title: "MassaPro IVR Rebranded — PDF",
     description:
-      "30-page Telepresencia_Hibrida deck rebranded with MassaPro purple palette. Original images preserved verbatim. Best for previewing in browser.",
-    kind: "PDF" as const,
-  },
-  {
-    name: "Massapro-IVR-Rebranded-Deck.pdf",
-    size: "20 MB",
-    title: "MassaPro IVR Rebranded Deck — PDF (alt copy)",
-    description: "Alternate copy of the IVR rebranded deck — same content, retained for compatibility with older links.",
+      "30-page Telepresencia_Hibrida deck rebranded with MassaPro purple palette. Original images preserved verbatim.",
     kind: "PDF" as const,
   },
 ];
