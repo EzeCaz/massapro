@@ -1,0 +1,388 @@
+TOTAL SLIDES: 24
+================================================================================
+INDEX 16 — SLIDE 17
+TITLE: Slide 17: Traditional Model vs Phygital Model — Every Remote Point Reduces Operating Cost
+LAYOUT: comparison
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_17.html
+TASK_BRIEF:
+SLIDE 17 | Chapter 03 — Integration & Operations
+Title: Traditional Model vs Phygital Model — Every Remote Point Reduces Operating Cost
+
+LAYOUT: comparison
+IMAGE: human-vet-receptionist.png  (relative path — use <img src="human-vet-receptionist.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 17 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Traditional model — active payroll with no interaction; infrastructure running regardless; transit time that produces no service; absences covered point by point; talent tied to geography.
+- •  Phygital model — capacity based on real occupancy; the point carries no staff (just a screen and connectivity); zero transit time; absences absorbed by the team; talent with no geographic ties.
+- •  The real savings are the payroll, infrastructure, and geography that no longer limit the service.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+This slide is a side-by-side comparison. Walk through each row. The pattern is the same in every row: the traditional model pays for capacity that is not used; the phygital model pays only for capacity that is used. That is the structural cost advantage. The talent row is often the most resonant with HR leaders. In the traditional model, you can only hire where the point is. If your best mortgage advisor lives in a different city than your branch, you cannot hire them. In the phygital model, you can hire anywhere. You can concentrate your team in one site, move it to another country, or distribute it across home offices. The talent pool is no longer constrained by the location of the service point.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Two-column comparison table with 5 rows (payroll, infrastructure, transit, absences, talent)
+- •  Left column: Traditional Model (in muted grey, with a small X icon next to each row)
+- •  Right column: Phygital Model (in MassaPro purple, with a small checkmark icon next to each row)
+- •  Bottom strip: the closing line in bold, in a callout box
+- •  Optional: a small sustainability badge — "Positive environmental impact: fewer commutes, smaller real-estate footprint"
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.
+
+
+================================================================================
+INDEX 17 — SLIDE 18
+TITLE: Slide 18: Security and Compliance — Enterprise-Grade, from the Infrastructure Up
+LAYOUT: bento-grid
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_18.html
+TASK_BRIEF:
+SLIDE 18 | Chapter 03 — Integration & Operations
+Title: Security and Compliance — Enterprise-Grade, from the Infrastructure Up
+
+LAYOUT: bento-grid
+IMAGE: human-agent-ai.png  (relative path — use <img src="human-agent-ai.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 18 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Compliance certifications — SOC 2 Type II, ISO 27001, GDPR, HIPAA, PCI-DSS. The platform is engineered for high-compliance sectors including legal, healthcare, finance, and government.
+- •  Live identity verification — the advisor visually confirms the customer and their ID document during the video session. A direct barrier against impersonation. Deepfakes cannot operate through a kiosk because the customer is physically present and their ID is visually inspected.
+- •  Session traceability — interaction recording and auditing in line with each organisation's policy. Reports, logs, and metadata generated for all activity. Full audit trail for regulators.
+- •  Encryption standards — TLS 1.3 for data in transit, AES-256 for data at rest. The same standards that protect MassaPro's voice, chat, and AI channels protect MassaPro IVR.
+- •  PII redaction — automatic identification and redaction of personally identifiable information from transcripts and analytics reports, powered by MassaPro AI Analytics.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+For regulated industries, this slide is the gate. If the audience is from a bank, hospital, insurer, or government agency, they will not move forward until they are satisfied on security. Walk through each certification, each control, and be prepared for detailed questions about data residency, encryption key management, and audit log access. The live identity verification point is worth emphasising. It is a structural advantage of video service over phone or chat. On a phone call, identity verification relies on knowledge-based authentication (date of birth, mother's maiden name) which is compromised by every data breach. On a video call, the advisor can visually compare the customer's face to their ID document. That is the same standard as an in-person branch visit. Deepfakes cannot defeat this because the customer is physically present at the kiosk — the advisor can ask them to turn their head, hold up the ID, or perform a liveness check.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Top: a row of certification badges (SOC 2, ISO 27001, GDPR, HIPAA, PCI-DSS) in clean white circles with purple borders
+- •  Middle: three feature cards — Live Identity Verification, Session Traceability, Encryption Standards — each with an icon and 2-line description
+- •  Bottom strip: the PII redaction line, highlighting that it is powered by MassaPro AI Analytics (cross-reference to the ecosystem slide)
+- •  Use MassaPro purple for the certification badges and card titles
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.
+
+
+================================================================================
+INDEX 18 — SLIDE 19
+TITLE: Slide 19: Service Continuity — If Local Hardware Fails, the Service Never Goes Down
+LAYOUT: split-text-image
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_19.html
+TASK_BRIEF:
+SLIDE 19 | Chapter 03 — Integration & Operations
+Title: Service Continuity — If Local Hardware Fails, the Service Never Goes Down
+
+LAYOUT: split-text-image
+IMAGE: human-concierge-vet.png  (relative path — use <img src="human-concierge-vet.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 19 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Resilient by design — the system is 100% multimodal and keeps running even without fixed screens. The session lives in the cloud, not on the kiosk.
+- •  Static QR code backup — the printed sticker works even if the kiosk is completely down. The customer scans the sticker and continues the session on their phone.
+- •  Full mobile session — customers keep video, audio, and shared screen from their own device. They do not lose any capability, just the large screen.
+- •  Active session from mobile — no technician dispatch, no support ticket, no service interruption. The session that started on the kiosk continues on the phone as if nothing happened.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+This slide answers the operations continuity question: what happens when the kiosk breaks? The answer is: the service continues on the customer's phone. The kiosk is a convenience, not a dependency. The session is in the cloud, the customer has their phone, and the QR sticker is printed on the wall. As long as two of those three things are working, the service is working. This is a meaningful operational advantage. In a traditional kiosk deployment, a hardware failure means a service outage until a technician is dispatched. With MassaPro IVR, a hardware failure means the customer uses a slightly smaller screen. The Mean Time To Repair drops from hours (technician dispatch) to zero (the customer never notices). For multi-site operators with remote locations, this is the difference between a service that is up 99% of the time and one that is up 99.99% of the time.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Three-step illustration: (1) kiosk working normally, (2) kiosk screen goes dark (with a small "fail" icon), (3) customer scans the QR sticker on the wall and continues the session on their phone
+- •  Use MassaPro purple for the session flow, muted grey for the failed kiosk
+- •  Bottom strip: "No technician dispatch · No support ticket" in bold, with checkmark icons
+- •  Optional: a small uptime badge — "99.99% service availability, even during hardware failure"
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.
+
+
+================================================================================
+INDEX 19 — SLIDE 20
+TITLE: Slide 20: Sector Applications — The Same Model, Four Different Operations
+LAYOUT: comparison-grid
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_20.html
+TASK_BRIEF:
+SLIDE 20 | Chapter 04 — Proof & Business Case
+Title: Sector Applications — The Same Model, Four Different Operations
+
+LAYOUT: comparison-grid
+IMAGE: human-hairsalon-receptionist.png  (relative path — use <img src="human-hairsalon-receptionist.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 20 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Finance — assisted claims assessment, account opening, policy issuance, and claim filing, with visual verification of the policyholder and their document. After-hours service without after-hours staffing.
+- •  Retail — personal shopper and in-store product advisory. One brand specialist covers the entire retail network. Customers at any store can speak with the specialist, see the product on screen, and place the order.
+- •  Travel & Hospitality — multilingual 24/7 concierge in the hotel, resort, or tour lobby. No need for a staffed desk overnight. Guests check in, get recommendations, and book excursions from a kiosk.
+- •  Healthcare — admissions, initial triage, and patient guidance at clinics and centres without permanent front-desk staff. Patients check in, verify identity, and are routed to the right clinician — all on video.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+This slide is a menu, not a list. The audience should be able to find their sector on the slide and picture their own operation running on MassaPro IVR. If they are in finance, the banking use case is for them. If they are in retail, the personal shopper use case is for them. Walk through each sector briefly, but spend the most time on the sector that matches the audience. Be ready to discuss sectors not on the slide. The platform is sector-agnostic — the same software that runs a bank kiosk can run a government services kiosk, a university admissions kiosk, or a car dealership kiosk. The configuration is in MassaPro Flow, not in the code. If the audience asks about a sector not listed, the answer is: if you have a service point and a customer who needs to speak with a human, MassaPro IVR applies.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Four-quadrant grid, each quadrant a sector with an icon, a title, and a 3-line description
+- •  Suggested icons: bank building (finance), shopping bag (retail), airplane (travel), medical cross (healthcare)
+- •  Use MassaPro purple for the quadrant titles and icons
+- •  Bottom strip: a small MassaPro Flow diagram showing how the same platform configures differently per sector
+- •  Optional: a small image in each quadrant showing the sector in action (bank lobby, retail store, hotel desk, clinic reception)
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.
+
+
+================================================================================
+INDEX 20 — SLIDE 21
+TITLE: Slide 21: Featured Case — Banking: Specialised Service Outside Branch Hours
+LAYOUT: split-image-text
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_21.html
+TASK_BRIEF:
+SLIDE 21 | Chapter 04 — Proof & Business Case
+Title: Featured Case — Banking: Specialised Service Outside Branch Hours
+
+LAYOUT: split-image-text
+IMAGE: human-receptionist-2.png  (relative path — use <img src="human-receptionist-2.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 21 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Step 1 — Arrival — the customer enters the self-service lobby, whether or not the branch is open. The lobby is accessible 24/7 with a card or QR code at the door.
+- •  Step 2 — Connection — scans the kiosk QR code and selects the service: onboarding, an issue, or advisory. The metadata is captured and routed to the right queue.
+- •  Step 3 — Video service — a specialised banker assists over video and shares documentation on screen. The customer reviews the documents, asks questions, and confirms with a tap on their phone.
+- •  Step 4 — Verification — identity is confirmed visually (customer face + ID document) and the transaction is validated on the customer's phone. The session is recorded for audit, the transcript is summarised to the CRM, and the customer leaves with their need resolved.
+- •  Applicable processes: account opening, identity verification, credit origination, issue resolution, investment advisory.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+This is the proof-point slide. If the audience is from a bank, this is the slide they will remember. Walk through the four steps as a story. The customer arrives after the branch has closed. They scan the QR code. They pick "open an account." A specialised banker picks up the session — possibly from a contact centre in another city, possibly from their home office. The banker walks the customer through the application, shares the disclosures on screen, verifies their identity by asking them to hold up their driver's licence, and the customer signs on their phone. Total time: under 15 minutes. Total staffing cost: zero on-site. Be prepared to share quantified results if available — CSAT scores, transaction completion rates, cost-per-interaction comparisons with in-branch. If you do not have hard numbers for this specific case, use the industry benchmarks from slide 4 (CSAT 4.5-5) and note that the actual results from deployed customers are tracked in the customer success programme.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Four-step horizontal flow diagram: Arrival → Connection → Video Service → Verification
+- •  Each step has an icon (door, QR code, video camera, ID badge) and a short caption
+- •  Use MassaPro purple for the numbered circles and arrows
+- •  Top of slide: a hero image of a self-service bank lobby with a kiosk
+- •  Bottom strip: the applicable processes list, in pill-shaped tags
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.
+
+
+================================================================================
+INDEX 21 — SLIDE 22
+TITLE: Slide 22: Business Case — The Asset Pays for Itself
+LAYOUT: bento-grid
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_22.html
+TASK_BRIEF:
+SLIDE 22 | Chapter 04 — Proof & Business Case
+Title: Business Case — The Asset Pays for Itself
+
+LAYOUT: bento-grid
+IMAGE: human-concierge-medspa.png  (relative path — use <img src="human-concierge-medspa.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 22 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Cost savings — eliminate fixed payroll at low-traffic points, reduce infrastructure (climate control, lighting, workstations) at unstaffed locations, and absorb absences centrally instead of covering them point by point.
+- •  Revenue uplift — capture interactions that previously ended in abandonment or deferral. Every customer who would have walked out now has a path to resolution. CSAT 4.5-5 drives retention and word-of-mouth.
+- •  Content and advertising monetisation — at rest, the kiosk plays scheduled content and advertising carousels per location (JPG, GIF, MP4). Owned or third-party campaigns. The asset becomes a communication medium, not just a service channel.
+- •  Talent arbitrage — concentrate your team in one lower-cost site, or move it to another country. The talent pool is no longer constrained by the location of the service point.
+- •  The seventh decision: the service point stops being a fixed cost and becomes optimised, flexible capacity.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+This is the slide the CFO cares about. Walk through the four quadrants of value: cost savings, revenue uplift, monetisation, and talent arbitrage. Each one is a separate line on the business case. Together, they typically pay back the deployment within 6-12 months for a multi-site operator. If you have a concrete ROI calculator or a worked example for the customer's sector, this is the slide to show it. A simple table comparing traditional cost per interaction (fully-loaded branch staff cost / interactions per month) vs. MassaPro IVR cost per interaction (subscription + amortised kiosk / interactions per month) is often the most persuasive element of the entire deck. The number for MassaPro IVR is usually 40-70% lower, depending on volume. The advertising monetisation point is often underestimated. A kiosk in a high-traffic location that runs ads 12 hours a day (when not in service) can generate meaningful advertising revenue. In some deployments, the advertising revenue alone covers the subscription cost of the kiosk, making the service effectively free.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Four-quadrant grid: Cost Savings (top-left), Revenue Uplift (top-right), Monetisation (bottom-left), Talent Arbitrage (bottom-right)
+- •  Each quadrant has an icon, a title, and a 3-line description
+- •  Suggested icons: scissors (cost savings), upward arrow (revenue), play button (monetisation), globe (talent arbitrage)
+- •  Bottom strip: the closing line in bold, in a callout box
+- •  Optional: a small bar chart showing cost-per-interaction comparison (traditional vs MassaPro IVR)
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.
+
+
+================================================================================
+INDEX 22 — SLIDE 23
+TITLE: Slide 23: Implementation Roadmap — From Kick-Off to Go-Live in 8-12 Weeks
+LAYOUT: timeline
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_23.html
+TASK_BRIEF:
+SLIDE 23 | Chapter 05 — Roadmap & Next Steps
+Title: Implementation Roadmap — From Kick-Off to Go-Live in 8-12 Weeks
+
+LAYOUT: timeline
+IMAGE: human-aura-nail.png  (relative path — use <img src="human-aura-nail.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 23 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Phase 1 — Project Kick-Off (Week 1) — confirm objectives, scope, milestones, governance. Assign dedicated Project Manager. Produce implementation plan.
+- •  Phase 2 — Discovery & Solution Design (Weeks 2-3) — map existing customer journeys, telephony, CRM integrations, security requirements, branding. Define AI intents and conversation scenarios. Produce Solution Design Document.
+- •  Phase 3 — Technical Integration (Weeks 4-6) — configure ACD integration, API gateway, webhooks, CRM connectors, SSO, kiosk hardware. MassaPro engineering team executes; customer IT provides access and credentials.
+- •  Phase 4 — AI Configuration (Weeks 5-7, parallel) — MassaPro AI Specialists configure AI Agent prompts, AI Guru coaching prompts, MassaPro Flow workflows, branding, and service routing rules with customer subject-matter experts.
+- •  Phase 5 — Testing (Weeks 7-9) — functional, integration, telephony, AI conversation, security, performance, and UAT. Iterative prompt and workflow refinement until objectives are met.
+- •  Phase 6 — Training (Weeks 9-10) — role-based training for administrators, supervisors, video advisors, reporting users, and technical administrators. Instructor-led workshops plus hands-on labs.
+- •  Phase 7 — Go-Live (Week 10-11) — production deployment with hypercare support. Daily check-ins, priority engineering access, rapid configuration changes.
+- •  Phase 8 — Hypercare & Continuous Optimisation (Week 12+) — Account Manager and Customer Success team work alongside customer to maximise value. Regular reviews of AI performance, conversation optimisation, capacity planning, new use cases.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+This slide answers the "how long does it take" question. The answer is: 8-12 weeks for a standard deployment, depending on the scope of integrations and the complexity of the workflows. The eight-phase methodology is the same one documented in the MassaPro Technical Manual — point the audience there if they want the full detail. Emphasise that the deployment is managed end-to-end by MassaPro. The customer's team provides subject-matter expertise, access to source systems, and acceptance testing resources. MassaPro provides the project manager, the engineering team, the AI specialists, and the training. This is not a software-licence sale; it is a managed-service deployment with a defined outcome. Be ready to discuss what accelerates or delays the timeline. Accelerators: existing ACD that we have integrated with before (Genesys, Cisco), standard CRM (Salesforce, HubSpot), clear success criteria, available subject-matter experts. Decelerators: custom CRM with poor API documentation, multi-country regulatory approval, complex multi-brand deployment, customer IT team capacity constraints.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Horizontal Gantt-style timeline with 8 phases as coloured bars
+- •  Use MassaPro purple for the bars, with darker shade for active phases
+- •  Each phase has a label, a duration estimate, and a short deliverable description
+- •  Bottom strip: "Managed end-to-end by MassaPro. Customer provides SMEs, access, and UAT resources." in italic
+- •  Optional: a small badge showing "8-12 weeks typical end-to-end"
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.
+
+
+================================================================================
+INDEX 23 — SLIDE 24
+TITLE: Slide 24: Next Steps — Let's Talk About Your Case
+LAYOUT: closing
+OUTPUT_PATH: /home/z/my-project/download/slides/slide_24.html
+TASK_BRIEF:
+SLIDE 24 | Chapter 05 — Roadmap & Next Steps
+Title: Next Steps — Let's Talk About Your Case
+
+LAYOUT: closing
+IMAGE: human-medspa-3.png  (relative path — use <img src="human-medspa-3.png"> — real human photo of a receptionist / concierge / video agent representing the slide's scenario. Crop with object-fit: cover and a MassaPro purple gradient overlay for legibility.)
+
+BRANDING:
+- Use the MassaPro logo (massapro-logo.png) in the top-left brand-bar on every body slide.
+- MassaPro purple palette: --primary #7C3AED, --primary-dark #6D28D9, --primary-light #A78BFA on dark backgrounds, --primary-100 #EDE9FE / --primary-50 #F5F3FF for soft surfaces.
+- Cover slide (slide 1) and closing slide (slide 24) use slide-dark-grad background. Section dividers use slide-dark. Body slides use slide-light or slide-soft.
+- Footer on every body slide: "MassaPro IVR — Sales Deck" (left) | "Slide 24 / 24" (right) | "Confidential" (center) in micro caps.
+
+ON-SLIDE HEADLINE (large H1, top of slide):
+Use the slide title's secondary clause as the visual headline. For example, slide 2 "The Problem — Multi-Sector Pain Points at the Point of Contact" → headline "Multi-Sector Pain Points at the Point of Contact", eyebrow "The Problem".
+
+ON-SLIDE BODY (render verbatim, formatted as clean cards / bullets / steps):
+- •  Workshop session (60-90 minutes) — bring one specific process from your operation (account opening, claims intake, technical support, concierge, etc.). We map it to MassaPro IVR end-to-end and identify the integration points.
+- •  Custom ROI estimate — we model the cost-per-interaction comparison between your current model and MassaPro IVR for the specific process, using your volumes and your fully-loaded staffing costs.
+- •  Reference architecture — we produce a one-page reference architecture for your IT team, showing the ACD integration, the API gateway, the CRM connectors, and the security boundary.
+- •  Pilot proposal — if the ROI case holds, we propose a pilot deployment at 1-3 locations, 60-90 days, with success criteria agreed up front. The pilot includes the kiosk hardware, the platform subscription, and the MassaPro implementation team.
+- •  Decision points — at the end of the pilot, you have the data to decide: scale to the full network, iterate on the configuration, or stop. No long-term lock-in.
+
+SPEAKER NOTES (embed as <aside data-notes class="hidden">):
+This is the close. Be specific about what you are asking for. The ask is a 60-90 minute workshop with one specific process from the customer's operation. Not a generic demo, not a capabilities presentation — a working session on their process. This is the lowest-friction next step that produces the highest-quality outcome, because it forces the customer to engage with the product on their own terms rather than yours. End with the line on the slide: no commitment, no cost, no obligation. The workshop is free. The ROI estimate is free. The reference architecture is free. The only thing the customer has to provide is the process and the people who know it. MassaPro provides everything else. If the customer is not ready to commit to a pilot, the workshop still produces value — both sides learn whether there is a fit, and the customer has a concrete artefact (the ROI estimate and the reference architecture) to take to their internal decision-makers. Close the deck by thanking the audience and asking for the workshop date directly. "I have Tuesday next week or Thursday the week after open — which works better for your team?" This is the classic sales close: assume the next step, offer a binary choice. Do not leave the room without a calendar invitation.
+
+VISUAL/DESIGN HINTS (apply where relevant):
+- •  Clean, simple slide with a single hero image: a calendar or a handshake, in MassaPro purple
+- •  Five-step list of what the workshop includes, with checkmark icons in purple
+- •  Bottom strip: "No commitment · No cost · No obligation" in bold, with strike-through dollar and lock icons
+- •  Contact block: MassaPro branding, sales contact email, phone, website
+- •  Optional: a small QR code in the corner that links to the MassaPro IVR landing page
+
+QUALITY BAR:
+- Canvas exactly 1280×720, overflow hidden.
+- All text passes WCAG AA contrast on its background.
+- Use Material Icons via <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">.
+- Use Tailwind via <script src="https://cdn.tailwindcss.com"></script>.
+- Link <link rel="stylesheet" href="global.css"> in <head>.
+- 60-120 words of substantive on-slide text — no placeholders.
+- Real human image should be prominent (40-50% of slide width on split layouts).
+- Embed full speaker notes verbatim as last <aside data-notes class="hidden">…</aside> child of <body>.

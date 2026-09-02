@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide 5 — Introducing MassaPro IVR</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .intro-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      box-shadow: 0 1px 3px rgba(124,58,237,0.04);
+    }
+    .intro-icon {
+      flex-shrink: 0;
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: var(--primary-50);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .intro-icon .material-icons { font-size: 20px; }
+    .intro-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 14.5px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: -0.003em;
+      line-height: 1.25;
+    }
+    .intro-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      line-height: 1.5;
+      margin-top: 4px;
+    }
+    .intro-desc .accent-bold {
+      color: var(--primary-dark);
+      font-weight: 600;
+    }
+    .no-pill {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      letter-spacing: 0.01em;
+    }
+    .no-pill .material-icons { font-size: 16px; color: #C4B5FD; }
+  </style>
+</head>
+<body>
+  <div class="slide slide-light relative">
+
+    <!-- Left hero image with MassaPro purple gradient overlay -->
+    <div class="absolute top-0 left-0" style="width:560px;height:720px;overflow:hidden;">
+      <img src="human-medspa-1.png" alt="MassaPro video advisor on a service-point screen" class="w-full h-full object-cover" style="object-position: center 25%;">
+      <!-- Top dark gradient for logo legibility -->
+      <div class="absolute inset-x-0 top-0" style="height:140px;background:linear-gradient(180deg, rgba(26,11,46,0.85) 0%, rgba(26,11,46,0.0) 100%);"></div>
+      <!-- Bottom dark gradient -->
+      <div class="absolute inset-x-0 bottom-0" style="height:300px;background:linear-gradient(0deg, rgba(26,11,46,0.95) 0%, rgba(26,11,46,0.20) 60%, transparent 100%);"></div>
+      <!-- Right edge fade -->
+      <div class="absolute inset-y-0 right-0" style="width:80px;background:linear-gradient(270deg, rgba(255,255,255,0.85) 0%, transparent 100%);"></div>
+      <!-- Purple tint -->
+      <div class="absolute inset-0" style="background:linear-gradient(135deg, rgba(124,58,237,0.18) 0%, transparent 50%, rgba(109,40,217,0.20) 100%);"></div>
+
+      <!-- Brand bar over image -->
+      <div class="absolute" style="top:28px;left:32px;display:flex;align-items:center;gap:10px;z-index:10;">
+        <img src="massapro-logo.png" alt="MassaPro" style="height:28px;width:auto;filter:brightness(0) invert(1);">
+        <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.02em;color:#A78BFA;">MassaPro IVR</span>
+      </div>
+
+      <!-- Bottom hero caption -->
+      <div class="absolute" style="bottom:36px;left:32px;right:60px;">
+        <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.20em;text-transform:uppercase;color:#A78BFA;">The Video Layer</div>
+        <div style="font-family:'Playfair Display',serif;font-size:30px;font-weight:700;color:#FFFFFF;line-height:1.15;letter-spacing:-0.01em;margin-top:6px;">Real human advisors.<br>Life-size on every screen.</div>
+        <div style="font-family:'Inter',sans-serif;font-size:13px;font-weight:500;color:rgba(255,255,255,0.78);line-height:1.4;margin-top:8px;">One expert team serves the entire physical and digital network.</div>
+      </div>
+    </div>
+
+    <!-- Right content -->
+    <div class="absolute" style="top:80px;left:600px;right:64px;">
+
+      <!-- Eyebrow + headline -->
+      <div class="eyebrow"><span class="material-icons" style="font-size:13px;">play_circle</span>Introducing</div>
+      <h1 style="font-family:'Inter',sans-serif;font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-0.015em;line-height:1.18;margin-top:12px;">The Video Capability of the MassaPro Platform</h1>
+      <div class="accent-rule" style="margin-top:12px;"></div>
+
+      <!-- Three cards -->
+      <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px;">
+
+        <div class="intro-card">
+          <div class="intro-icon"><span class="material-icons">videocam</span></div>
+          <div>
+            <div class="intro-title">What it is</div>
+            <div class="intro-desc">MassaPro IVR is the video channel of the MassaPro omni-channel AI platform. It connects a customer at a physical service point (or on their own device) to a human advisor over high-definition video, in under 30 seconds.</div>
+          </div>
+        </div>
+
+        <div class="intro-card">
+          <div class="intro-icon"><span class="material-icons">support_agent</span></div>
+          <div>
+            <div class="intro-title">Who it serves</div>
+            <div class="intro-desc">Real human video agents, based at any contact centre in the world. The advisor appears life-size on the service point's screen and looks straight at the camera. The customer experiences a face-to-face interaction.</div>
+          </div>
+        </div>
+
+        <div class="intro-card">
+          <div class="intro-icon"><span class="material-icons">hub</span></div>
+          <div>
+            <div class="intro-title">What makes it different</div>
+            <div class="intro-desc">Natively integrated with <span class="accent-bold">MassaPro AI Agent</span> (autonomous chat and voice), <span class="accent-bold">AI Guru</span> (real-time coaching), <span class="accent-bold">AI Analytics</span> (sentiment and quality), and <span class="accent-bold">MassaPro Flow</span> (orchestration). One platform, every channel, AI and human together.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom three-no callout -->
+      <div style="margin-top:14px;background:linear-gradient(90deg, #2A1450 0%, #4C1D95 100%);border-radius:12px;padding:12px 18px;display:flex;gap:14px;align-items:center;">
+        <div class="no-pill"><span class="material-icons">block</span>No app to install</div>
+        <div style="width:1px;height:18px;background:rgba(255,255,255,0.25);"></div>
+        <div class="no-pill"><span class="material-icons">event_busy</span>No appointment needed</div>
+        <div style="width:1px;height:18px;background:rgba(255,255,255,0.25);"></div>
+        <div class="no-pill"><span class="material-icons">person_off</span>No on-site staff required</div>
+      </div>
+
+    </div>
+
+    <!-- Page footer -->
+    <div class="page-footer">
+      <span>MassaPro IVR — Sales Deck</span>
+      <span>Confidential</span>
+      <span>Slide 5 / 24</span>
+    </div>
+
+  </div>
+
+  <aside data-notes class="hidden">This is the slide where you introduce the product by name. Say it clearly: MassaPro IVR. Spell out what IVR stands for in this context — Interactive Video Response — and emphasise that this is not your father's IVR. Traditional IVR is a voice menu that frustrates callers. MassaPro IVR is a video service that resolves customer needs face-to-face, instantly, anywhere. The most important sentence on the slide is the third bullet: the integration with the rest of the MassaPro platform. This is the moat. Standalone telepresence vendors can replicate the kiosk and the SPLIT architecture. They cannot replicate the AI layer. When the audience asks "why MassaPro and not vendor X," the answer is always: because MassaPro IVR is part of a complete AI-powered omni-channel platform, not a point solution.</aside>
+</body>
+</html>

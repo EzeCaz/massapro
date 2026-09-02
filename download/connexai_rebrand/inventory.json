@@ -1,0 +1,734 @@
+[
+  {
+    "slide": 1,
+    "texts": [
+      {
+        "text": "M",
+        "font_name": "Calibri",
+        "font_size": 23.5,
+        "color": "49B395",
+        "bold": null
+      },
+      {
+        "text": "ConnexAl",
+        "font_name": "Calibri",
+        "font_size": 23.5,
+        "color": null,
+        "bold": null
+      },
+      {
+        "text": "The",
+        "font_name": "Arial MT",
+        "font_size": 24.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Global",
+        "font_name": "Arial MT",
+        "font_size": 24.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Leader",
+        "font_name": "Arial MT",
+        "font_size": 24.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "in",
+        "font_name": "Arial MT",
+        "font_size": 24.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Conversational",
+        "font_name": "Arial MT",
+        "font_size": 24.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Agentic",
+        "font_name": "Arial MT",
+        "font_size": 24.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "AI",
+        "font_name": "Arial MT",
+        "font_size": 24.0,
+        "color": "FFFFFF",
+        "bold": null
+      }
+    ]
+  },
+  {
+    "slide": 2,
+    "texts": [
+      {
+        "text": "One",
+        "font_name": null,
+        "font_size": null,
+        "color": null,
+        "bold": null
+      },
+      {
+        "text": "Platform.",
+        "font_name": null,
+        "font_size": null,
+        "color": null,
+        "bold": null
+      },
+      {
+        "text": "A",
+        "font_name": null,
+        "font_size": null,
+        "color": null,
+        "bold": null
+      },
+      {
+        "text": "Complete",
+        "font_name": null,
+        "font_size": null,
+        "color": null,
+        "bold": null
+      },
+      {
+        "text": "AI",
+        "font_name": null,
+        "font_size": null,
+        "color": null,
+        "bold": null
+      },
+      {
+        "text": "Workforce.",
+        "font_name": null,
+        "font_size": null,
+        "color": null,
+        "bold": null
+      },
+      {
+        "text": "purpose",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "C8C8C8",
+        "bold": null
+      },
+      {
+        "text": "models,",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "BDBDBD",
+        "bold": null
+      },
+      {
+        "text": "we",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "BFBFBF",
+        "bold": null
+      },
+      {
+        "text": "design ",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "C8C8C8",
+        "bold": null
+      },
+      {
+        "text": "and",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "BABABA",
+        "bold": null
+      },
+      {
+        "text": "control every",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "C1C1C1",
+        "bold": null
+      },
+      {
+        "text": " layer",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "C1C1C1",
+        "bold": null
+      },
+      {
+        "text": "of",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "C3C3C3",
+        "bold": null
+      },
+      {
+        "text": "our",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "BCBCBC",
+        "bold": null
+      },
+      {
+        "text": "AI",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "BABABA",
+        "bold": null
+      },
+      {
+        "text": "technology.",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "C8C8C8",
+        "bold": null
+      },
+      {
+        "text": ":.•':",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "249A87",
+        "bold": null
+      },
+      {
+        "text": "Advanced",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": " Agentic",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Application",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Layer",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Capability",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "!{!",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "D8FFFF",
+        "bold": null
+      },
+      {
+        "text": "Proprietary",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Voice",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": " Recognition",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Models",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "•'I..",
+        "font_name": "Arial MT",
+        "font_size": 7.0,
+        "color": "369383",
+        "bold": null
+      },
+      {
+        "text": "Proprietary",
+        "font_name": "Arial MT",
+        "font_size": 7.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Voice",
+        "font_name": "Arial MT",
+        "font_size": 7.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Synthesis",
+        "font_name": "Arial MT",
+        "font_size": 7.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "And",
+        "font_name": "Arial MT",
+        "font_size": 7.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Cloning",
+        "font_name": "Arial MT",
+        "font_size": 7.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "*”",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "6B8E87",
+        "bold": null
+      },
+      {
+        "text": "”",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "AAAAAA",
+        "bold": null
+      },
+      {
+        "text": "=••",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "E2FBFB",
+        "bold": null
+      },
+      {
+        "text": "Advanced",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Fine",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Tuning",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "/",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "DPO",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "LLM",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Layer",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Ø",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "427062",
+        "bold": null
+      },
+      {
+        "text": "100%",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Owned",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Single-",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Vendor",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Stack",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": ",/ê'",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Enterprise",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": " Implementation",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Capability",
+        "font_name": "Arial MT",
+        "font_size": 7.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "žõ'.",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Native",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Omnichannel",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Execution",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Layer",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "For",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "AI",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Agents",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "@•.",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Native",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "AI",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Ouality",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Assurance",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "And",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Analytics",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": " Tools",
+        "font_name": "Arial MT",
+        "font_size": 8.0,
+        "color": "FFFFFF",
+        "bold": null
+      }
+    ]
+  },
+  {
+    "slide": 3,
+    "texts": [
+      {
+        "text": "ConnexAl",
+        "font_name": "Calibri",
+        "font_size": 11.0,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Con",
+        "font_name": "Calibri",
+        "font_size": 8.5,
+        "color": "5DA391",
+        "bold": null
+      },
+      {
+        "text": "tents",
+        "font_name": "Calibri",
+        "font_size": 8.5,
+        "color": "3F796B",
+        "bold": null
+      },
+      {
+        "text": "Unrivaled",
+        "font_name": "Arial MT",
+        "font_size": 15.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Full-",
+        "font_name": "Arial MT",
+        "font_size": 15.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Stack",
+        "font_name": "Arial MT",
+        "font_size": 15.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Agentic",
+        "font_name": "Arial MT",
+        "font_size": 15.5,
+        "color": "FFFFFF",
+        "bold": null
+      },
+      {
+        "text": "Offering",
+        "font_name": "Arial MT",
+        "font_size": 15.5,
+        "color": "FFFFFF",
+        "bold": null
+      }
+    ]
+  },
+  {
+    "slide": 4,
+    "texts": []
+  },
+  {
+    "slide": 5,
+    "texts": []
+  },
+  {
+    "slide": 6,
+    "texts": []
+  },
+  {
+    "slide": 7,
+    "texts": []
+  },
+  {
+    "slide": 8,
+    "texts": []
+  },
+  {
+    "slide": 9,
+    "texts": []
+  },
+  {
+    "slide": 10,
+    "texts": []
+  },
+  {
+    "slide": 11,
+    "texts": []
+  },
+  {
+    "slide": 12,
+    "texts": []
+  },
+  {
+    "slide": 13,
+    "texts": []
+  },
+  {
+    "slide": 14,
+    "texts": []
+  },
+  {
+    "slide": 15,
+    "texts": []
+  },
+  {
+    "slide": 16,
+    "texts": []
+  },
+  {
+    "slide": 17,
+    "texts": []
+  },
+  {
+    "slide": 18,
+    "texts": []
+  },
+  {
+    "slide": 19,
+    "texts": []
+  },
+  {
+    "slide": 20,
+    "texts": []
+  },
+  {
+    "slide": 21,
+    "texts": []
+  },
+  {
+    "slide": 22,
+    "texts": []
+  },
+  {
+    "slide": 23,
+    "texts": []
+  },
+  {
+    "slide": 24,
+    "texts": []
+  },
+  {
+    "slide": 25,
+    "texts": []
+  },
+  {
+    "slide": 26,
+    "texts": []
+  },
+  {
+    "slide": 27,
+    "texts": []
+  },
+  {
+    "slide": 28,
+    "texts": []
+  },
+  {
+    "slide": 29,
+    "texts": []
+  },
+  {
+    "slide": 30,
+    "texts": []
+  }
+]

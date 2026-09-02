@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 13 — Routing and Continuity</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<style>
+  .img-pane {
+    position: relative;
+    height: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 14px 36px rgba(124,58,237,0.20);
+    border: 1px solid var(--primary-100);
+  }
+  .img-pane img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-pane::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(26,11,46,0.10) 0%, rgba(26,11,46,0.55) 100%);
+  }
+  .img-pane .pane-tag {
+    position: absolute; left: 20px; top: 20px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,0.92);
+    color: var(--primary-dark);
+    font-size: 10px; font-weight: 700;
+    padding: 5px 10px; border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+  .img-pane .pane-tag .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--primary);
+  }
+  .img-pane .pane-caption {
+    position: absolute; left: 22px; right: 22px; bottom: 22px; z-index: 2;
+    color: #fff;
+  }
+  .img-pane .pane-caption .pc-title {
+    font-family: var(--font-heading);
+    font-weight: 700; font-size: 16px; line-height: 1.3;
+  }
+  .img-pane .pane-caption .pc-sub {
+    font-size: 11px; opacity: 0.85; margin-top: 4px;
+    line-height: 1.4;
+  }
+  .step-row {
+    display: grid;
+    grid-template-columns: 1fr 28px 1fr 28px 1fr;
+    gap: 6px;
+    align-items: stretch;
+  }
+  .step-card {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 14px 14px;
+    box-shadow: 0 1px 3px rgba(124,58,237,0.04);
+    position: relative;
+  }
+  .step-card .sc-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 6px;
+  }
+  .step-card .sc-num {
+    width: 26px; height: 26px; border-radius: 8px;
+    background: var(--primary); color: #fff;
+    font-family: var(--font-heading); font-weight: 700; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-card h3 {
+    font-family: var(--font-heading); font-weight: 700;
+    font-size: 13.5px; color: var(--primary-dark);
+    letter-spacing: -0.01em;
+  }
+  .step-card .sc-role {
+    font-size: 10.5px; color: var(--muted);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    font-weight: 600; margin-top: -2px; margin-bottom: 6px;
+  }
+  .step-card p {
+    font-size: 11.5px; line-height: 1.4; color: var(--ink-soft);
+  }
+  .step-card .ctx-chips {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 8px;
+  }
+  .ctx-chip {
+    font-size: 9px; font-weight: 600;
+    background: var(--primary-50); color: var(--primary-dark);
+    border: 1px solid var(--primary-100);
+    padding: 2px 6px; border-radius: 4px;
+    letter-spacing: 0.04em;
+  }
+  .arrow-cell {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--primary);
+  }
+  .arrow-cell .arrow-line {
+    position: relative;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, var(--primary-100), var(--primary));
+    border-radius: 2px;
+  }
+  .arrow-cell .arrow-line::after {
+    content: '';
+    position: absolute; right: -2px; top: 50%; transform: translateY(-50%);
+    width: 0; height: 0;
+    border-left: 8px solid var(--primary);
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+  }
+  .acd-strip {
+    background: linear-gradient(90deg, rgba(124,58,237,0.06), rgba(167,139,250,0.10));
+    border-radius: 12px;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .acd-label {
+    font-family: var(--font-heading);
+    font-size: 10px; font-weight: 700;
+    color: var(--primary-dark);
+    letter-spacing: 0.16em; text-transform: uppercase;
+    flex-shrink: 0;
+    border-right: 1px solid var(--primary-100);
+    padding-right: 14px;
+  }
+  .acd-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #FFFFFF;
+    border: 1px solid var(--primary-100);
+    border-radius: 999px;
+    padding: 4px 11px;
+    font-size: 11px; font-weight: 600;
+    color: var(--primary-dark);
+  }
+  .acd-pill .material-icons { font-size: 12px; color: var(--primary); }
+  .no-repeat-callout {
+    background: var(--primary);
+    color: #fff;
+    border-radius: 12px;
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 6px 16px rgba(124,58,237,0.30);
+  }
+</style>
+</head>
+<body>
+<div class="slide slide-light">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <img src="massapro-logo.png" alt="MassaPro">
+    <span class="brand-name">MassaPro</span>
+  </div>
+
+  <!-- Decor -->
+  <div data-decor aria-hidden="true" style="position:absolute; top:-80px; right:-80px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle, rgba(167,139,250,0.12) 0%, rgba(167,139,250,0) 70%); z-index:0;"></div>
+
+  <div class="absolute inset-0 flex flex-col" style="padding: 78px 64px 60px 64px;">
+
+    <!-- Header -->
+    <div style="margin-bottom: 14px;">
+      <div class="eyebrow" style="margin-bottom: 10px;">
+        <span class="material-icons icon-sm">route</span>
+        Chapter 03 — Integration &amp; Operations
+      </div>
+      <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 30px; line-height: 1.13; color: var(--ink); letter-spacing: -0.02em; max-width: 880px;">
+        Routing and Continuity — <span class="accent-text">Customers Never Repeat Themselves Across Any Transfer</span>
+      </h1>
+      <div class="accent-rule" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- Body: text-left + image-right -->
+    <div class="flex gap-6" style="flex: 1; min-height: 0;">
+
+      <!-- LEFT: 3-step flow -->
+      <div style="width: 60%;" class="flex flex-col">
+        <div class="step-row" style="flex: 1;">
+
+          <div class="step-card">
+            <div class="sc-head">
+              <div class="sc-num">1</div>
+              <h3>Customer</h3>
+            </div>
+            <div class="sc-role">At the service point</div>
+            <p>Data captured <em>before connecting</em>: identity, reason, and context from the service point.</p>
+            <div class="ctx-chips">
+              <span class="ctx-chip">Identity</span>
+              <span class="ctx-chip">Reason</span>
+              <span class="ctx-chip">Context</span>
+            </div>
+          </div>
+
+          <div class="arrow-cell"><div class="arrow-line"></div></div>
+
+          <div class="step-card">
+            <div class="sc-head">
+              <div class="sc-num">2</div>
+              <h3>Advisor A</h3>
+            </div>
+            <div class="sc-role">Receives in context</div>
+            <p>Receives the session already in context. Handles it, documents it, and decides whether to escalate.</p>
+            <div class="ctx-chips">
+              <span class="ctx-chip">Conversation</span>
+              <span class="ctx-chip">Documents</span>
+              <span class="ctx-chip">Notes</span>
+            </div>
+          </div>
+
+          <div class="arrow-cell"><div class="arrow-line"></div></div>
+
+          <div class="step-card">
+            <div class="sc-head">
+              <div class="sc-num">3</div>
+              <h3>Supervisor B</h3>
+            </div>
+            <div class="sc-role">Inherits full session</div>
+            <p>Inherits the full session: conversation, documents, and data — without dropping the video.</p>
+            <div class="ctx-chips">
+              <span class="ctx-chip">Full history</span>
+              <span class="ctx-chip">Live video</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- No-repeat callout -->
+        <div class="no-repeat-callout" style="margin-top: 12px;">
+          <span class="material-icons" style="font-size: 22px;">repeat_one</span>
+          <div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 14px; line-height: 1.2;">
+              Full context carried through the entire chain. Zero repetition.
+            </div>
+            <div style="font-size: 11px; opacity: 0.9; margin-top: 2px;">
+              Native ACD routing — Genesys, Cisco, Five9, GoContact, Avaya, and more.
+            </div>
+          </div>
+        </div>
+
+        <!-- ACD badges strip -->
+        <div class="acd-strip" style="margin-top: 10px;">
+          <div class="acd-label">Native ACD</div>
+          <div class="flex flex-wrap gap-2" style="flex:1;">
+            <span class="acd-pill"><span class="material-icons">hub</span>Genesys</span>
+            <span class="acd-pill"><span class="material-icons">hub</span>Cisco</span>
+            <span class="acd-pill"><span class="material-icons">hub</span>Avaya</span>
+            <span class="acd-pill"><span class="material-icons">hub</span>Five9</span>
+            <span class="acd-pill"><span class="material-icons">hub</span>GoContact</span>
+            <span class="acd-pill" style="background: var(--primary-50);"><span class="material-icons">add</span>&amp; more</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT: Image -->
+      <div style="width: 40%;">
+        <div class="img-pane">
+          <img src="human-aura-vet.png" alt="Video advisor handing off a session with full context preserved">
+          <div class="pane-tag"><span class="dot"></span>Live transfer</div>
+          <div class="pane-caption">
+            <div class="pc-title">Transfer without starting over.</div>
+            <div class="pc-sub">Conversation, documents, and data flow with the customer — the video never drops.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <span>MassaPro IVR — Sales Deck</span>
+    <span class="footer-meta">
+      <span>Confidential</span>
+      <span class="footer-divider"></span>
+      <span>Slide 13 / 24</span>
+    </span>
+  </div>
+
+</div>
+
+<aside data-notes class="hidden">
+This slide answers the question every contact-centre leader asks: what happens when the first advisor cannot resolve the issue? The answer is: the session transfers with full context, the customer does not have to repeat themselves, and the video does not drop. This is a fundamental difference from a standard video call, where a transfer means starting over. The native ACD integration is the technical enabler. MassaPro IVR does not replace your existing contact-centre routing — it plugs into it. If you have Genesys, MassaPro IVR routes through Genesys. If you have Cisco, it routes through Cisco. The advisor console is browser-based and works alongside your existing agent desktop, or as a standalone. No migration required. The implication for the customer is simple: the second advisor already knows your name, your reason, and what was just discussed. The session feels continuous — not like a hand-off.
+</aside>
+
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 20 — Sector Applications</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<style>
+  .sector-card {
+    border-radius: 14px; overflow: hidden; display: flex;
+    background: white; border: 1px solid var(--line);
+    box-shadow: 0 1px 3px rgba(124,58,237,0.04);
+  }
+  .sector-card .icon-strip {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 16px 12px; background: var(--primary-50); width: 92px; flex-shrink: 0;
+  }
+  .sector-card .icon-strip .icon { color: var(--primary); font-size: 36px !important; }
+  .sector-card .icon-strip .num {
+    font-size: 9px; letter-spacing: 0.14em; font-weight: 700; color: var(--primary); margin-top: 4px;
+    text-transform: uppercase;
+  }
+  .sector-card .body { padding: 16px 18px; flex: 1; }
+  .sector-card h3 { font-family: var(--font-heading); font-weight: 700; font-size: 18px; color: var(--primary-dark); margin-bottom: 4px; line-height: 1.1; }
+  .sector-card p { font-size: 12.5px; line-height: 1.45; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="slide slide-light">
+  <div class="brand-bar">
+    <img src="massapro-logo.png" alt="MassaPro">
+    <span class="brand-name">MassaPro</span>
+  </div>
+  <div class="absolute top-[28px] right-[48px] text-[11px] tracking-[0.18em] uppercase font-bold" style="color: var(--muted);">
+    Chapter 04 — Proof &amp; Business Case
+  </div>
+
+  <!-- header -->
+  <div class="absolute" style="top: 80px; left: 60px; right: 60px;">
+    <div class="flex items-end justify-between gap-8">
+      <div class="flex-1">
+        <div class="eyebrow mb-3"><span class="material-icons" style="font-size:14px;">grid_view</span>Sector Applications</div>
+        <h1 class="font-bold leading-[1.05] tracking-[-0.02em]" style="font-family: var(--font-heading); font-size: 36px; color: var(--primary-dark);">The Same Model, Four Different Operations</h1>
+        <p class="mt-2 text-[14px]" style="color: var(--muted);">Sector-agnostic — the configuration lives in MassaPro Flow, not in the code.</p>
+      </div>
+      <img src="human-hairsalon-receptionist.png" alt="Receptionist" class="w-[100px] h-[100px] rounded-full object-cover flex-shrink-0" style="border: 3px solid var(--primary-100); box-shadow: 0 4px 14px rgba(124,58,237,0.10);">
+    </div>
+  </div>
+
+  <!-- 2x2 grid -->
+  <div class="absolute grid grid-cols-2 gap-5" style="top: 220px; left: 60px; right: 60px; bottom: 110px;">
+    <div class="sector-card">
+      <div class="icon-strip">
+        <span class="material-icons icon">account_balance</span>
+        <span class="num">Sector 01</span>
+      </div>
+      <div class="body">
+        <h3>Finance</h3>
+        <p>Assisted claims assessment, account opening, policy issuance, and claim filing, with visual verification of the policyholder and their document. <span class="font-semibold" style="color: var(--primary-dark);">After-hours service without after-hours staffing.</span></p>
+      </div>
+    </div>
+
+    <div class="sector-card">
+      <div class="icon-strip">
+        <span class="material-icons icon">shopping_bag</span>
+        <span class="num">Sector 02</span>
+      </div>
+      <div class="body">
+        <h3>Retail</h3>
+        <p>Personal shopper and in-store product advisory. <span class="font-semibold" style="color: var(--primary-dark);">One brand specialist covers the entire retail network.</span> Customers at any store can speak with the specialist, see the product on screen, and place the order.</p>
+      </div>
+    </div>
+
+    <div class="sector-card">
+      <div class="icon-strip">
+        <span class="material-icons icon">flight</span>
+        <span class="num">Sector 03</span>
+      </div>
+      <div class="body">
+        <h3>Travel &amp; Hospitality</h3>
+        <p>Multilingual 24/7 concierge in the hotel, resort, or tour lobby. <span class="font-semibold" style="color: var(--primary-dark);">No need for a staffed desk overnight.</span> Guests check in, get recommendations, and book excursions from a kiosk.</p>
+      </div>
+    </div>
+
+    <div class="sector-card">
+      <div class="icon-strip">
+        <span class="material-icons icon">local_hospital</span>
+        <span class="num">Sector 04</span>
+      </div>
+      <div class="body">
+        <h3>Healthcare</h3>
+        <p>Admissions, initial triage, and patient guidance at clinics and centres without permanent front-desk staff. <span class="font-semibold" style="color: var(--primary-dark);">Patients check in, verify identity, and are routed to the right clinician — all on video.</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- bottom strip -->
+  <div class="absolute flex items-center gap-4" style="bottom: 60px; left: 60px; right: 60px;">
+    <div class="flex-1 rounded-lg flex items-center gap-4 p-3 px-5" style="background: var(--primary-50); border-left: 4px solid var(--primary);">
+      <span class="material-icons" style="color: var(--primary); font-size: 22px;">account_tree</span>
+      <p class="text-[14px] font-semibold" style="color: var(--primary-dark);">Same platform, different configuration — MassaPro Flow routes each sector's journey: <span class="opacity-70">scan → identify → connect → talk.</span></p>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="page-footer">
+    <span>MassaPro IVR — Sales Deck</span>
+    <span>Confidential</span>
+    <span>Slide 20 / 24</span>
+  </div>
+
+  <aside data-notes class="hidden">
+    This slide is a menu, not a list. The audience should be able to find their sector on the slide and picture their own operation running on MassaPro IVR. If they are in finance, the banking use case is for them. If they are in retail, the personal shopper use case is for them. Walk through each sector briefly, but spend the most time on the sector that matches the audience. Be ready to discuss sectors not on the slide. The platform is sector-agnostic — the same software that runs a bank kiosk can run a government services kiosk, a university admissions kiosk, or a car dealership kiosk. The configuration is in MassaPro Flow, not in the code. If the audience asks about a sector not listed, the answer is: if you have a service point and a customer who needs to speak with a human, MassaPro IVR applies.
+  </aside>
+</div>
+</body>
+</html>

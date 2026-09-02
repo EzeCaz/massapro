@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 19 — Service Continuity</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<style>
+  .step-card {
+    border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; background: white;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .step-card .step-num {
+    width: 28px; height: 28px; border-radius: 50%; background: var(--primary);
+    color: white; font-weight: 700; font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .step-card .step-num.fail { background: #DC2626; }
+  .step-card h3 { font-family: var(--font-heading); font-weight: 700; font-size: 13px; color: var(--primary-dark); margin-bottom: 2px; }
+  .step-card p { font-size: 11.5px; line-height: 1.4; color: var(--ink-soft); }
+</style>
+</head>
+<body>
+<div class="slide slide-light">
+  <div class="brand-bar">
+    <img src="massapro-logo.png" alt="MassaPro">
+    <span class="brand-name">MassaPro</span>
+  </div>
+  <div class="absolute top-[28px] right-[48px] text-[11px] tracking-[0.18em] uppercase font-bold" style="color: var(--muted);">
+    Chapter 03 — Integration &amp; Operations
+  </div>
+
+  <!-- main split -->
+  <div class="absolute" style="top: 80px; left: 60px; right: 60px; bottom: 110px;">
+    <div class="grid h-full gap-7" style="grid-template-columns: 1fr 460px;">
+      <!-- LEFT -->
+      <div class="flex flex-col">
+        <div class="eyebrow mb-3 self-start"><span class="material-icons" style="font-size:14px;">cloud_sync</span>Service Continuity</div>
+        <h1 class="font-bold leading-[1.05] tracking-[-0.02em]" style="font-family: var(--font-heading); font-size: 34px; color: var(--primary-dark);">If Local Hardware Fails, the Service Never Goes Down</h1>
+        <p class="mt-2 text-[14px]" style="color: var(--muted);">The kiosk is a convenience, not a dependency. The session lives in the cloud — the customer always has their phone.</p>
+
+        <!-- 3-step diagram -->
+        <div class="mt-4 grid grid-cols-3 gap-3">
+          <div class="step-card">
+            <div class="step-num">1</div>
+            <div>
+              <h3>Kiosk Working</h3>
+              <p>100% multimodal — runs even without fixed screens. The session lives in the cloud, not on the kiosk.</p>
+            </div>
+          </div>
+          <div class="step-card" style="border-color: #FECACA; background: #FEF2F2;">
+            <div class="step-num fail">2</div>
+            <div>
+              <h3 style="color: #B91C1C;">Kiosk Fails</h3>
+              <p>Screen goes dark. Static QR code backup — the printed sticker works even if the kiosk is completely down.</p>
+            </div>
+          </div>
+          <div class="step-card">
+            <div class="step-num">3</div>
+            <div>
+              <h3>Mobile Continues</h3>
+              <p>Customer scans the sticker and continues on their phone. Full video, audio, and shared screen — just a smaller display.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4 bullets -->
+        <div class="mt-4 grid grid-cols-2 gap-x-5 gap-y-2 text-[12.5px] leading-snug" style="color: var(--ink-soft);">
+          <div class="mp-bullet"><span class="font-semibold" style="color: var(--primary-dark);">Resilient by design</span> — keeps running even without fixed screens.</div>
+          <div class="mp-bullet"><span class="font-semibold" style="color: var(--primary-dark);">Static QR code backup</span> — the printed sticker works if the kiosk is down.</div>
+          <div class="mp-bullet"><span class="font-semibold" style="color: var(--primary-dark);">Full mobile session</span> — customers keep video, audio, and shared screen from their own device.</div>
+          <div class="mp-bullet"><span class="font-semibold" style="color: var(--primary-dark);">Active session from mobile</span> — the session that started on the kiosk continues on the phone as if nothing happened.</div>
+        </div>
+      </div>
+
+      <!-- RIGHT image -->
+      <div class="rounded-xl overflow-hidden relative h-full">
+        <img src="human-concierge-vet.png" alt="Concierge video agent" class="w-full h-full object-cover">
+        <div class="absolute inset-0" style="background: linear-gradient(180deg, rgba(26,11,46,0.10) 0%, rgba(26,11,46,0.70) 100%);"></div>
+        <!-- floating uptime badge -->
+        <div class="absolute top-5 left-5 rounded-lg px-3 py-2.5 flex items-center gap-2.5" style="background: rgba(255,255,255,0.96); border: 1px solid var(--primary); box-shadow: 0 6px 18px rgba(26,11,46,0.18);">
+          <span class="material-icons" style="color: var(--primary); font-size: 22px;">verified</span>
+          <div>
+            <div class="text-[9px] tracking-[0.12em] uppercase font-bold" style="color: var(--muted);">Service Availability</div>
+            <div class="text-[15px] font-bold leading-tight" style="color: var(--primary-dark);">99.99%</div>
+            <div class="text-[10px] leading-tight" style="color: var(--ink-soft);">even during hardware failure</div>
+          </div>
+        </div>
+        <!-- bottom label -->
+        <div class="absolute bottom-5 left-5 right-5 text-white">
+          <div class="text-[10px] tracking-[0.14em] uppercase font-bold opacity-80 mb-1.5">MTTR drops from hours to zero</div>
+          <div class="text-[16px] font-semibold leading-tight" style="font-family: var(--font-display);">"The customer never notices the kiosk is down."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- bottom strip -->
+  <div class="absolute" style="bottom: 60px; left: 60px; right: 60px;">
+    <div class="rounded-lg flex items-center gap-3 p-3 px-5 flex-wrap" style="background: var(--primary-50); border-left: 4px solid var(--primary);">
+      <span class="material-icons" style="color: var(--primary); font-size: 22px;">support_agent</span>
+      <div class="flex items-center gap-3 text-[14px] font-semibold flex-wrap" style="color: var(--primary-dark);">
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="font-size:16px; color: var(--primary);">check_circle</span>No technician dispatch</span>
+        <span class="opacity-40">·</span>
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="font-size:16px; color: var(--primary);">check_circle</span>No support ticket</span>
+        <span class="opacity-40">·</span>
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="font-size:16px; color: var(--primary);">check_circle</span>No service interruption</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="page-footer">
+    <span>MassaPro IVR — Sales Deck</span>
+    <span>Confidential</span>
+    <span>Slide 19 / 24</span>
+  </div>
+
+  <aside data-notes class="hidden">
+    This slide answers the operations continuity question: what happens when the kiosk breaks? The answer is: the service continues on the customer's phone. The kiosk is a convenience, not a dependency. The session is in the cloud, the customer has their phone, and the QR sticker is printed on the wall. As long as two of those three things are working, the service is working. This is a meaningful operational advantage. In a traditional kiosk deployment, a hardware failure means a service outage until a technician is dispatched. With MassaPro IVR, a hardware failure means the customer uses a slightly smaller screen. The Mean Time To Repair drops from hours (technician dispatch) to zero (the customer never notices). For multi-site operators with remote locations, this is the difference between a service that is up 99% of the time and one that is up 99.99% of the time.
+  </aside>
+</div>
+</body>
+</html>

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 11 — Customer Experience</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<style>
+  .img-pane {
+    position: relative;
+    height: 100%;
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: 0 14px 36px rgba(124,58,237,0.20);
+    border: 1px solid var(--primary-100);
+  }
+  .img-pane img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-pane::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(26,11,46,0.10) 0%, rgba(26,11,46,0.30) 45%, rgba(124,58,237,0.70) 100%);
+  }
+  .img-overlay-tag {
+    position: absolute; left: 22px; top: 22px; z-index: 2;
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.92);
+    color: var(--primary-dark);
+    font-size: 11px; font-weight: 700;
+    padding: 6px 12px; border-radius: 999px;
+    letter-spacing: 0.05em;
+  }
+  .img-overlay-tag .dot {
+    width: 7px; height: 7px; border-radius: 50%; background: var(--primary);
+    box-shadow: 0 0 0 4px rgba(124,58,237,0.18);
+  }
+  .img-overlay-quote {
+    position: absolute; left: 26px; right: 26px; bottom: 24px; z-index: 2;
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 18px; line-height: 1.4;
+    font-style: italic;
+  }
+  .img-overlay-quote .by {
+    display: block;
+    font-family: var(--font-body);
+    font-style: normal;
+    font-size: 10.5px; letter-spacing: 0.18em; text-transform: uppercase;
+    font-weight: 700; opacity: 0.85;
+    margin-top: 8px;
+  }
+  .pillar {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 1px 3px rgba(124,58,237,0.04);
+    display: flex; flex-direction: column; gap: 6px;
+    position: relative;
+  }
+  .pillar::before {
+    content: '';
+    position: absolute; left: 0; top: 18px;
+    width: 3px; height: 28px;
+    background: var(--primary);
+    border-radius: 0 2px 2px 0;
+  }
+  .pillar .p-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: var(--primary-50); color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 4px;
+  }
+  .pillar h3 {
+    font-family: var(--font-heading); font-weight: 700;
+    font-size: 15px; color: var(--primary-dark);
+    letter-spacing: -0.01em;
+  }
+  .pillar p {
+    font-size: 12px; line-height: 1.45; color: var(--ink-soft);
+  }
+  .phone-mini {
+    position: absolute;
+    right: -22px; bottom: -18px;
+    width: 92px;
+    background: #1A0B2E;
+    border-radius: 14px;
+    padding: 8px;
+    box-shadow: 0 14px 28px rgba(0,0,0,0.30);
+    z-index: 3;
+    border: 1px solid #3B1D6B;
+  }
+  .phone-mini .pm-screen {
+    background: linear-gradient(180deg, #2D1A52 0%, #1A0B2E 100%);
+    border-radius: 8px;
+    padding: 8px 6px;
+    color: #fff;
+    text-align: center;
+  }
+  .phone-mini .pm-row {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; margin-bottom: 4px;
+  }
+  .phone-mini .pm-row .material-icons { font-size: 13px; color: var(--primary-light); }
+  .phone-mini .pm-row span.lbl { font-size: 8.5px; color: rgba(255,255,255,0.85); font-weight: 600; }
+  .phone-mini .pm-btns { display: flex; gap: 4px; justify-content: center; margin-top: 6px; }
+  .phone-mini .pm-btn {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(255,255,255,0.14);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .phone-mini .pm-btn .material-icons { font-size: 9px; color: #fff; }
+  .phone-mini .pm-btn.end { background: #EF4444; }
+</style>
+</head>
+<body>
+<div class="slide slide-light">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <img src="massapro-logo.png" alt="MassaPro">
+    <span class="brand-name">MassaPro</span>
+  </div>
+
+  <!-- Decor -->
+  <div data-decor aria-hidden="true" style="position:absolute; bottom:-120px; right:-100px; width:340px; height:340px; border-radius:50%; background:radial-gradient(circle, rgba(167,139,250,0.14) 0%, rgba(167,139,250,0) 70%); z-index:0;"></div>
+
+  <div class="absolute inset-0 flex" style="padding: 84px 64px 64px 64px;">
+
+    <!-- LEFT: Image pane (45%) -->
+    <div style="width: 45%; padding-right: 28px; position: relative;">
+      <div class="img-pane">
+        <img src="human-medspa-2.png" alt="Customer at a service point speaking with a video advisor life-size on screen">
+        <div class="img-overlay-tag">
+          <span class="dot"></span>
+          Live video session
+        </div>
+        <div class="img-overlay-quote">
+          "It felt like she was standing<br>right in front of me."
+          <span class="by">— Customer, Med-Spa pilot</span>
+        </div>
+      </div>
+
+      <!-- Phone inset showing session controls -->
+      <div class="phone-mini">
+        <div class="pm-screen">
+          <div style="font-size: 7.5px; color: rgba(255,255,255,0.6); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 4px;">Your session</div>
+          <div class="pm-row">
+            <span class="material-icons">pause_circle</span>
+            <span class="lbl">Hold</span>
+          </div>
+          <div class="pm-row">
+            <span class="material-icons">mic_off</span>
+            <span class="lbl">Mute</span>
+          </div>
+          <div class="pm-row">
+            <span class="material-icons">swap_horiz</span>
+            <span class="lbl">Channel</span>
+          </div>
+          <div class="pm-btns">
+            <div class="pm-btn"><span class="material-icons">volume_up</span></div>
+            <div class="pm-btn end"><span class="material-icons">call_end</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Text column (55%) -->
+    <div style="width: 55%; padding-left: 12px;" class="flex flex-col">
+
+      <div class="eyebrow" style="margin-bottom: 12px;">
+        <span class="material-icons icon-sm">favorite</span>
+        Chapter 02 — How It Works
+      </div>
+
+      <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 34px; line-height: 1.13; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 8px;">
+        Why It Feels Like <span class="accent-text">In-Person Service</span>
+      </h1>
+      <div class="accent-rule" style="margin-bottom: 16px;"></div>
+
+      <p style="font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 16px; max-width: 540px;">
+        Three pillars make MassaPro IVR feel like a person standing in front of you — not a video call on a laptop. The technology disappears; the interaction is what the customer remembers.
+      </p>
+
+      <!-- Three pillar cards stacked -->
+      <div class="flex flex-col gap-3">
+        <div class="pillar">
+          <div class="flex items-start gap-3">
+            <div class="p-icon"><span class="material-icons">person</span></div>
+            <div style="flex:1;">
+              <h3>Human Scale</h3>
+              <p>The advisor appears life-size on the service point's screen, looking straight at the camera. Perceived service and trust match a staffed counter — not a video call on a laptop; a person standing in front of you.</p>
+            </div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="flex items-start gap-3">
+            <div class="p-icon"><span class="material-icons">description</span></div>
+            <div style="flex:1;">
+              <h3>Shared Viewing</h3>
+              <p>The advisor shares contracts, forms, or catalogues on screen in real time. Customers visually review orders, applications, or documents before confirming. No more "I will email it to you later."</p>
+            </div>
+          </div>
+        </div>
+        <div class="pillar">
+          <div class="flex items-start gap-3">
+            <div class="p-icon"><span class="material-icons">smartphone</span></div>
+            <div style="flex:1;">
+              <h3>Control from Their Phone</h3>
+              <p>The customer runs the session from their own phone. No shared touchscreens. No giving up control to a kiosk. They can end the session, mute, or switch channels at any time.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <span>MassaPro IVR — Sales Deck</span>
+    <span class="footer-meta">
+      <span>Confidential</span>
+      <span class="footer-divider"></span>
+      <span>Slide 11 / 24</span>
+    </span>
+  </div>
+
+</div>
+
+<aside data-notes class="hidden">
+This slide is about the felt experience of the customer. The three pillars — human scale, shared viewing, control — are what make MassaPro IVR feel like in-person service rather than a video call. The technology disappears and the interaction is what the customer remembers. If you have a demo video, this is the slide to play it on. A 30-second clip of a real customer using a kiosk to speak with an advisor — seeing the advisor life-size, reviewing a document on screen, confirming with a tap on their phone — is worth a thousand bullet points. If no video is available, the visual recommendation below should be designed to convey the same feeling. Walk the room through a single story: the customer walks up, the advisor appears life-size, they review the document together, the customer taps once on their own phone to confirm. That sequence is the whole promise of MassaPro IVR in 30 seconds.
+</aside>
+
+</body>
+</html>

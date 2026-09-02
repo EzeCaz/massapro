@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 24 — Next Steps</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<style>
+  .cta-card {
+    background: rgba(255,255,255,0.06); border: 1px solid rgba(167,139,250,0.30);
+    border-radius: 14px; padding: 14px 16px; backdrop-filter: blur(8px);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .cta-card .icon-wrap {
+    width: 42px; height: 42px; border-radius: 10px; background: var(--primary);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .cta-card .cta-tag { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; font-weight: 700; color: var(--primary-soft); }
+  .cta-card .cta-name { font-size: 14px; font-weight: 700; color: white; line-height: 1.15; }
+  .ws-bullet { display: flex; gap: 8px; align-items: flex-start; }
+  .ws-bullet .material-icons { color: var(--primary-light); font-size: 14px; margin-top: 2px; flex-shrink: 0; }
+  .ws-bullet .text { font-size: 11.5px; line-height: 1.4; color: rgba(255,255,255,0.85); }
+  .ws-bullet .text strong { color: white; font-weight: 600; }
+  /* Decorative blobs */
+  .decor-blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.35; pointer-events: none; }
+</style>
+</head>
+<body>
+<div class="slide slide-dark-grad">
+  <!-- decorative gradient blobs -->
+  <div class="decor-blob" data-decor aria-hidden="true" style="background: #A78BFA; width: 320px; height: 320px; top: -80px; right: -80px;"></div>
+  <div class="decor-blob" data-decor aria-hidden="true" style="background: #6D28D9; width: 280px; height: 280px; bottom: -60px; left: -60px; opacity: 0.45;"></div>
+
+  <div class="brand-bar">
+    <img src="massapro-logo.png" alt="MassaPro">
+    <span class="brand-name">MassaPro</span>
+  </div>
+  <div class="absolute top-[28px] right-[48px] text-[11px] tracking-[0.18em] uppercase font-bold" style="color: rgba(255,255,255,0.65);">
+    Chapter 05 — Roadmap &amp; Next Steps
+  </div>
+
+  <!-- HERO -->
+  <div class="absolute" style="top: 70px; left: 60px; right: 60px;">
+    <div class="flex items-center gap-8">
+      <div class="flex-1">
+        <div class="eyebrow mb-3"><span class="material-icons" style="font-size:14px;">event_available</span>Next Steps</div>
+        <h1 class="font-bold leading-[0.98] tracking-[-0.025em]" style="font-family: var(--font-display); font-size: 60px; color: white;">Let's Talk About<br>Your Case</h1>
+        <p class="mt-3 text-[17px]" style="color: rgba(255,255,255,0.85);">Book your discovery session — <span class="font-semibold" style="color: var(--primary-soft);">30 minutes, no obligation.</span></p>
+      </div>
+      <div class="relative flex-shrink-0">
+        <img src="human-medspa-3.png" alt="MassaPro specialist" class="w-[180px] h-[180px] rounded-full object-cover" style="border: 4px solid rgba(167,139,250,0.5); box-shadow: 0 12px 36px rgba(0,0,0,0.4);">
+        <div class="absolute -bottom-2 -right-2 rounded-full px-2.5 py-1 flex items-center gap-1" style="background: var(--primary); color: white; border: 2px solid rgba(255,255,255,0.25); box-shadow: 0 4px 14px rgba(0,0,0,0.3);">
+          <span class="material-icons" style="font-size: 14px;">support_agent</span>
+          <span class="text-[10px] font-bold tracking-[0.08em]">YOUR TEAM</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 CTA cards -->
+  <div class="absolute" style="top: 300px; left: 60px; right: 60px;">
+    <div class="grid grid-cols-3 gap-4">
+      <div class="cta-card">
+        <div class="icon-wrap"><span class="material-icons" style="color: white; font-size: 22px;">play_circle</span></div>
+        <div>
+          <div class="cta-tag">CTA 01</div>
+          <div class="cta-name">Book a Demo</div>
+        </div>
+      </div>
+      <div class="cta-card">
+        <div class="icon-wrap"><span class="material-icons" style="color: white; font-size: 22px;">calculate</span></div>
+        <div>
+          <div class="cta-tag">CTA 02</div>
+          <div class="cta-name">Request a Worked ROI Example</div>
+        </div>
+      </div>
+      <div class="cta-card">
+        <div class="icon-wrap"><span class="material-icons" style="color: white; font-size: 22px;">place</span></div>
+        <div>
+          <div class="cta-tag">CTA 03</div>
+          <div class="cta-name">Schedule a Site Visit</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Discovery session includes -->
+  <div class="absolute" style="top: 408px; left: 60px; right: 60px;">
+    <div class="text-[10px] tracking-[0.14em] uppercase font-bold mb-2.5" style="color: var(--primary-soft);">What the discovery session includes</div>
+    <div class="grid grid-cols-2 gap-x-6 gap-y-2">
+      <div class="ws-bullet">
+        <span class="material-icons">check_circle</span>
+        <div class="text"><strong>Workshop session (60–90 min)</strong> — bring one specific process (account opening, claims intake, technical support, concierge, etc.). We map it to MassaPro IVR end-to-end and identify the integration points.</div>
+      </div>
+      <div class="ws-bullet">
+        <span class="material-icons">check_circle</span>
+        <div class="text"><strong>Custom ROI estimate</strong> — we model the cost-per-interaction comparison between your current model and MassaPro IVR for the specific process, using your volumes and your fully-loaded staffing costs.</div>
+      </div>
+      <div class="ws-bullet">
+        <span class="material-icons">check_circle</span>
+        <div class="text"><strong>Reference architecture</strong> — we produce a one-page reference architecture for your IT team, showing the ACD integration, the API gateway, the CRM connectors, and the security boundary.</div>
+      </div>
+      <div class="ws-bullet">
+        <span class="material-icons">check_circle</span>
+        <div class="text"><strong>Pilot proposal</strong> — if the ROI case holds, we propose a pilot deployment at 1–3 locations, 60–90 days, with success criteria agreed up front. Pilot includes kiosk hardware, platform subscription, and MassaPro implementation team.</div>
+      </div>
+      <div class="ws-bullet col-span-2">
+        <span class="material-icons">check_circle</span>
+        <div class="text"><strong>Decision points</strong> — at the end of the pilot, you have the data to decide: scale to the full network, iterate on the configuration, or stop. <strong>No long-term lock-in.</strong></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- bottom strip -->
+  <div class="absolute" style="bottom: 56px; left: 60px; right: 60px;">
+    <div class="flex items-center justify-between gap-4 rounded-lg p-3 px-5" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(167,139,250,0.30); backdrop-filter: blur(6px);">
+      <div class="flex items-center gap-3 text-[13px] font-bold" style="color: white;">
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="color: var(--primary-light); font-size: 18px;">money_off</span>No commitment</span>
+        <span class="opacity-40">·</span>
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="color: var(--primary-light); font-size: 18px;">money_off</span>No cost</span>
+        <span class="opacity-40">·</span>
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="color: var(--primary-light); font-size: 18px;">lock_open</span>No obligation</span>
+      </div>
+      <div class="flex items-center gap-4 text-[12.5px]" style="color: rgba(255,255,255,0.88);">
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="font-size: 16px;">email</span>hello@massapro.com</span>
+        <span class="opacity-40">|</span>
+        <span class="flex items-center gap-1.5"><span class="material-icons" style="font-size: 16px;">language</span>receptionist.massapro.com</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- footer -->
+  <div class="page-footer">
+    <span>MassaPro IVR — Sales Deck</span>
+    <span>Confidential</span>
+    <span>Slide 24 / 24</span>
+  </div>
+
+  <aside data-notes class="hidden">
+    This is the close. Be specific about what you are asking for. The ask is a 60-90 minute workshop with one specific process from the customer's operation. Not a generic demo, not a capabilities presentation — a working session on their process. This is the lowest-friction next step that produces the highest-quality outcome, because it forces the customer to engage with the product on their own terms rather than yours. End with the line on the slide: no commitment, no cost, no obligation. The workshop is free. The ROI estimate is free. The reference architecture is free. The only thing the customer has to provide is the process and the people who know it. MassaPro provides everything else. If the customer is not ready to commit to a pilot, the workshop still produces value — both sides learn whether there is a fit, and the customer has a concrete artefact (the ROI estimate and the reference architecture) to take to their internal decision-makers. Close the deck by thanking the audience and asking for the workshop date directly. "I have Tuesday next week or Thursday the week after open — which works better for your team?" This is the classic sales close: assume the next step, offer a binary choice. Do not leave the room without a calendar invitation.
+  </aside>
+</div>
+</body>
+</html>

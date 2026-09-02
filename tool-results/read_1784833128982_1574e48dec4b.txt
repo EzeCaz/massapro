@@ -1,0 +1,1033 @@
+     1→"""
+     2→MassaPro AI Omni-Channel Platform — Technical & Integration Manual
+     3→Body PDF generator (ReportLab). Cover is generated separately via html2poster.js
+     4→and merged in via pypdf.
+     5→
+     6→Palette: MassaPro site palette (user-specified)
+     7→  Primary:  #7c3aed  (purple-600)
+     8→  Dark:     #6d28d9  (purple-700)
+     9→  Light:    #ede9fe  (purple-100)
+    10→  Ultralight:#f5f3ff (purple-50)
+    11→  Text:     #1f2937
+    12→  Muted:    #6b7280
+    13→  Border:   #e5e7eb
+    14→"""
+    15→import os, sys, hashlib
+    16→from reportlab.lib.pagesizes import A4
+    17→from reportlab.lib.units import inch, cm
+    18→from reportlab.lib import colors
+    19→from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    20→from reportlab.lib.enums import TA_LEFT, TA_CENTER, TA_RIGHT, TA_JUSTIFY
+    21→from reportlab.platypus import (
+    22→    SimpleDocTemplate, Paragraph, Spacer, PageBreak, Image, Table, TableStyle,
+    23→    KeepTogether, HRFlowable, CondPageBreak
+    24→)
+    25→from reportlab.platypus.tableofcontents import TableOfContents
+    26→from reportlab.pdfbase import pdfmetrics
+    27→from reportlab.pdfbase.ttfonts import TTFont
+    28→from reportlab.pdfbase.pdfmetrics import registerFontFamily
+    29→from PIL import Image as PILImage
+    30→
+    31→# ─── PDF Skill scripts on path for install_font_fallback ───
+    32→PDF_SKILL_DIR = "/home/z/my-project/skills/pdf"
+    33→sys.path.insert(0, os.path.join(PDF_SKILL_DIR, "scripts"))
+    34→from pdf import install_font_fallback
+    35→
+    36→# ───────────────────── Color Palette (MassaPro site palette) ─────────────────────
+    37→ACCENT         = colors.HexColor('#7c3aed')   # purple-600
+    38→ACCENT_DARK    = colors.HexColor('#6d28d9')   # purple-700
+    39→ACCENT_LIGHT   = colors.HexColor('#ede9fe')   # purple-100
+    40→ACCENT_ULTRA   = colors.HexColor('#f5f3ff')   # purple-50
+    41→TEXT_PRIMARY   = colors.HexColor('#1f2937')
+    42→TEXT_MUTED     = colors.HexColor('#6b7280')
+    43→BG_SURFACE     = colors.HexColor('#f9fafb')
+    44→BG_PAGE        = colors.white
+    45→BORDER_LIGHT   = colors.HexColor('#e5e7eb')
+    46→
+    47→TABLE_HEADER_COLOR = ACCENT
+    48→TABLE_HEADER_TEXT  = colors.white
+    49→TABLE_ROW_EVEN     = colors.white
+    50→TABLE_ROW_ODD      = ACCENT_ULTRA
+    51→
+    52→# ───────────────────── Font Registration ─────────────────────
+    53→# Use Liberation Serif (open-source Times New Roman metric-compatible equivalent).
+    54→# Carlito is metric-compatible with Calibri. DejaVuSans for code/symbols.
+    55→pdfmetrics.registerFont(TTFont('Tinos', '/usr/share/fonts/truetype/liberation/LiberationSerif-Regular.ttf'))
+    56→pdfmetrics.registerFont(TTFont('Tinos-Bold', '/usr/share/fonts/truetype/liberation/LiberationSerif-Bold.ttf'))
+    57→pdfmetrics.registerFont(TTFont('Tinos-Italic', '/usr/share/fonts/truetype/liberation/LiberationSerif-Italic.ttf'))
+    58→pdfmetrics.registerFont(TTFont('Tinos-BoldItalic', '/usr/share/fonts/truetype/liberation/LiberationSerif-BoldItalic.ttf'))
+    59→pdfmetrics.registerFont(TTFont('Carlito', '/usr/share/fonts/truetype/english/Carlito-Regular.ttf'))
+    60→pdfmetrics.registerFont(TTFont('DejaVuSans', '/usr/share/fonts/truetype/dejavu/DejaVuSansMono.ttf'))
+    61→registerFontFamily('Tinos', normal='Tinos', bold='Tinos-Bold', italic='Tinos-Italic', boldItalic='Tinos-BoldItalic')
+    62→registerFontFamily('Carlito', normal='Carlito', bold='Carlito')
+    63→registerFontFamily('DejaVuSans', normal='DejaVuSans', bold='DejaVuSans')
+    64→install_font_fallback()
+    65→
+    66→# ───────────────────── Page Geometry ─────────────────────
+    67→PAGE_W, PAGE_H = A4
+    68→LEFT_M  = 0.85 * inch
+    69→RIGHT_M = 0.85 * inch
+    70→TOP_M   = 0.85 * inch
+    71→BOT_M   = 0.85 * inch
+    72→AVAIL_W = PAGE_W - LEFT_M - RIGHT_M  # ~428pt
+    73→
+    74→# ───────────────────── Styles ─────────────────────
+    75→BODY_FONT = 'Tinos'
+    76→
+    77→h1_style = ParagraphStyle('H1', fontName=BODY_FONT, fontSize=20, leading=26,
+    78→    textColor=ACCENT_DARK, spaceBefore=18, spaceAfter=10, alignment=TA_LEFT)
+    79→h2_style = ParagraphStyle('H2', fontName=BODY_FONT, fontSize=14, leading=20,
+    80→    textColor=ACCENT, spaceBefore=14, spaceAfter=6, alignment=TA_LEFT)
+    81→h3_style = ParagraphStyle('H3', fontName=BODY_FONT, fontSize=11.5, leading=16,
+    82→    textColor=TEXT_PRIMARY, spaceBefore=10, spaceAfter=4, alignment=TA_LEFT)
+    83→body_style = ParagraphStyle('Body', fontName=BODY_FONT, fontSize=10.5, leading=16,
+    84→    textColor=TEXT_PRIMARY, spaceBefore=0, spaceAfter=8, alignment=TA_JUSTIFY)
+    85→body_left_style = ParagraphStyle('BodyLeft', parent=body_style, alignment=TA_LEFT)
+    86→bullet_style = ParagraphStyle('Bullet', fontName=BODY_FONT, fontSize=10.5, leading=15,
+    87→    textColor=TEXT_PRIMARY, leftIndent=18, bulletIndent=6, spaceBefore=1, spaceAfter=3,
+    88→    alignment=TA_LEFT)
+    89→muted_style = ParagraphStyle('Muted', fontName=BODY_FONT, fontSize=9, leading=13,
+    90→    textColor=TEXT_MUTED, alignment=TA_CENTER, spaceBefore=4, spaceAfter=10)
+    91→caption_style = ParagraphStyle('Caption', fontName=BODY_FONT, fontSize=9, leading=12,
+    92→    textColor=TEXT_MUTED, alignment=TA_CENTER, spaceBefore=4, spaceAfter=14, italic=True)
+    93→
+    94→# Table styles
+    95→th_style = ParagraphStyle('TH', fontName=BODY_FONT, fontSize=10, leading=13,
+    96→    textColor=colors.white, alignment=TA_LEFT, leftIndent=0)
+    97→th_center = ParagraphStyle('THC', parent=th_style, alignment=TA_CENTER)
+    98→td_style = ParagraphStyle('TD', fontName=BODY_FONT, fontSize=9.5, leading=13,
+    99→    textColor=TEXT_PRIMARY, alignment=TA_LEFT, leftIndent=0)
+   100→td_center = ParagraphStyle('TDC', parent=td_style, alignment=TA_CENTER)
+   101→td_bold = ParagraphStyle('TDB', parent=td_style, fontName=BODY_FONT)
+   102→td_bold = ParagraphStyle('TDBold', parent=td_style, fontName=BODY_FONT)
+   103→
+   104→# Callout
+   105→stat_big = ParagraphStyle('StatBig', fontName=BODY_FONT, fontSize=22, leading=26,
+   106→    textColor=ACCENT, alignment=TA_CENTER)
+   107→stat_lbl = ParagraphStyle('StatLbl', fontName=BODY_FONT, fontSize=9, leading=12,
+   108→    textColor=TEXT_MUTED, alignment=TA_CENTER)
+   109→
+   110→# TOC styles
+   111→toc_h1 = ParagraphStyle('TOCH1', fontName=BODY_FONT, fontSize=11.5, leading=18,
+   112→    textColor=TEXT_PRIMARY, leftIndent=0, spaceBefore=4)
+   113→toc_h2 = ParagraphStyle('TOCH2', fontName=BODY_FONT, fontSize=10, leading=16,
+   114→    textColor=TEXT_MUTED, leftIndent=24, spaceBefore=2)
+   115→
+   116→
+   117→# ───────────────────── Helpers ─────────────────────
+   118→def add_heading(text, style, level=0):
+   119→    key = 'h_%s' % hashlib.md5(text.encode()).hexdigest()[:8]
+   120→    p = Paragraph('<a name="%s"/>%s' % (key, text), style)
+   121→    p.bookmark_name = text
+   122→    p.bookmark_level = level
+   123→    p.bookmark_text = text
+   124→    p.bookmark_key = key
+   125→    return p
+   126→
+   127→MAX_KEEP_H = A4[1] * 0.4
+   128→def safe_keep(elements):
+   129→    total = 0
+   130→    for el in elements:
+   131→        try:
+   132→            w, h = el.wrap(AVAIL_W, A4[1])
+   133→            total += h
+   134→        except Exception:
+   135→            total += 50
+   136→    if total <= MAX_KEEP_H:
+   137→        return [KeepTogether(elements)]
+   138→    elif len(elements) >= 2:
+   139→        return [KeepTogether(elements[:2])] + list(elements[2:])
+   140→    else:
+   141→        return list(elements)
+   142→
+   143→def h1(text):
+   144→    """H1 with orphan-prevention (CondPageBreak, not PageBreak)."""
+   145→    return [CondPageBreak(A4[1] * 0.18), add_heading(text, h1_style, level=0),
+   146→            HRFlowable(width="100%", thickness=1.2, color=ACCENT, spaceBefore=2, spaceAfter=10)]
+   147→
+   148→def h2(text):
+   149→    return [CondPageBreak(A4[1] * 0.10), add_heading(text, h2_style, level=1)]
+   150→
+   151→def h3(text):
+   152→    return [CondPageBreak(A4[1] * 0.07), Paragraph('<b>%s</b>' % text, h3_style)]
+   153→
+   154→def p(text):
+   155→    return Paragraph(text, body_style)
+   156→
+   157→def pl(text):
+   158→    return Paragraph(text, body_left_style)
+   159→
+   160→def bullet(text):
+   161→    return Paragraph('•  %s' % text, bullet_style)
+   162→
+   163→def caption(text):
+   164→    return Paragraph('<i>%s</i>' % text, caption_style)
+   165→
+   166→def embed_image(path, max_width=None, max_height=None):
+   167→    if max_width is None:
+   168→        max_width = AVAIL_W
+   169→    if max_height is None:
+   170→        max_height = A4[1] * 0.55
+   171→    img = PILImage.open(path)
+   172→    w, h = img.size
+   173→    rw = max_width / w if w > max_width else 1.0
+   174→    rh = max_height / h if h > max_height else 1.0
+   175→    r = min(rw, rh)
+   176→    return Image(path, width=w * r, height=h * r)
+   177→
+   178→def callout(stat, label, width=140):
+   179→    t = Table(
+   180→        [[Paragraph('<b>%s</b>' % stat, stat_big)],
+   181→         [Paragraph(label, stat_lbl)]],
+   182→        colWidths=[width]
+   183→    )
+   184→    t.setStyle(TableStyle([
+   185→        ('BACKGROUND', (0,0), (-1,-1), ACCENT_ULTRA),
+   186→        ('BOX', (0,0), (-1,-1), 1, ACCENT),
+   187→        ('LINEABOVE', (0,1), (-1,1), 0.5, BORDER_LIGHT),
+   188→        ('TOPPADDING', (0,0), (-1,-1), 10),
+   189→        ('BOTTOMPADDING', (0,0), (-1,-1), 10),
+   190→        ('LEFTPADDING', (0,0), (-1,-1), 6),
+   191→        ('RIGHTPADDING', (0,0), (-1,-1), 6),
+   192→        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+   193→    ]))
+   194→    return t
+   195→
+   196→def callout_row(items):
+   197→    """Row of stat callouts, evenly spaced."""
+   198→    n = len(items)
+   199→    each_w = AVAIL_W / n
+   200→    cells = []
+   201→    for stat, lbl in items:
+   202→        c = callout(stat, lbl, width=each_w - 10)
+   203→        cells.append(c)
+   204→    outer = Table([cells], colWidths=[each_w] * n, hAlign='CENTER')
+   205→    outer.setStyle(TableStyle([
+   206→        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
+   207→        ('LEFTPADDING', (0,0), (-1,-1), 4),
+   208→        ('RIGHTPADDING', (0,0), (-1,-1), 4),
+   209→        ('TOPPADDING', (0,0), (-1,-1), 0),
+   210→        ('BOTTOMPADDING', (0,0), (-1,-1), 0),
+   211→    ]))
+   212→    return outer
+   213→
+   214→def std_table(data_rows, col_ratios, header=True):
+   215→    """data_rows: list of lists of strings (already-plain). First row is header if header=True.
+   216→    col_ratios: list of floats summing to 1.0"""
+   217→    col_widths = [r * AVAIL_W for r in col_ratios]
+   218→    # Wrap all cells in Paragraph
+   219→    rows = []
+   220→    for ri, row in enumerate(data_rows):
+   221→        prow = []
+   222→        for ci, cell in enumerate(row):
+   223→            if header and ri == 0:
+   224→                prow.append(Paragraph('<b>%s</b>' % cell, th_style))
+   225→            else:
+   226→                prow.append(Paragraph(cell, td_style))
+   227→        rows.append(prow)
+   228→    t = Table(rows, colWidths=col_widths, hAlign='CENTER', repeatRows=1 if header else 0)
+   229→    style = [
+   230→        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+   231→        ('LEFTPADDING', (0,0), (-1,-1), 7),
+   232→        ('RIGHTPADDING', (0,0), (-1,-1), 7),
+   233→        ('TOPPADDING', (0,0), (-1,-1), 6),
+   234→        ('BOTTOMPADDING', (0,0), (-1,-1), 6),
+   235→        ('GRID', (0,0), (-1,-1), 0.4, BORDER_LIGHT),
+   236→    ]
+   237→    if header:
+   238→        style += [
+   239→            ('BACKGROUND', (0,0), (-1,0), TABLE_HEADER_COLOR),
+   240→            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+   241→            ('TOPPADDING', (0,0), (-1,0), 8),
+   242→            ('BOTTOMPADDING', (0,0), (-1,0), 8),
+   243→        ]
+   244→        # Alternating rows
+   245→        for i in range(1, len(rows)):
+   246→            bg = TABLE_ROW_ODD if (i % 2 == 1) else TABLE_ROW_EVEN
+   247→            style.append(('BACKGROUND', (0,i), (-1,i), bg))
+   248→    t.setStyle(TableStyle(style))
+   249→    return t
+   250→
+   251→def info_box(text, label=None):
+   252→    """Light purple info callout box."""
+   253→    rows = []
+   254→    if label:
+   255→        rows.append([Paragraph('<b>%s</b>' % label, ParagraphStyle('ibL', fontName=BODY_FONT, fontSize=9, textColor=ACCENT, alignment=TA_LEFT, spaceAfter=4))])
+   256→    rows.append([Paragraph(text, ParagraphStyle('ibT', fontName=BODY_FONT, fontSize=10, leading=15, textColor=TEXT_PRIMARY, alignment=TA_LEFT))])
+   257→    t = Table(rows, colWidths=[AVAIL_W], hAlign='CENTER')
+   258→    t.setStyle(TableStyle([
+   259→        ('BACKGROUND', (0,0), (-1,-1), ACCENT_ULTRA),
+   260→        ('LINEBEFORE', (0,0), (0,-1), 3, ACCENT),
+   261→        ('LEFTPADDING', (0,0), (-1,-1), 14),
+   262→        ('RIGHTPADDING', (0,0), (-1,-1), 12),
+   263→        ('TOPPADDING', (0,0), (-1,-1), 8),
+   264→        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
+   265→    ]))
+   266→    return t
+   267→
+   268→
+   269→# ───────────────────── Page Header / Footer ─────────────────────
+   270→def header_footer(canvas, doc):
+   271→    canvas.saveState()
+   272→    # Header
+   273→    canvas.setFont(BODY_FONT, 8)
+   274→    canvas.setFillColor(TEXT_MUTED)
+   275→    canvas.drawString(LEFT_M, A4[1] - TOP_M + 22, 'MassaPro AI Omni-Channel Platform')
+   276→    canvas.drawRightString(PAGE_W - RIGHT_M, A4[1] - TOP_M + 22, 'Technical & Integration Manual')
+   277→    canvas.setStrokeColor(ACCENT)
+   278→    canvas.setLineWidth(0.6)
+   279→    canvas.line(LEFT_M, A4[1] - TOP_M + 16, PAGE_W - RIGHT_M, A4[1] - TOP_M + 16)
+   280→    # Footer
+   281→    canvas.setFillColor(TEXT_MUTED)
+   282→    canvas.drawString(LEFT_M, BOT_M - 22, 'MassaPro  |  eze@massapro.com  |  massapro.com')
+   283→    page_num = canvas.getPageNumber()
+   284→    canvas.drawRightString(PAGE_W - RIGHT_M, BOT_M - 22, 'Page %d' % page_num)
+   285→    canvas.setStrokeColor(BORDER_LIGHT)
+   286→    canvas.setLineWidth(0.4)
+   287→    canvas.line(LEFT_M, BOT_M - 14, PAGE_W - RIGHT_M, BOT_M - 14)
+   288→    canvas.restoreState()
+   289→
+   290→
+   291→# ───────────────────── TOC DocTemplate ─────────────────────
+   292→class TocDocTemplate(SimpleDocTemplate):
+   293→    def afterFlowable(self, flowable):
+   294→        if hasattr(flowable, 'bookmark_name'):
+   295→            level = getattr(flowable, 'bookmark_level', 0)
+   296→            text = getattr(flowable, 'bookmark_text', '')
+   297→            key = getattr(flowable, 'bookmark_key', '')
+   298→            self.notify('TOCEntry', (level, text, self.page, key))
+   299→
+   300→
+   301→# ───────────────────── Build Story ─────────────────────
+   302→story = []
+   303→
+   304→# ── TOC PAGE ──
+   305→toc_title = ParagraphStyle('TOCTitle', fontName=BODY_FONT, fontSize=22, leading=28,
+   306→    textColor=ACCENT_DARK, alignment=TA_LEFT, spaceBefore=0, spaceAfter=18)
+   307→story.append(Paragraph('Table of Contents', toc_title))
+   308→story.append(HRFlowable(width="100%", thickness=1.2, color=ACCENT, spaceBefore=2, spaceAfter=14))
+   309→toc = TableOfContents()
+   310→toc.levelStyles = [toc_h1, toc_h2]
+   311→story.append(toc)
+   312→story.append(PageBreak())
+   313→
+   314→# ═══════════════════════════════════════════════════════════════════════════════
+   315→# SECTION 1: PLATFORM OVERVIEW
+   316→# ═══════════════════════════════════════════════════════════════════════════════
+   317→story.extend(h1('1. Platform Overview'))
+   318→
+   319→story.append(p(
+   320→    'The MassaPro AI Omni-Channel Platform is an enterprise-grade, modular cloud ecosystem engineered for high-scale customer interaction management. '
+   321→    'Formerly referenced as the Athena Suite, the platform has been rebranded and unified under the MassaPro identity, bringing together advanced speech recognition, '
+   322→    'autonomous conversational bots, an internal knowledge repository driven by large language models, and real-time analytics into a single cohesive framework. '
+   323→    'The platform is purpose-built for organizations that require low-latency performance across multiple communication channels while maintaining rigorous security standards '
+   324→    'such as SOC 2 Type II, GDPR, HIPAA, and ISO compliance.'
+   325→))
+   326→
+   327→story.append(p(
+   328→    'MassaPro is hosted within a Dedicated Private Tenant (VPC) on AWS, ensuring complete data isolation, predictable performance, and high availability. '
+   329→    'The architecture is designed to orchestrate real-time omni-channel data through contextual LLM routing, achieving up to 5x faster data processing compared to legacy frameworks. '
+   330→    'The proprietary MassaPro Large Language Model powers every conversational surface on the platform, from autonomous AI Agents handling inbound customer queries to the AI Guru co-pilot '
+   331→    'that augments human agents with retrieval-augmented generation during live calls.'
+   332→))
+   333→
+   334→story.extend(h3('Design Philosophy'))
+   335→story.append(p(
+   336→    'The platform is built around four core principles: <b>modularity</b> (each AI engine can be deployed independently or together), <b>low-latency real-time processing</b> '
+   337→    '(sustained sub-300ms roundtrip on the ASR & Voice layer), <b>security-by-design</b> (TLS 1.3 in transit, AES-256 at rest, automatic PII redaction), and '
+   338→    '<b>orchestration flexibility</b> via the MassaPro Flow drag-and-drop workflow builder. This combination allows integrators to deploy MassaPro in a fully managed SaaS model '
+   339→    'or as a customized enterprise installation tailored to specific industry workflows.'
+   340→))
+   341→
+   342→story.extend(h3('Platform Identity Transition'))
+   343→story.append(p(
+   344→    'The platform previously operated under the Athena Suite product naming convention. All references to legacy naming have been consolidated under the MassaPro brand. '
+   345→    'The four flagship AI engines — AI Agent, AI Guru, AI Analytics, and ASR & Voice — retain their functional identity but are now marketed and documented as MassaPro modules. '
+   346→    'Existing integrations, API endpoints, and configuration files continue to function unchanged; only the brand surface has been updated.'
+   347→))
+   348→
+   349→story.extend(h3('Core Value Propositions'))
+   350→story.append(callout_row([
+   351→    ('5x', 'Faster data processing vs. legacy frameworks'),
+   352→    ('50x', 'More interactions than human-operated queues'),
+   353→    ('70%', 'Decrease in average handle time'),
+   354→    ('24/7', 'Always-on autonomous operation'),
+   355→]))
+   356→story.append(Spacer(1, 14))
+   357→
+   358→story.extend(h3('High-Level Architecture Summary'))
+   359→story.append(p(
+   360→    'The infrastructure is categorized into five critical layers, each isolated within its own private subnet and orchestrated through a centralized API Gateway. '
+   361→    'These layers, detailed in Section 2, are: (1) the Edge Security Layer providing WAF and load balancing; (2) the Telephony & Carrier Layer managing SIP/RTP voice transport '
+   362→    'via global Tier-1 carriers; (3) the Omni-Channel Ingestion Layer receiving voice, SMS, email, live chat, and social media inputs; (4) the Core AI Engines Layer running ASR & Voice, '
+   363→    'AI Agent, AI Guru, and AI Analytics; and (5) the Orchestration & Integration Layer exposing REST APIs, Webhooks, WebSockets, and 100+ marketplace connectors.'
+   364→))
+   365→
+   366→story.append(PageBreak())
+   367→
+   368→# ═══════════════════════════════════════════════════════════════════════════════
+   369→# SECTION 2: SYSTEM ARCHITECTURE
+   370→# ═══════════════════════════════════════════════════════════════════════════════
+   371→story.extend(h1('2. System Architecture'))
+   372→
+   373→story.append(p(
+   374→    'The MassaPro system architecture is a layered, modular cloud framework designed for real-time orchestration across diverse communication paths. '
+   375→    'Each layer is independently scalable, fault-tolerant, and isolated within its own AWS private subnet. The diagram below illustrates the five functional layers '
+   376→    'and their constituent components, followed by a detailed technical description of each.'
+   377→))
+   378→
+   379→# Architecture diagram
+   380→arch_img = embed_image('/home/z/my-project/scripts/arch-diagram.png', max_width=AVAIL_W, max_height=A4[1] * 0.62)
+   381→story.append(KeepTogether([arch_img, caption('Figure 2.1 — MassaPro AI Platform System Architecture: Five functional layers from edge security to analytics output')]))
+   382→story.append(Spacer(1, 8))
+   383→
+   384→story.extend(h2('2.1 Edge Security Layer'))
+   385→story.append(p(
+   386→    'The Edge Security Layer is the public-facing perimeter of the platform. It utilizes a Web Application Firewall (WAF) to inspect and filter all inbound HTTP/HTTPS traffic '
+   387→    'against OWASP Top 10 rules, SQL injection patterns, cross-site scripting attempts, and volumetric DDoS attacks. Behind the WAF, Network Load Balancers (L4) distribute raw '
+   388→    'TCP/UDP traffic, while Application Load Balancers (L7) handle HTTPS termination with TLS 1.3 and route requests to the appropriate microservices running in Private Subnets. '
+   389→    'This dual-balancer design ensures that both voice (RTP/UDP) and web (HTTPS) traffic receive optimized routing without contention.'
+   390→))
+   391→
+   392→story.extend(h2('2.2 Telephony & Carrier Layer'))
+   393→story.append(p(
+   394→    'The Telephony Layer manages all voice ingress and egress through carrier-grade protocols. SIP signaling over TCP port 5060 handles session initiation, handshakes, and call setup. '
+   395→    'Real-time audio media is transported via RTP over UDP ports 10000-20000, with dynamic port allocation per media stream. The platform maintains direct interconnects with global Tier-1 '
+   396→    'carriers and Mobile Network Operators (MNOs), with localized peering in Israel, the United States, Europe, Africa, and Australia. Dynamic Intelligent Routing continuously optimizes '
+   397→    'the path across multiple in-region carriers in real time, minimizing jitter, packet loss, and round-trip latency. This layer is detailed further in Section 4.'
+   398→))
+   399→
+   400→story.extend(h2('2.3 Omni-Channel Ingestion Layer'))
+   401→story.append(p(
+   402→    'The Ingestion Layer is the entry point for all customer interactions regardless of channel. It supports Voice (inbound and outbound calls), SMS (two-way text messaging), '
+   403→    'Email (parsed and threaded), Live Chat (web and in-app), and Social Media including WhatsApp, Facebook Messenger, Instagram Direct, X (formerly Twitter), and Apple Business Chat. '
+   404→    'A PCI DSS-compliant payment flow is embedded for secure transaction processing. All channels feed into a normalized event stream that downstream AI modules consume.'
+   405→))
+   406→
+   407→story.extend(h2('2.4 Core AI Engines Layer'))
+   408→story.append(p(
+   409→    'The Core AI Engines Layer hosts the four primary intelligence modules: ASR & Voice (speech-to-text and text-to-speech with sub-300ms latency), AI Agent (autonomous LLM-powered '
+   410→    'conversational bot with deterministic guardrails), AI Guru (RAG-powered co-pilot for human agents), and AI Analytics (real-time stream processing for sentiment, keyphrase, entity, '
+   411→    'and topic analysis). All four modules share the proprietary MassaPro Large Language Model and a centralized knowledge base. Section 3 provides a full deep-dive on each module.'
+   412→))
+   413→
+   414→story.extend(h2('2.5 Orchestration, Integration & Analytics Layer'))
+   415→story.append(p(
+   416→    'The topmost layer combines three functions. <b>MassaPro Flow</b> is the drag-and-drop orchestration engine that lets architects design complex customer journeys, embed AI Agent and '
+   417→    'ASR features, and configure intelligent routing by skill set, language, or topic expertise. The <b>API Gateway</b> serves as the secure, centralized entry point for all external '
+   418→    'system requests, exposing RESTful APIs, Webhooks, and WebSockets for real-time integration with CRM, ERP, and BI tools. <b>Real-Time Analytics & Storage</b> processes interaction '
+   419→    'streams into structured telemetry, with all data encrypted at rest using AES-256. Over 100 marketplace connectors (Salesforce, HubSpot, Zendesk, Shopify, Slack, Stripe, and more) '
+   420→    'are pre-configured for one-click integration.'
+   421→))
+   422→
+   423→story.append(PageBreak())
+   424→
+   425→# ═══════════════════════════════════════════════════════════════════════════════
+   426→# SECTION 3: CORE AI MODULES
+   427→# ═══════════════════════════════════════════════════════════════════════════════
+   428→story.extend(h1('3. Core AI Modules'))
+   429→
+   430→story.append(p(
+   431→    'The platform\'s intelligence is distributed across four primary engines, each engineered to handle a distinct function within the customer interaction lifecycle. '
+   432→    'All four modules share the proprietary MassaPro Large Language Model and a centralized knowledge repository. Updates to knowledge articles circulate instantly across the '
+   433→    'ecosystem, and the system can automatically identify content gaps based on real customer interactions, generating new articles to expand the knowledge base. '
+   434→    'The module map below illustrates the functional relationship between the four engines and the MassaPro Flow orchestration layer that binds them.'
+   435→))
+   436→
+   437→mod_img = embed_image('/home/z/my-project/scripts/module-map.png', max_width=AVAIL_W, max_height=A4[1] * 0.62)
+   438→story.append(KeepTogether([mod_img, caption('Figure 3.1 — MassaPro Core AI Modules Map: Four engines sharing the in-house LLM, orchestrated via MassaPro Flow')]))
+   439→story.append(Spacer(1, 8))
+   440→
+   441→story.extend(h2('3.1 MassaPro ASR & Voice'))
+   442→story.append(p(
+   443→    'The MassaPro Automatic Speech Recognition (ASR) and Voice synthesis engine provides the foundational interface for human-to-machine engagement. '
+   444→    'It is engineered to prioritize precision and linguistic nuance, sustaining a roundtrip latency threshold below 300ms, which eliminates the staccato effect of traditional voice bots '
+   445→    'and enables fluid, natural-sounding conversations. The module employs adaptive noise filtering and custom acoustic models to ensure high-accuracy capture even in challenging '
+   446→    'acoustic environments, including background office noise, mobile network degradation, and varied accents or dialects.'
+   447→))
+   448→story.append(p(
+   449→    'On the synthesis side, the Text-to-Speech (TTS) engine offers three configuration sliders that allow integrators to define brand-specific voice identities. '
+   450→    'Tone of Voice can be tuned from Friendly to Authoritative; Formality Level ranges from Casual to Formal; and Language Complexity ranges from Simple to Complex. '
+   451→    'These sliders ensure that every automated voice interaction aligns with the client\'s brand identity, regardless of the language being spoken. '
+   452→    'Specialized synchronization between Speech-to-Text (STT) and TTS maintains conversational context across multi-turn interactions, which is critical for handling complex transactions '
+   453→    'such as appointment booking and payment processing where context retention across turns directly affects completion rates.'
+   454→))
+   455→
+   456→story.extend(h3('Key Technical Specifications'))
+   457→story.append(std_table([
+   458→    ['Specification', 'Value', 'Functional Detail'],
+   459→    ['Roundtrip Latency', '<300ms', 'Sustained across all voice channels'],
+   460→    ['ASR Accuracy', '99%', 'Measured on standard telephony audio'],
+   461→    ['Language Support', '100+ languages', 'Multi-language synchronization'],
+   462→    ['Tone of Voice', 'Friendly to Authoritative', 'Brand-configurable slider'],
+   463→    ['Formality Level', 'Casual to Formal', 'Brand-configurable slider'],
+   464→    ['Language Complexity', 'Simple to Complex', 'Brand-configurable slider'],
+   465→    ['Acoustic Processing', 'Adaptive noise filtering', 'Custom acoustic models per region'],
+   466→], [0.30, 0.25, 0.45]))
+   467→story.append(Spacer(1, 14))
+   468→
+   469→story.extend(h3('ASR Customization: Confidence Scores & Intents'))
+   470→story.append(p(
+   471→    'The ASR module allows administrators to customize confidence scores and intent mappings to match specific business needs. Intent Mapping connects specific customer phrases '
+   472→    'to predefined user journeys. When the AI encounters phrases with a low confidence score, administrators can manually confirm the correct intent, which trains the model to recognize '
+   473→    'and respond to those phrases more accurately in future interactions. This precision control ensures that customer journeys are tailored and that the ASR assistant provides the most '
+   474→    'personal and relevant level of support. The training module includes a summary page with Knowledge Recommendations and Confidence Levels, helping administrators identify knowledge '
+   475→    'gaps where additional articles or training data may be required.'
+   476→))
+   477→
+   478→story.extend(h2('3.2 MassaPro AI Agent'))
+   479→story.append(p(
+   480→    'The AI Agent is an autonomous conversational engine powered by the proprietary MassaPro Large Language Model with deterministic guardrails. '
+   481→    'These guardrails are hardened logic layers that ensure the LLM remains within brand-safe parameters, delivering consistent, professional responses even in edge cases. '
+   482→    'The AI Agent is designed to handle 50x more interactions than standard human-operated queues while achieving a 70% decrease in average handle time. '
+   483→    'It provides 24/7 multi-language support across 100+ languages and can perform complex transactions including automated payment processing, appointment booking, invoice extraction '
+   484→    'and validation, claims processing intake, and lead qualification — all without human intervention.'
+   485→))
+   486→story.append(p(
+   487→    'A key differentiator is the AI Agent\'s self-learning capability. The training module matches specific customer phrases and intents to predefined user journeys, '
+   488→    'allowing administrators to boost confidence levels through manual intent confirmation. When the agent encounters phrases it has a low confidence of understanding, '
+   489→    'the administrator can confirm the correct intent and the model trains itself to recognize and respond to those phrases more accurately in future interactions. '
+   490→    'This creates a continuous improvement loop where the agent becomes more accurate over time as it processes more real customer conversations.'
+   491→))
+   492→
+   493→story.extend(h3('Transactional Capabilities'))
+   494→story.append(p(
+   495→    'The AI Agent manages high-value financial and administrative tasks through predefined scripts and integration with secure backend systems. '
+   496→    'Transaction Completion enables the agent to engage with customers in natural-sounding conversations to manage payment processing and complete transactions without human intervention. '
+   497→    'Workflow Automation handles routine financial tasks such as invoice processing (automatically extracting and validating data) and claims processing (automating intake and validation). '
+   498→    'By using predefined scripts and integrating with secure backend systems, the agent minimizes human error and ensures that financial interactions meet regulatory disclosures and '
+   499→    'compliance requirements. This is particularly valuable in high-compliance sectors such as legal and healthcare, where disclosure accuracy is non-negotiable.'
+   500→))
+   501→
+   502→story.extend(h2('3.3 MassaPro AI Guru'))
+   503→story.append(p(
+   504→    'The AI Guru module functions as a Retrieval-Augmented Generation (RAG) intelligent co-pilot for human agents. It creates a technical synergy between the in-house MassaPro LLM '
+   505→    'and an enterprise knowledge repository, significantly reducing agent training time while providing instant return on investment. The system utilizes live transcription to feed the '
+   506→    'RAG engine during active calls, which then provides Real-Time Coaching Prompts and CSAT Recommendations directly to the human agent\'s screen. '
+   507→    'This empowers agents to handle a wider range of queries without extensive prior training, decreasing response times and allowing experienced staff to focus on strategic tasks.'
+   508→))
+   509→
+   510→story.extend(h3('Knowledge Source Ingestion'))
+   511→story.append(p(
+   512→    'AI Guru can ingest and synthesize the following source types: <b>Document Assets</b> (PDFs and local text files), <b>Visual Data</b> (images and infographics), '
+   513→    '<b>External Content</b> (automated web-scraped content and Knowledge Base Articles), and <b>Third-Party Assets</b> (data pulled from integrated third-party application stacks). '
+   514→    'Users upload proprietary documentation and local assets directly into the platform\'s knowledge repository to power up the internal LLM, making the AI Agents more advanced '
+   515→    'and contextually aware of specific company procedures or products. Internal best-practice documents and files enrich AI prompts, ensuring the AI provides support that aligns '
+   516→    'perfectly with a company\'s unique brand voice and documentation. The web scraping capability consolidates information from various external sources into the LLM without requiring '
+   517→    'manual data entry.'
+   518→))
+   519→
+   520→story.extend(h3('Real-Time Coaching Mechanism'))
+   521→story.append(p(
+   522→    'During live customer interactions, AI Guru analyzes the ongoing conversation using real-time call transcripts and sentiment detection. '
+   523→    'When it identifies specific customer triggers — for example, a customer stating "cancel my contract" — it automatically displays contextual coaching prompts on the agent\'s screen. '
+   524→    'These prompts suggest effective responses, such as offering a specific discount or a tailored retention script. Using RAG, AI Guru instantly scans the enterprise knowledge base '
+   525→    'to provide agents with precise answers and relevant article suggestions, reducing the time spent searching for information. Sentiment insights from AI Analytics feed directly into '
+   526→    'AI Guru to trigger relevant coaching prompts, ensuring agents respond with the appropriate level of empathy or authority based on the customer\'s current mood.'
+   527→))
+   528→
+   529→story.extend(h3('Knowledge Article Synchronization'))
+   530→story.append(p(
+   531→    'Knowledge articles and snippets are synchronized with AI Guru through a centralized, real-time distribution system within the AI Knowledge hub. '
+   532→    'When content is created or updated in the Article Editor, it is circulated throughout the entire AI ecosystem instantly, ensuring that AI Guru and other agents always have the most '
+   533→    'current information. The system can automatically identify content gaps based on real customer interactions and generate new articles to expand the knowledge base, which AI Guru '
+   534→    'then uses to resolve future queries. This eliminates the manual burden of article maintenance and ensures the knowledge base evolves naturally with customer needs.'
+   535→))
+   536→
+   537→story.extend(h2('3.4 MassaPro AI Analytics'))
+   538→story.append(p(
+   539→    'The AI Analytics engine employs real-time stream processing to convert raw conversational data into high-density telemetry for data-driven decision-making. '
+   540→    'It transforms unstructured interaction data — voice calls, chat transcripts, email threads, social media messages — into structured, actionable business intelligence. '
+   541→    'The module offers six primary analytical functions, each designed to surface different categories of insight from the same underlying interaction data.'
+   542→))
+   543→
+   544→story.extend(h3('Analytics Capabilities'))
+   545→story.append(std_table([
+   546→    ['Capability', 'Description', 'Business Use Case'],
+   547→    ['Sentiment Analysis', 'Assesses emotional states (positive, neutral, negative) by analyzing language and context. Highlights traits such as Politeness, Anger, and Empathy.', 'Live monitoring of emotional health; proactive issue escalation before complaints.'],
+   548→    ['Keyphrase Analysis', 'Identifies trending keywords and phrases via wordclouds. Groups popular terms to spot industry shifts.', 'Spot emerging product issues; identify common customer pain points.'],
+   549→    ['Entity Recognition', 'Automatically identifies and classifies critical elements such as product names, locations, and financial amounts.', 'Convert unstructured data into structured fields; automate routing.'],
+   550→    ['Topic-Based Modeling', 'Groups interactions by similar characteristics and time periods for deeper organizational understanding.', 'Segment support volume by topic; forecast seasonal demand.'],
+   551→    ['Interaction Summarization', 'Automatically produces concise summaries of conversations, eliminating manual interpretation.', 'Reduce after-call work; faster supervisor review.'],
+   552→    ['PII Redaction', 'Automatic identification and redaction of Personally Identifiable Information from transcripts and reports.', 'GDPR/HIPAA compliance; safe reporting without sensitive data exposure.'],
+   553→], [0.22, 0.42, 0.36]))
+   554→story.append(Spacer(1, 12))
+   555→
+   556→story.append(p(
+   557→    'A particularly powerful application of Entity Recognition is proactive issue prevention. For example, if a manufacturer begins shipping defective products and starts receiving '
+   558→    'calls regarding specific defects, leaders can spot this trend early and take immediate action to prevent further defective units from being shipped. '
+   559→    'This proactive approach is vital across industries, allowing businesses to address potential problems swiftly, minimize negative impacts, and enhance customer satisfaction.'
+   560→))
+   561→
+   562→story.append(PageBreak())
+   563→
+   564→# ═══════════════════════════════════════════════════════════════════════════════
+   565→# SECTION 4: TELEPHONY & NETWORK
+   566→# ═══════════════════════════════════════════════════════════════════════════════
+   567→story.extend(h1('4. Telephony & Network Infrastructure'))
+   568→
+   569→story.append(p(
+   570→    'The MassaPro platform utilizes carrier-grade protocols and specific port allocations to ensure high-fidelity voice transport. '
+   571→    'The network architecture is optimized for global reach with localized connectivity in key regions, including direct interconnects with Mobile Network Operators (MNOs) '
+   572→    'and fixed-line providers. This section documents the exact protocol specifications, port allocations, and routing logic that integrators need when configuring SIP trunking, '
+   573→    'firewall rules, or carrier interconnects.'
+   574→))
+   575→
+   576→story.extend(h2('4.1 Protocol & Port Specifications'))
+   577→story.append(std_table([
+   578→    ['Process', 'Protocol / Specification', 'Functional Detail'],
+   579→    ['SIP Signaling', 'SIP over TCP (Port 5060)', 'Manages session initiation, SIP handshakes, and call setup procedures.'],
+   580→    ['Media Transport', 'RTP over UDP (Ports 10000-20000)', 'Facilitates real-time audio transport with dynamic port allocation for media streams.'],
+   581→    ['Carrier Connectivity', 'Tier-1 Global & Regional Peering', 'Direct integration with MNOs and fixed-line providers in Israel, US, EU, Africa, Australia.'],
+   582→    ['Routing Logic', 'Dynamic Intelligent Routing', 'Real-time path optimization across multiple in-region carriers to minimize jitter and latency.'],
+   583→    ['TLS Encryption', 'TLS 1.3', 'All SIP signaling and HTTPS traffic encrypted in transit.'],
+   584→    ['Media Encryption', 'SRTP (optional)', 'Secure Real-time Transport Protocol for encrypted media streams on regulated deployments.'],
+   585→], [0.22, 0.30, 0.48]))
+   586→story.append(Spacer(1, 14))
+   587→
+   588→story.extend(h2('4.2 Carrier Connectivity & Global Reach'))
+   589→story.append(p(
+   590→    'MassaPro maintains direct interconnects with global Tier-1 carriers and regional Mobile Network Operators. The platform operates from dedicated private tenants on AWS '
+   591→    'with localized peering points in Israel (HQ operations), the United States (Miami), Spain (Barcelona), the United Kingdom (Manchester), South Africa (Durban), '
+   592→    'Australia (Melbourne), Nigeria, and Kenya. This distributed footprint ensures that voice traffic can be terminated locally in most major markets, '
+   593→    'reducing international transit costs and improving audio quality. The Dynamic Intelligent Routing engine continuously monitors carrier health metrics '
+   594→    '(jitter, packet loss, round-trip time) and reroutes traffic in real time to the best-performing carrier for each destination.'
+   595→))
+   596→
+   597→story.extend(h2('4.3 Firewall & Network Configuration'))
+   598→story.append(p(
+   599→    'When deploying MassaPro in an enterprise environment, the following firewall rules must be configured to allow voice traffic to flow correctly. '
+   600→    'SIP signaling requires inbound and outbound TCP port 5060 to be open between the enterprise SIP trunk and the MassaPro telephony layer. '
+   601→    'RTP media requires UDP ports 10000-20000 to be open in both directions. For deployments behind a Session Border Controller (SBC), the SBC should be configured '
+   602→    'to anchor media and forward SIP to the MassaPro telephony ingress. All signaling traffic should be encrypted using TLS 1.3, and media should use SRTP where regulatory '
+   603→    'requirements mandate end-to-end media encryption.'
+   604→))
+   605→
+   606→story.extend(h3('Required Firewall Rules'))
+   607→story.append(std_table([
+   608→    ['Direction', 'Protocol', 'Port Range', 'Purpose'],
+   609→    ['Inbound', 'TCP', '5060', 'SIP signaling from carrier / SBC to MassaPro'],
+   610→    ['Outbound', 'TCP', '5060', 'SIP signaling from MassaPro to carrier / SBC'],
+   611→    ['Inbound', 'UDP', '10000-20000', 'RTP media from carrier / SBC to MassaPro'],
+   612→    ['Outbound', 'UDP', '10000-20000', 'RTP media from MassaPro to carrier / SBC'],
+   613→    ['Outbound', 'TCP', '443', 'HTTPS API calls to CRM / ERP / BI integrations'],
+   614→    ['Outbound', 'TCP', '80', 'OCSP / CRL checks for TLS certificate validation'],
+   615→], [0.16, 0.14, 0.20, 0.50]))
+   616→story.append(Spacer(1, 10))
+   617→
+   618→story.append(info_box(
+   619→    'Always test SIP connectivity using a packet capture (Wireshark) on port 5060 before opening a support ticket. '
+   620→    'Most SIP registration failures are caused by asymmetric routing or NAT traversal issues at the enterprise firewall, not by MassaPro platform configuration.',
+   621→    label='Integration Note'
+   622→))
+   623→
+   624→story.append(PageBreak())
+   625→
+   626→# ═══════════════════════════════════════════════════════════════════════════════
+   627→# SECTION 5: SECURITY & COMPLIANCE
+   628→# ═══════════════════════════════════════════════════════════════════════════════
+   629→story.extend(h1('5. Security, Compliance & Data Integrity'))
+   630→
+   631→story.append(p(
+   632→    'MassaPro incorporates rigorous safeguards to meet the requirements of high-compliance industries such as legal, healthcare, financial services, and government. '
+   633→    'The platform adheres to a Security-by-Design philosophy, maintaining rigorous international certifications and advanced encryption standards. '
+   634→    'This section documents the full security stack, compliance frameworks, access control mechanisms, and privacy engineering controls that integrators must understand '
+   635→    'when deploying MassaPro in regulated environments.'
+   636→))
+   637→
+   638→story.extend(h2('5.1 Encryption Standards'))
+   639→story.append(p(
+   640→    'All data in transit between MassaPro and external systems (carriers, browsers, API clients, integrated CRMs) is encrypted using TLS 1.3, the current industry standard '
+   641→    'for transport-layer security. TLS 1.3 provides forward secrecy, eliminates vulnerable cipher suites from previous TLS versions, and reduces handshake latency. '
+   642→    'All data at rest — including call recordings, chat transcripts, analytics summaries, knowledge base documents, and configuration data — is encrypted using AES-256 '
+   643→    '(Advanced Encryption Standard with 256-bit keys), which is approved by the U.S. National Security Agency for top-secret information. '
+   644→    'Encryption keys are managed within AWS Key Management Service (KMS) with automatic rotation policies.'
+   645→))
+   646→
+   647→story.extend(h2('5.2 Compliance Frameworks'))
+   648→story.append(p(
+   649→    'MassaPro is engineered to meet the requirements of the following compliance frameworks. The platform is SOC 2 Type II certified, demonstrating that its security controls '
+   650→    'have been audited by an independent third party and operate effectively over time. The platform is also designed to be GDPR-ready (European Union General Data Protection Regulation) '
+   651→    'and HIPAA-ready (United States Health Insurance Portability and Accountability Act), making it suitable for deployment in high-compliance sectors such as legal and healthcare. '
+   652→    'ISO compliance is maintained through the platform\'s quality management system. Specific compliance scoping should be reviewed per deployment, as some frameworks require '
+   653→    'customer-side configuration (such as Business Associate Agreements for HIPAA-covered entities).'
+   654→))
+   655→
+   656→story.extend(h3('Security & Compliance Standards Matrix'))
+   657→story.append(std_table([
+   658→    ['Security Category', 'Technical Standard / Certification'],
+   659→    ['Data in Transit', 'TLS 1.3 (all signaling, API, and web traffic)'],
+   660→    ['Data at Rest', 'AES-256 (call recordings, transcripts, knowledge base, configuration)'],
+   661→    ['Compliance Frameworks', 'SOC 2 Type II, GDPR, HIPAA-ready, ISO'],
+   662→    ['Access Control', 'VPN, Single Sign-On (SSO), Dedicated Private Tenants, Role-Based Access Control (RBAC)'],
+   663→    ['Network Protection', 'Web Application Firewall (WAF), Network & Application Load Balancers, DDoS Shield'],
+   664→    ['PII Protection', 'Automatic identification and redaction in transcripts and analytics reports'],
+   665→    ['Key Management', 'AWS KMS with automatic key rotation'],
+   666→    ['Audit Logging', 'Comprehensive audit trail of all administrative and user actions'],
+   667→], [0.32, 0.68]))
+   668→story.append(Spacer(1, 14))
+   669→
+   670→story.extend(h2('5.3 Access Control'))
+   671→story.append(p(
+   672→    'Access to MassaPro administration and agent interfaces is governed by a layered access control model. <b>VPN</b> is required for direct administrative access to the platform\'s '
+   673→    'private subnets. <b>Single Sign-On (SSO)</b> integration supports SAML 2.0 and OAuth 2.0, allowing enterprises to federate authentication through their existing identity provider '
+   674→    '(Microsoft Entra ID, Okta, Google Workspace, etc.). Each customer deployment runs in a <b>Dedicated Private Tenant</b> on AWS, ensuring complete logical isolation from other tenants. '
+   675→    'Within each tenant, <b>Role-Based Access Control (RBAC)</b> governs what actions each user can perform, with predefined roles for administrators, supervisors, agents, and read-only auditors.'
+   676→))
+   677→
+   678→story.extend(h2('5.4 Network Protection'))
+   679→story.append(p(
+   680→    'The platform\'s network perimeter is protected by a Web Application Firewall (WAF) that inspects all inbound HTTP/HTTPS traffic against OWASP Top 10 rules and custom signature sets. '
+   681→    'Network Load Balancers (L4) and Application Load Balancers (L7) distribute traffic across healthy backend instances, automatically isolating failed nodes. '
+   682→    'A DDoS Shield provides volumetric and protocol-layer attack mitigation, absorbing traffic spikes before they reach application servers. All administrative access to the AWS '
+   683→    'environment flows through bastion hosts with multi-factor authentication and session recording.'
+   684→))
+   685→
+   686→story.extend(h2('5.5 PII Identification & Redaction'))
+   687→story.append(p(
+   688→    'The platform incorporates advanced data protection within the MassaPro AI Analytics engine. The system automatically identifies and masks Personally Identifiable Information (PII) '
+   689→    'from interaction data and transcripts. Categories of PII that are automatically detected include: full names, email addresses, phone numbers, Social Security numbers, credit card numbers, '
+   690→    'dates of birth, physical addresses, passport numbers, and medical record numbers. The redaction process allows businesses to collate, review, and interpret reporting and analytics '
+   691→    'without the risk of sensitive customer data being compromised or exposed to unauthorized users. Redacted data is replaced with tokenized placeholders in analytics views, '
+   692→    'while the original data remains accessible only to authorized personnel through a separate audited interface.'
+   693→))
+   694→
+   695→story.extend(h2('5.6 Privacy Engineering'))
+   696→story.append(p(
+   697→    'Beyond redaction, MassaPro implements privacy engineering principles throughout the platform. Data minimization is enforced at the ingestion layer — only fields required for the '
+   698→    'configured workflow are captured. Configurable data retention policies allow administrators to specify how long each data type (call recordings, transcripts, analytics summaries) '
+   699→    'is retained before automatic deletion. Right-to-be-forgotten requests can be processed through a self-service administrative interface that purges all customer-specific data across '
+   700→    'every subsystem within 30 days, satisfying GDPR Article 17 requirements. All data processing activities are logged in an immutable audit trail available for compliance review.'
+   701→))
+   702→
+   703→story.append(PageBreak())
+   704→
+   705→# ═══════════════════════════════════════════════════════════════════════════════
+   706→# SECTION 6: INTEGRATION GUIDE
+   707→# ═══════════════════════════════════════════════════════════════════════════════
+   708→story.extend(h1('6. Integration Guide'))
+   709→
+   710→story.append(p(
+   711→    'MassaPro is designed for seamless architectural unity with existing enterprise technology stacks via high-throughput connectivity methods. '
+   712→    'This section documents the four primary integration surfaces — REST APIs, Webhooks, WebSockets, and SIP/RTP Trunking — and the marketplace of pre-configured connectors '
+   713→    'available for one-click deployment. Integrators should use this section as the authoritative reference when planning CRM, ERP, or BI integrations.'
+   714→))
+   715→
+   716→story.extend(h2('6.1 API Gateway'))
+   717→story.append(p(
+   718→    'The API Gateway acts as the secure, centralized entry point for all external system requests, ensuring consistent policy enforcement. Every API request is authenticated, '
+   719→    'rate-limited, logged, and routed to the appropriate backend microservice. The gateway supports both API key authentication (for server-to-server integrations) and '
+   720→    'OAuth 2.0 bearer tokens (for user-context integrations). Rate limits are configurable per integration and per endpoint, with default thresholds of 1000 requests per minute '
+   721→    'for read endpoints and 100 requests per minute for write endpoints. All API responses are returned in JSON format with consistent envelope structure containing status, data, '
+   722→    'and metadata fields.'
+   723→))
+   724→
+   725→story.extend(h2('6.2 RESTful APIs & Webhooks'))
+   726→story.append(p(
+   727→    'RESTful APIs are the primary framework for real-time data synchronization between MassaPro and external systems. Endpoints are versioned (currently v1) and documented using '
+   728→    'OpenAPI 3.0 specification, with interactive documentation available through the integrator portal. Webhooks provide event-driven triggers, pushing real-time notifications to '
+   729→    'external systems when specific events occur — such as a new lead being qualified, a call ending, a sentiment threshold being crossed, or a payment being processed. '
+   730→    'Webhook payloads are signed with HMAC-SHA256 using a per-integration secret, allowing receivers to verify authenticity. Failed webhook deliveries are retried with exponential '
+   731→    'backoff for up to 24 hours, after which the event is queued for manual review.'
+   732→))
+   733→
+   734→story.extend(h2('6.3 WebSockets'))
+   735→story.append(p(
+   736→    'WebSockets enable full-duplex communication channels for low-latency digital interaction updates. This is the recommended integration method for real-time agent dashboards, '
+   737→    'live call monitoring interfaces, and any application that requires sub-second updates on interaction state changes. The WebSocket protocol carries JSON-encoded events '
+   738→    'including interaction started, message received, sentiment changed, agent assigned, and interaction ended. Connection authentication uses a short-lived JWT exchanged during '
+   739→    'the initial HTTP upgrade handshake. Heartbeat pings every 30 seconds keep connections alive through proxy firewalls.'
+   740→))
+   741→
+   742→story.extend(h2('6.4 SIP/RTP Trunking'))
+   743→story.append(p(
+   744→    'For direct telephony integration, MassaPro supports SIP/RTP trunking with carrier-grade compatibility. Enterprise SIP trunks can be configured to route inbound calls directly '
+   745→    'to MassaPro\'s telephony ingress, with optional media anchoring on a Session Border Controller (SBC) for NAT traversal and security hardening. Outbound calls can be placed '
+   746→    'through MassaPro\'s AI Agent or human agent interfaces, with routing rules determining whether calls egress through MassaPro\'s Tier-1 carrier interconnects or through '
+   747→    'customer-provided SIP trunks. This flexibility allows hybrid deployments where existing carrier contracts are preserved while AI capabilities are layered on top.'
+   748→))
+   749→
+   750→story.extend(h2('6.5 Marketplace Integrations'))
+   751→story.append(p(
+   752→    'MassaPro maintains a marketplace of pre-configured connectors for hundreds of standard CRM, ERP, and BI applications. These connectors handle authentication, data mapping, '
+   753→    'error handling, and retry logic out of the box, reducing integration effort from weeks to hours. Below is a representative sample of the most commonly deployed marketplace '
+   754→    'connectors. The full catalog is accessible through the integrator portal, and custom connectors can be developed for systems not yet covered.'
+   755→))
+   756→
+   757→story.extend(h3('Sample Marketplace Connectors'))
+   758→story.append(std_table([
+   759→    ['Connector', 'Category', 'Sync Direction', 'Typical Use Case'],
+   760→    ['Salesforce', 'CRM', 'Bidirectional', 'Sync contacts, log calls, update opportunity stage'],
+   761→    ['HubSpot', 'CRM', 'Bidirectional', 'Sync contacts, trigger workflows, log engagements'],
+   762→    ['Zendesk', 'Support', 'Bidirectional', 'Create tickets, sync user profiles, attach call recordings'],
+   763→    ['Shopify', 'E-Commerce', 'Inbound', 'Trigger AI Agent on abandoned cart, sync order status'],
+   764→    ['Slack', 'Collaboration', 'Outbound', 'Notify channels of high-priority interactions'],
+   765→    ['Stripe', 'Payments', 'Bidirectional', 'Process payments via AI Agent, sync transaction status'],
+   766→    ['Mailchimp', 'Marketing', 'Outbound', 'Add qualified leads to email campaigns'],
+   767→    ['Calendly', 'Scheduling', 'Bidirectional', 'Book consultations directly from AI Agent conversations'],
+   768→    ['Google Calendar', 'Scheduling', 'Bidirectional', 'Block time for consultations, sync availability'],
+   769→    ['Microsoft Teams', 'Collaboration', 'Outbound', 'Notify channels, escalate interactions'],
+   770→], [0.20, 0.18, 0.18, 0.44]))
+   771→story.append(Spacer(1, 12))
+   772→
+   773→story.extend(h2('6.6 Custom Integrations'))
+   774→story.append(p(
+   775→    'For systems not covered by the marketplace, MassaPro supports custom integrations via the REST API and Webhook framework. Custom integrations are typically built using '
+   776→    'a middleware layer (such as Zapier, Make, MuleSoft, or a custom Node.js/Python service) that translates between MassaPro\'s API contract and the target system\'s API. '
+   777→    'The integrator portal provides OpenAPI specifications, Postman collections, and code samples in JavaScript, Python, and Java to accelerate custom integration development. '
+   778→    'All custom integrations must register for an API key through the integrator portal and adhere to the rate limits defined in the API Gateway configuration. '
+   779→    'Enterprise-grade encryption and privacy are maintained across all integration types, meeting SOC 2, GDPR, HIPAA, and ISO requirements to ensure data is always secure.'
+   780→))
+   781→
+   782→story.append(PageBreak())
+   783→
+   784→# ═══════════════════════════════════════════════════════════════════════════════
+   785→# SECTION 7: MASSAPRO FLOW
+   786→# ═══════════════════════════════════════════════════════════════════════════════
+   787→story.extend(h1('7. MassaPro Flow — Workflow Automation'))
+   788→
+   789→story.append(p(
+   790→    'MassaPro Flow serves as the central orchestration engine that binds the platform\'s individual AI modules into a unified, automated customer journey. '
+   791→    'Within its intuitive drag-and-drop interface, integrators can design and automate highly personalized workflows that integrate various technical features '
+   792→    'across the four core AI engines. Flow is where the platform\'s modular capabilities are composed into business outcomes — it is the layer where AI Agent, ASR, AI Guru, '
+   793→    'and AI Analytics stop being individual products and start functioning as a coordinated system.'
+   794→))
+   795→
+   796→story.extend(h2('7.1 Core Capabilities'))
+   797→story.extend(h3('Conversational AI Integration'))
+   798→story.append(p(
+   799→    'Flow allows for the seamless embedding of AI Agents into workflows to handle routine queries and high-value tasks like payment processing without human intervention. '
+   800→    'AI Agent nodes within a Flow can be configured with specific knowledge base scopes, intent thresholds, and escalation rules. When an AI Agent node determines that a conversation '
+   801→    'exceeds its configured confidence threshold or requires human judgment, it can hand off to a human agent node with full context preserved.'
+   802→))
+   803→
+   804→story.extend(h3('Intelligent Routing'))
+   805→story.append(p(
+   806→    'Flow utilizes data from other modules to route inbound interactions to the most appropriate human agent based on specific criteria. Routing rules can be configured around '
+   807→    'agent skill set (e.g., Spanish-speaking agents receive Spanish calls), language proficiency (e.g., advanced speakers handle complex queries), topic expertise '
+   808→    '(e.g., billing specialists receive payment disputes), or immediate availability (e.g., least-busy agent receives new chat). Multiple routing criteria can be combined '
+   809→    'with AND/OR logic to create sophisticated assignment policies.'
+   810→))
+   811→
+   812→story.extend(h3('Voice and Text Processing'))
+   813→story.append(p(
+   814→    'Flow integrates directly with ASR (Automatic Speech Recognition) and AI Voice modules, enabling the use of Text-to-Speech and Speech-to-Text technologies within custom '
+   815→    'IVR menus and automated response paths. This allows integrators to build voice-based workflows that branch based on caller intent, play dynamic prompts synthesized from '
+   816→    'real-time data, and seamlessly transition between voice and text channels within a single interaction.'
+   817→))
+   818→
+   819→story.extend(h2('7.2 Sales Funnel Automation'))
+   820→story.append(p(
+   821→    'MassaPro Flow acts as a drag-and-drop orchestration layer that automates routine tasks within a sales funnel to increase conversion rates and efficiency. '
+   822→    'The following numbered process describes a typical automated lead-qualification workflow, but the same patterns can be adapted to customer support, retention, '
+   823→    'onboarding, and other business processes.'
+   824→))
+   825→
+   826→story.extend(h3('Sales Funnel Workflow Steps'))
+   827→story.append(std_table([
+   828→    ['Step', 'Action', 'Module Involved', 'Outcome'],
+   829→    ['1', 'New lead enters system (web form, inbound call, social DM)', 'Omni-Channel Ingestion', 'Lead record created with source attribution'],
+   830→    ['2', 'AI Agent triggers automatic outbound call to new lead within seconds', 'AI Agent + Flow', 'Instant engagement, sub-minute response time'],
+   831→    ['3', 'AI Agent asks predefined screening questions to qualify lead', 'AI Agent', 'Lead scored against qualification criteria'],
+   832→    ['4', 'Qualified leads auto-booked into consultant calendar', 'AI Agent + Calendly/Google Calendar', 'Appointment scheduled, confirmations sent'],
+   833→    ['5', 'Unqualified leads routed to nurture sequence via AI-driven SMS', 'AI Agent + SMS channel', 'Ongoing engagement without human workload'],
+   834→    ['6', 'Inbound sales inquiries intelligently routed to top performers', 'Flow + Intelligent Routing', 'Best agent receives the high-value inquiry'],
+   835→    ['7', 'AI-driven SMS and call follow-ups manage consistent engagement', 'AI Agent + Flow scheduler', 'No opportunities lost to manual follow-up gaps'],
+   836→    ['8', 'AI Analytics logs every interaction, scores sentiment, identifies drop-off points', 'AI Analytics', 'Continuous optimization of the funnel'],
+   837→], [0.07, 0.32, 0.22, 0.39]))
+   838→story.append(Spacer(1, 12))
+   839→
+   840→story.append(info_box(
+   841→    'In a deployed UK law firm case study, this exact workflow produced a 22% increase in qualified lead-to-active-case conversion, '
+   842→    'reduced average response time from 2 hours to under 10 seconds, and handled over 120,000 engagements per month autonomously.',
+   843→    label='Proven Result'
+   844→))
+   845→
+   846→story.append(PageBreak())
+   847→
+   848→# ═══════════════════════════════════════════════════════════════════════════════
+   849→# SECTION 8: IMPLEMENTATION & ONBOARDING
+   850→# ═══════════════════════════════════════════════════════════════════════════════
+   851→story.extend(h1('8. Implementation & Onboarding'))
+   852→
+   853→story.append(p(
+   854→    'The MassaPro implementation process follows a structured four-step methodology designed to take a customer from contract signing to go-live in a predictable, low-risk manner. '
+   855→    'Each step has defined inputs, outputs, and acceptance criteria. The process is fully managed by the MassaPro delivery team, with the customer providing subject-matter expertise, '
+   856→    'access to source systems, and acceptance testing resources. Typical end-to-end timelines range from 4 to 8 weeks depending on the scope of integrations and the complexity of '
+   857→    'the workflows being deployed.'
+   858→))
+   859→
+   860→story.extend(h2('8.1 Implementation Process'))
+   861→story.append(std_table([
+   862→    ['Step', 'Phase', 'Key Activities', 'Typical Duration'],
+   863→    ['1', 'Scoping Meeting', 'Create bespoke rollout plan; define timescales; identify dependencies; agree on success metrics', '3-5 business days'],
+   864→    ['2', 'Data Gathering', 'Confirm scope; finalize service model; collect user lists, team structures, campaign data, account configuration', '5-10 business days'],
+   865→    ['3', 'System Setup, Site Survey & Testing', 'Platform build; IP configuration; server provisioning; security hardening; integration testing; UAT', '2-4 weeks'],
+   866→    ['4', 'Training & Go-Live', 'Group workshops at customer site; admin training; agent training; cutover; hypercare support', '1-2 weeks'],
+   867→], [0.07, 0.27, 0.46, 0.20]))
+   868→story.append(Spacer(1, 14))
+   869→
+   870→story.extend(h3('Step 1 — Scoping Meeting'))
+   871→story.append(p(
+   872→    'Following the award of contract, the MassaPro delivery team works with the customer\'s project team to create a bespoke plan for rolling out the new solution. '
+   873→    'This plan includes detailed timescales based on the customer\'s needs, identifies any dependencies on third-party systems or carrier provisioning, and establishes '
+   874→    'the success metrics that will be used to evaluate the deployment. The output of this step is a signed-off Project Charter document that governs the remainder of the implementation.'
+   875→))
+   876→
+   877→story.extend(h3('Step 2 — Data Gathering'))
+   878→story.append(p(
+   879→    'During this phase the delivery team confirms the scope of the customer\'s requirements and finalizes an agreed service model. Information collected for build includes: '
+   880→    'user status and role assignments, team structures and reporting hierarchies, preload campaigns and workflow definitions, telephony porting requirements, carrier interconnect '
+   881→    'details, integration credentials for CRM/ERP/BI systems, and any other vital account data. The output is a Build Specification document that the engineering team will use '
+   882→    'to configure the platform.'
+   883→))
+   884→
+   885→story.extend(h3('Step 3 — System Setup, Site Survey & Testing'))
+   886→story.append(p(
+   887→    'The platform build is completed based on the information collected at the data gathering meeting. Activities include: configuring IPs, building servers, securing the platform '
+   888→    'with WAF rules and access controls, deploying AI Agent knowledge bases, configuring MassaPro Flow workflows, integrating with external systems via API connectors, '
+   889→    'and conducting end-to-end integration testing. A site survey may be conducted for on-premise components (SBCs, desk phones, network gear). User Acceptance Testing (UAT) '
+   890→    'is performed by the customer\'s project team against the acceptance criteria defined in the Project Charter.'
+   891→))
+   892→
+   893→story.extend(h3('Step 4 — Training & Go-Live'))
+   894→story.append(p(
+   895→    'Group workshops are conducted at the customer\'s offices or another agreed location to introduce the team to the new technology and processes. Training is role-based: '
+   896→    'administrators learn platform configuration, supervisor tools, and analytics; agents learn the agent desktop, AI Guru co-pilot, and escalation procedures; '
+   897→    'executives learn the analytics dashboards and reporting tools. Once training is complete, the solution goes live. A hypercare period of 2-4 weeks follows go-live, '
+   898→    'during which the MassaPro delivery team provides priority support to resolve any issues and tune the configuration based on real production traffic.'
+   899→))
+   900→
+   901→story.extend(h2('8.2 Knowledge Base Ingestion'))
+   902→story.append(p(
+   903→    'A critical success factor for any MassaPro deployment is the quality and completeness of the knowledge base that powers the AI Agent and AI Guru modules. '
+   904→    'The platform supports ingestion of multiple content types, and integrators should plan to dedicate time during Step 2 (Data Gathering) and Step 3 (System Setup) '
+   905→    'to populate the knowledge base with the customer\'s proprietary documentation.'
+   906→))
+   907→
+   908→story.extend(h3('Supported Content Sources'))
+   909→story.append(std_table([
+   910→    ['Source Type', 'Format', 'Ingestion Method', 'Use Case'],
+   911→    ['Document Assets', 'PDF, DOCX, TXT', 'Direct upload via Article Editor', 'Product manuals, policy docs, FAQs'],
+   912→    ['Visual Data', 'PNG, JPG, SVG', 'Direct upload via Article Editor', 'Infographics, diagrams, branded visuals'],
+   913→    ['Web Content', 'HTML pages', 'Automated web scraper (URL list)', 'Public knowledge bases, partner docs'],
+   914→    ['Third-Party Apps', 'API-connected', 'Marketplace connector sync', 'Zendesk articles, Confluence pages, Notion docs'],
+   915→    ['Internal KB Articles', 'Markdown / Rich Text', 'Article Editor (in-platform)', 'Original content authored in MassaPro'],
+   916→], [0.22, 0.20, 0.28, 0.30]))
+   917→story.append(Spacer(1, 12))
+   918→
+   919→story.append(p(
+   920→    'Once ingested, content is automatically indexed into the MassaPro LLM and made instantly available to AI Agent and AI Guru. Updates to articles circulate throughout the '
+   921→    'ecosystem in real time — no re-indexing or restart required. The system also identifies content gaps by analyzing real customer queries that AI Agent or AI Guru could not '
+   922→    'confidently answer, and generates draft articles for those gaps, which the customer\'s knowledge administrators can review and publish. This creates a self-improving knowledge '
+   923→    'base that evolves naturally with customer needs.'
+   924→))
+   925→
+   926→story.append(PageBreak())
+   927→
+   928→# ═══════════════════════════════════════════════════════════════════════════════
+   929→# SECTION 9: GLOSSARY & REFERENCE
+   930→# ═══════════════════════════════════════════════════════════════════════════════
+   931→story.extend(h1('9. Glossary & Reference'))
+   932→
+   933→story.append(p(
+   934→    'This final section provides a consolidated glossary of acronyms and technical terms used throughout this manual, followed by a quick-reference table of all key technical '
+   935→    'specifications. Integrators should use this section as a quick lookup when configuring deployments or communicating with the MassaPro support team.'
+   936→))
+   937→
+   938→story.extend(h2('9.1 Glossary'))
+   939→story.append(std_table([
+   940→    ['Term', 'Definition'],
+   941→    ['AES-256', 'Advanced Encryption Standard with 256-bit keys; used for data at rest in MassaPro.'],
+   942→    ['AI Agent', 'MassaPro\'s autonomous conversational LLM bot that handles customer interactions 24/7.'],
+   943→    ['AI Analytics', 'MassaPro module performing real-time stream processing of interaction data.'],
+   944→    ['AI Guru', 'MassaPro\'s RAG-powered co-pilot providing real-time coaching to human agents.'],
+   945→    ['API Gateway', 'Centralized entry point for all external API requests, enforcing auth and rate limits.'],
+   946→    ['ASR', 'Automatic Speech Recognition; converts spoken audio to text.'],
+   947→    ['CSAT', 'Customer Satisfaction score; a key metric tracked by AI Analytics.'],
+   948→    ['Flow', 'MassaPro Flow; the drag-and-drop workflow orchestration engine.'],
+   949→    ['GDPR', 'General Data Protection Regulation; EU data privacy framework.'],
+   950→    ['HIPAA', 'Health Insurance Portability and Accountability Act; US healthcare data law.'],
+   951→    ['IVR', 'Interactive Voice Response; phone menu system built using ASR and TTS.'],
+   952→    ['ISO', 'International Organization for Standardization; certifies quality management systems.'],
+   953→    ['LLM', 'Large Language Model; the AI underpinning MassaPro\'s conversational engines.'],
+   954→    ['MNO', 'Mobile Network Operator; cellular carrier providing voice/SMS connectivity.'],
+   955→    ['NLP', 'Natural Language Processing; branch of AI handling human language.'],
+   956→    ['PII', 'Personally Identifiable Information; automatically redacted by AI Analytics.'],
+   957→    ['RAG', 'Retrieval-Augmented Generation; AI Guru\'s architecture combining retrieval + LLM.'],
+   958→    ['RTP', 'Real-time Transport Protocol; carries voice media over UDP ports 10000-20000.'],
+   959→    ['SBC', 'Session Border Controller; telephony edge device for SIP security and NAT.'],
+   960→    ['SIP', 'Session Initiation Protocol; signaling protocol on TCP port 5060.'],
+   961→    ['SLA', 'Service Level Agreement; performance commitments to customers.'],
+   962→    ['SOC 2', 'Service Organization Control 2; security audit standard (Type II = operating effectiveness).'],
+   963→    ['SSO', 'Single Sign-On; federated authentication via SAML 2.0 or OAuth 2.0.'],
+   964→    ['SRTP', 'Secure RTP; encrypted media transport for regulated deployments.'],
+   965→    ['STT', 'Speech-to-Text; see ASR.'],
+   966→    ['TLS 1.3', 'Transport Layer Security version 1.3; encrypts all data in transit.'],
+   967→    ['TTS', 'Text-to-Speech; AI Voice synthesis.'],
+   968→    ['VPC', 'Virtual Private Cloud; isolated AWS network partition hosting MassaPro tenants.'],
+   969→    ['WAF', 'Web Application Firewall; L7 filter protecting against OWASP attacks.'],
+   970→    ['WebSocket', 'Full-duplex TCP protocol for real-time bidirectional communication.'],
+   971→], [0.14, 0.86]))
+   972→story.append(Spacer(1, 14))
+   973→
+   974→story.extend(h2('9.2 Quick Reference — Technical Specifications'))
+   975→story.append(std_table([
+   976→    ['Category', 'Specification', 'Value'],
+   977→    ['Voice Latency', 'ASR roundtrip', '<300ms'],
+   978→    ['Voice Accuracy', 'ASR transcription', '99%'],
+   979→    ['Languages', 'AI Agent conversational', '100+'],
+   980→    ['Concurrency', 'AI Agent vs human queue', '50x throughput'],
+   981→    ['Handle Time', 'AI Agent reduction', '-70%'],
+   982→    ['SIP Signaling', 'Protocol', 'SIP over TCP'],
+   983→    ['SIP Port', 'Default', '5060'],
+   984→    ['RTP Media', 'Protocol', 'RTP over UDP'],
+   985→    ['RTP Ports', 'Range', '10000-20000'],
+   986→    ['Transit Encryption', 'Standard', 'TLS 1.3'],
+   987→    ['At-Rest Encryption', 'Standard', 'AES-256'],
+   988→    ['Compliance', 'Frameworks', 'SOC 2 Type II, GDPR, HIPAA, ISO'],
+   989→    ['Access Control', 'Methods', 'VPN, SSO (SAML 2.0 / OAuth 2.0), RBAC'],
+   990→    ['Integration', 'API types', 'REST, Webhooks, WebSockets, SIP/RTP trunking'],
+   991→    ['Marketplace', 'Pre-built connectors', '100+'],
+   992→    ['Hosting', 'Infrastructure', 'AWS Dedicated Private Tenant (VPC)'],
+   993→    ['Identity', 'Brand', 'MassaPro (formerly Athena Suite)'],
+   994→], [0.30, 0.32, 0.38]))
+   995→story.append(Spacer(1, 16))
+   996→
+   997→story.extend(h2('9.3 Contact & Support'))
+   998→story.append(p(
+   999→    'For technical support, integration questions, or to request an updated version of this manual, contact the MassaPro team:'
+  1000→))
+  1001→story.append(Spacer(1, 6))
+  1002→contact_style = ParagraphStyle('Contact', fontName=BODY_FONT, fontSize=11, leading=18,
+  1003→    textColor=TEXT_PRIMARY, alignment=TA_LEFT, leftIndent=20)
+  1004→story.append(Paragraph('<b>MassaPro</b>', contact_style))
+  1005→story.append(Paragraph('Ezequiel Sznaider — CEO', contact_style))
+  1006→story.append(Paragraph('Email: eze@massapro.com', contact_style))
+  1007→story.append(Paragraph('Website: massapro.com', contact_style))
+  1008→story.append(Spacer(1, 12))
+  1009→
+  1010→story.append(info_box(
+  1011→    'This manual is intended for authorized integrators and implementation partners. '
+  1012→    'Distribution outside the authorized partner network requires written approval from MassaPro. '
+  1013→    'For the latest version of this document, additional integration guides, or to request a custom integration scope review, contact the MassaPro integrator support team.',
+  1014→    label='Document Control'
+  1015→))
+  1016→
+  1017→
+  1018→# ───────────────────── Build ─────────────────────
+  1019→OUT_BODY = '/home/z/my-project/scripts/body.pdf'
+  1020→
+  1021→doc = TocDocTemplate(
+  1022→    OUT_BODY,
+  1023→    pagesize=A4,
+  1024→    leftMargin=LEFT_M, rightMargin=RIGHT_M,
+  1025→    topMargin=TOP_M, bottomMargin=BOT_M,
+  1026→    title='MassaPro AI Omni-Channel Platform — Technical & Integration Manual',
+  1027→    author='MassaPro',
+  1028→    creator='MassaPro',
+  1029→    subject='Technical and integration reference for MassaPro AI platform integrators',
+  1030→)
+  1031→doc.multiBuild(story, onFirstPage=header_footer, onLaterPages=header_footer)
+  1032→print('Body PDF generated: %s' % OUT_BODY)
+  1033→

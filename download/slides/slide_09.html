@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 9 — Privacy and Inclusion</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<style>
+  .quad-card {
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 18px 20px;
+    position: relative;
+    box-shadow: 0 1px 3px rgba(124,58,237,0.05);
+    transition: all .2s;
+  }
+  .quad-card .q-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    background: var(--primary-50);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 10px;
+  }
+  .quad-card h3 {
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 15px;
+    color: var(--primary-dark);
+    margin-bottom: 4px;
+    letter-spacing: -0.01em;
+  }
+  .quad-card p {
+    font-size: 12.5px;
+    line-height: 1.45;
+    color: var(--ink-soft);
+  }
+  .img-frame {
+    position: relative;
+    height: 100%;
+    border-radius: 20px;
+    overflow: hidden;
+    border: 2px solid var(--primary-100);
+    box-shadow: 0 12px 30px rgba(124,58,237,0.18);
+  }
+  .img-frame img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-frame::after {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(26,11,46,0.05) 0%, rgba(124,58,237,0.55) 100%);
+  }
+  .img-caption {
+    position: absolute; left: 24px; right: 24px; bottom: 22px; z-index: 2;
+    color: #fff;
+  }
+  .img-caption .ic-eyebrow {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    font-weight: 700; opacity: 0.85; margin-bottom: 6px;
+  }
+  .img-caption .ic-line { font-size: 16px; font-weight: 600; line-height: 1.35; }
+  .arch-pill {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 12px; border-radius: 999px;
+    background: var(--primary-50);
+    color: var(--primary-dark);
+    font-size: 11px; font-weight: 600;
+    border: 1px solid var(--primary-100);
+  }
+</style>
+</head>
+<body>
+<div class="slide slide-light">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <img src="massapro-logo.png" alt="MassaPro">
+    <span class="brand-name">MassaPro</span>
+  </div>
+
+  <!-- Decorative background blob -->
+  <div data-decor aria-hidden="true" style="position:absolute; top:-80px; right:-80px; width:280px; height:280px; border-radius:50%; background:radial-gradient(circle, rgba(167,139,250,0.18) 0%, rgba(167,139,250,0) 70%); z-index:0;"></div>
+
+  <!-- Layout: text-left (60%) + image-right (40%) -->
+  <div class="absolute inset-0 flex" style="padding: 88px 64px 72px 64px;">
+
+    <!-- LEFT: Text column -->
+    <div class="flex flex-col" style="width: 60%; padding-right: 36px;">
+
+      <div class="eyebrow" style="margin-bottom: 14px;">
+        <span class="material-icons icon-sm">lock_person</span>
+        Chapter 02 — How It Works
+      </div>
+
+      <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 36px; line-height: 1.12; color: var(--ink); letter-spacing: -0.02em; margin-bottom: 10px;">
+        Audio Never Passes Through <span class="accent-text">Shared Hardware</span>
+      </h1>
+      <div class="accent-rule" style="margin-bottom: 18px;"></div>
+
+      <p style="font-size: 13px; color: var(--muted); line-height: 1.5; margin-bottom: 18px; max-width: 560px;">
+        A structural privacy guarantee. The customer's own phone is the microphone and earpiece — the kiosk never hears what is said.
+      </p>
+
+      <!-- 2x2 quadrant grid -->
+      <div class="grid grid-cols-2 gap-3" style="max-width: 580px;">
+        <div class="quad-card">
+          <div class="q-icon"><span class="material-icons">headphones</span></div>
+          <h3>Acoustic Isolation</h3>
+          <p>No ambient noise in the session, and no disturbance to those nearby. The customer's phone mic is centimetres from their mouth, not metres.</p>
+        </div>
+        <div class="quad-card">
+          <div class="q-icon"><span class="material-icons">lock</span></div>
+          <h3>Data Confidentiality</h3>
+          <p>Banking, medical, or personal data is inaudible to bystanders. Critical for HIPAA, GDPR, and PCI-DSS compliance at the service point.</p>
+        </div>
+        <div class="quad-card">
+          <div class="q-icon"><span class="material-icons">language</span></div>
+          <h3>Multilingual Service</h3>
+          <p>Automatic routing to the customer's chosen language. The advisor does not need to be bilingual; the ACD routes to the right queue.</p>
+        </div>
+        <div class="quad-card">
+          <div class="q-icon"><span class="material-icons">sign_language</span></div>
+          <h3>Sign Language</h3>
+          <p>Real-time interpreter for deaf customers, available on the same kiosk without any additional hardware or software.</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 14px;">
+        <span class="arch-pill">
+          <span class="material-icons" style="font-size: 14px;">smartphone</span>
+          Architecture: phone = mic + speaker · kiosk = screen only
+        </span>
+      </div>
+    </div>
+
+    <!-- RIGHT: Image column -->
+    <div style="width: 40%;">
+      <div class="img-frame">
+        <img src="human-hairsalon-reception.png" alt="Receptionist representing privacy at the service point">
+        <div class="img-caption">
+          <div class="ic-eyebrow">Privacy by Architecture</div>
+          <div class="ic-line">The kiosk is a screen.<br>The customer's phone is the audio path.</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <span>MassaPro IVR — Sales Deck</span>
+    <span class="footer-meta">
+      <span>Confidential</span>
+      <span class="footer-divider"></span>
+      <span>Slide 9 / 24</span>
+    </span>
+  </div>
+
+</div>
+
+<aside data-notes class="hidden">
+This slide does double duty. It answers the privacy objection — "I do not want my customers' data going through a kiosk speaker" — and it opens up an inclusion story that competitors cannot match. The sign-language interpreter capability alone has won deals in healthcare and government, where accessibility is a legal requirement, not a nice-to-have. If the audience is from a regulated industry — banking, healthcare, government — spend extra time on the confidentiality bullet. The point is not that we encrypt the audio; everyone does. The point is that the audio never touches shared hardware in the first place. That is a structural privacy guarantee that no kiosk-mounted microphone can match, no matter how many layers of encryption you put on top.
+</aside>
+
+</body>
+</html>

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Slide 10 — The MassaPro Ecosystem Advantage</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<link rel="stylesheet" href="global.css">
+<style>
+  .stage {
+    position: relative;
+    width: 100%;
+    height: 360px;
+  }
+  .ivry-core {
+    position: absolute;
+    left: 50%; top: 50%;
+    transform: translate(-50%, -50%);
+    width: 220px; height: 220px;
+    border-radius: 28px;
+    background: linear-gradient(145deg, #7C3AED 0%, #5B21B6 100%);
+    box-shadow: 0 18px 50px rgba(124,58,237,0.45);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    color: #fff;
+    text-align: center;
+    z-index: 3;
+    padding: 18px;
+    border: 2px solid rgba(167,139,250,0.5);
+  }
+  .ivry-core .core-eyebrow {
+    font-size: 9.5px; letter-spacing: 0.24em; text-transform: uppercase;
+    font-weight: 700; color: rgba(255,255,255,0.7); margin-bottom: 6px;
+  }
+  .ivry-core .core-title {
+    font-family: var(--font-heading);
+    font-weight: 800; font-size: 22px; line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .ivry-core .core-sub {
+    font-size: 10.5px; color: rgba(255,255,255,0.78);
+    margin-top: 6px; line-height: 1.4;
+  }
+  .ivry-core .core-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    background: rgba(255,255,255,0.16);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 8px;
+  }
+  .module {
+    position: absolute;
+    width: 200px;
+    background: #FFFFFF;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 12px 14px;
+    box-shadow: 0 6px 18px rgba(124,58,237,0.08);
+    z-index: 2;
+  }
+  .module .mod-head {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+  }
+  .module .mod-icon {
+    width: 28px; height: 28px; border-radius: 8px;
+    background: var(--primary-50);
+    color: var(--primary);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .module h3 {
+    font-family: var(--font-heading); font-weight: 700;
+    font-size: 13px; color: var(--primary-dark);
+    letter-spacing: -0.01em; line-height: 1.15;
+  }
+  .module p {
+    font-size: 11px; line-height: 1.4; color: var(--ink-soft);
+  }
+  .connector {
+    position: absolute;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-100) 0%, var(--primary) 50%, var(--primary-100) 100%);
+    z-index: 1;
+  }
+  .connector::before, .connector::after {
+    content: ''; position: absolute; top: 50%; transform: translateY(-50%);
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--primary);
+  }
+  .connector::before { left: -3px; }
+  .connector::after { right: -3px; }
+  .ec-inset {
+    position: absolute;
+    top: 92px; right: 64px;
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid var(--primary);
+    box-shadow: 0 6px 16px rgba(124,58,237,0.25);
+    z-index: 4;
+  }
+  .ec-inset img { width: 100%; height: 100%; object-fit: cover; }
+  .ec-inset::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, rgba(124,58,237,0.0) 40%, rgba(124,58,237,0.35) 100%);
+  }
+  .platform-callout {
+    margin: 0 64px;
+    background: linear-gradient(90deg, rgba(124,58,237,0.06) 0%, rgba(167,139,250,0.10) 100%);
+    border-left: 4px solid var(--primary);
+    border-radius: 0 12px 12px 0;
+    padding: 12px 22px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+</style>
+</head>
+<body>
+<div class="slide slide-light">
+
+  <!-- Brand bar -->
+  <div class="brand-bar">
+    <img src="massapro-logo.png" alt="MassaPro">
+    <span class="brand-name">MassaPro</span>
+  </div>
+
+  <!-- Decorative bg -->
+  <div data-decor aria-hidden="true" style="position:absolute; top:-100px; left:-100px; width:300px; height:300px; border-radius:50%; background:radial-gradient(circle, rgba(167,139,250,0.10) 0%, rgba(167,139,250,0) 70%); z-index:0;"></div>
+
+  <div class="absolute inset-0 flex flex-col" style="padding: 78px 0 60px 0;">
+
+    <!-- Header block -->
+    <div style="padding: 0 64px;">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="eyebrow" style="margin-bottom: 10px;">
+            <span class="material-icons icon-sm">hub</span>
+            Chapter 02 — How It Works
+          </div>
+          <h1 style="font-family: var(--font-heading); font-weight: 800; font-size: 30px; line-height: 1.15; color: var(--ink); letter-spacing: -0.02em; max-width: 760px;">
+            The MassaPro Ecosystem Advantage — <span class="accent-text">IVR + AI Agent + AI Guru + AI Analytics + Flow</span>
+          </h1>
+        </div>
+      </div>
+      <div class="accent-rule" style="margin-top: 10px;"></div>
+    </div>
+
+    <!-- Ecosystem stage -->
+    <div style="padding: 8px 64px 0 64px; flex: 1; display: flex; flex-direction: column; justify-content: center;">
+      <div class="stage">
+
+        <!-- Connectors (lines) -->
+        <div class="connector" style="left: 175px; top: 50%; width: calc(50% - 290px);"></div>
+        <div class="connector" style="right: 175px; top: 50%; width: calc(50% - 290px);"></div>
+        <div class="connector" style="left: 50%; top: 90px; width: 2px; height: calc(50% - 195px); background: linear-gradient(180deg, var(--primary-100), var(--primary), var(--primary-100));"></div>
+        <div class="connector" style="left: 50%; bottom: 90px; width: 2px; height: calc(50% - 195px); background: linear-gradient(180deg, var(--primary-100), var(--primary), var(--primary-100));"></div>
+
+        <!-- IVR core -->
+        <div class="ivry-core">
+          <div class="core-icon"><span class="material-icons" style="color:#fff; font-size: 22px;">videocam</span></div>
+          <div class="core-eyebrow">MassaPro</div>
+          <div class="core-title">IVR</div>
+          <div class="core-sub">Face-to-face video<br>over the service point</div>
+        </div>
+
+        <!-- Top-left module: AI Agent -->
+        <div class="module" style="top: 0; left: 0;">
+          <div class="mod-head">
+            <div class="mod-icon"><span class="material-icons" style="font-size: 18px;">smart_toy</span></div>
+            <h3>AI Agent</h3>
+          </div>
+          <p>Autonomous chat &amp; voice. Resolves simple needs; escalates complex ones to a video advisor with full context.</p>
+        </div>
+
+        <!-- Top-right module: AI Guru -->
+        <div class="module" style="top: 0; right: 0;">
+          <div class="mod-head">
+            <div class="mod-icon"><span class="material-icons" style="font-size: 18px;">lightbulb</span></div>
+            <h3>AI Guru</h3>
+          </div>
+          <p>RAG co-pilot for the advisor. Live sentiment, coaching prompts &amp; CSAT recommendations during the session.</p>
+        </div>
+
+        <!-- Bottom-left module: AI Analytics -->
+        <div class="module" style="bottom: 0; left: 0;">
+          <div class="mod-head">
+            <div class="mod-icon"><span class="material-icons" style="font-size: 18px;">insights</span></div>
+            <h3>AI Analytics</h3>
+          </div>
+          <p>Every session transcribed, sentiment-scored, PII-redacted. Live dashboards &amp; executive trends.</p>
+        </div>
+
+        <!-- Bottom-right module: MassaPro Flow -->
+        <div class="module" style="bottom: 0; right: 0;">
+          <div class="mod-head">
+            <div class="mod-icon"><span class="material-icons" style="font-size: 18px;">account_tree</span></div>
+            <h3>MassaPro Flow</h3>
+          </div>
+          <p>Drag-and-drop orchestration across channels. Kiosk → AI Agent → advisor → supervisor, no context lost.</p>
+        </div>
+
+        <!-- Circular human inset -->
+        <div class="ec-inset">
+          <img src="human-aura-beauty.png" alt="MassaPro video advisor">
+        </div>
+      </div>
+
+      <!-- Bottom strip callout -->
+      <div class="platform-callout" style="margin-top: 12px;">
+        <div class="flex items-center gap-3">
+          <span class="material-icons" style="color: var(--primary); font-size: 24px;">bolt</span>
+          <div>
+            <div style="font-family: var(--font-heading); font-weight: 800; font-size: 16px; color: var(--ink); letter-spacing: -0.01em;">
+              One platform. Every channel.
+            </div>
+            <div style="font-size: 11.5px; color: var(--ink-soft); margin-top: 1px;">
+              AI and human, orchestrated together. No standalone telepresence vendor can match this.
+            </div>
+          </div>
+        </div>
+        <div style="font-family: var(--font-heading); font-weight: 700; font-size: 11px; color: var(--primary); letter-spacing: 0.16em; text-transform: uppercase;">
+          5 modules · 1 platform
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="page-footer">
+    <span>MassaPro IVR — Sales Deck</span>
+    <span class="footer-meta">
+      <span>Confidential</span>
+      <span class="footer-divider"></span>
+      <span>Slide 10 / 24</span>
+    </span>
+  </div>
+
+</div>
+
+<aside data-notes class="hidden">
+This is the most important slide in the deck for differentiation. Slow down. The audience has just spent eight slides understanding what MassaPro IVR does. Now they need to understand why MassaPro IVR is different from every other video service product on the market. The answer is this slide. Walk through each of the four integrations with a concrete scenario. Example: a customer walks up to a kiosk at a bank after hours. MassaPro Flow routes them to the AI Agent first — "I can help with account balance, recent transactions, or branch hours." If the customer says "I want to open an account," the AI Agent escalates to a video advisor. The advisor picks up the session in their browser, sees the customer's metadata, and starts the conversation. AI Guru is running in the advisor's console — when the customer mentions they are worried about fees, AI Guru pushes a coaching prompt with the current fee schedule and a retention script. AI Analytics is transcribing the whole session, detecting sentiment, and flagging it for supervisor review if the customer gets upset. After the session, the transcript is summarised and posted to the CRM. One platform, end to end. Close with the line on the slide: no standalone telepresence vendor can match this. That is the line the audience should remember when they are comparing MassaPro IVR to a point solution.
+</aside>
+
+</body>
+</html>

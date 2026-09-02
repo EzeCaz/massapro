@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide 8 — SPLIT Architecture</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .device-card {
+      flex: 1;
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(124,58,237,0.10);
+    }
+    .device-card .material-icons {
+      font-size: 22px;
+    }
+    .device-card .label-top {
+      font-family: 'Inter', sans-serif;
+      font-size: 9.5px;
+      font-weight: 700;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+    .device-card .label-bot {
+      font-family: 'Inter', sans-serif;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 2px;
+      line-height: 1.3;
+    }
+    .split-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 60px;
+    }
+    .split-arrow .split-pill {
+      background: linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      font-size: 9px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      padding: 3px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+    }
+    .split-arrow .arrow-icon {
+      color: var(--primary);
+      font-size: 22px;
+      margin-top: 4px;
+    }
+    .session-card {
+      flex: 1.2;
+      background: linear-gradient(135deg, #1A0B2E 0%, #4C1D95 100%);
+      color: #FFFFFF;
+      border-radius: 10px;
+      padding: 10px 12px;
+      text-align: center;
+      box-shadow: 0 6px 16px rgba(124,58,237,0.25);
+    }
+    .info-row {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--primary);
+      border-radius: 8px;
+      padding: 10px 14px;
+    }
+    .info-row .row-icon {
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: var(--primary-50);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .info-row .row-icon .material-icons { font-size: 16px; }
+    .info-row .row-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--primary-dark);
+      letter-spacing: -0.002em;
+    }
+    .info-row .row-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 11.5px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      line-height: 1.45;
+      margin-top: 2px;
+    }
+    .no-pill-bot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .no-pill-bot .material-icons {
+      font-size: 14px;
+      color: #C4B5FD;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide slide-light relative">
+
+    <!-- Left image with purple gradient overlay -->
+    <div class="absolute top-0 left-0" style="width:480px;height:720px;overflow:hidden;">
+      <img src="human-aura-vet-reception.png" alt="Vet receptionist appearing on a service point screen" class="w-full h-full object-cover" style="object-position: center 30%;">
+      <!-- Top dark gradient for logo legibility -->
+      <div class="absolute inset-x-0 top-0" style="height:140px;background:linear-gradient(180deg, rgba(26,11,46,0.85) 0%, rgba(26,11,46,0.0) 100%);"></div>
+      <!-- Bottom dark gradient -->
+      <div class="absolute inset-x-0 bottom-0" style="height:320px;background:linear-gradient(0deg, rgba(26,11,46,0.95) 0%, rgba(26,11,46,0.15) 70%, transparent 100%);"></div>
+      <!-- Right edge fade -->
+      <div class="absolute inset-y-0 right-0" style="width:80px;background:linear-gradient(270deg, rgba(255,255,255,0.85) 0%, transparent 100%);"></div>
+      <!-- Purple tint -->
+      <div class="absolute inset-0" style="background:linear-gradient(135deg, rgba(124,58,237,0.20) 0%, transparent 50%, rgba(109,40,217,0.20) 100%);"></div>
+
+      <!-- Brand bar over image -->
+      <div class="absolute" style="top:28px;left:32px;display:flex;align-items:center;gap:10px;z-index:10;">
+        <img src="massapro-logo.png" alt="MassaPro" style="height:28px;width:auto;filter:brightness(0) invert(1);">
+        <span style="font-family:'Inter',sans-serif;font-weight:700;font-size:14px;letter-spacing:0.02em;color:#A78BFA;">MassaPro IVR</span>
+      </div>
+
+      <!-- Vertical SPLIT label -->
+      <div class="absolute" style="top:50%;left:24px;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-family:'Inter',sans-serif;font-size:11px;font-weight:800;letter-spacing:0.30em;color:rgba(167,139,250,0.55);text-transform:uppercase;">SPLIT Architecture</div>
+
+      <!-- Bottom caption -->
+      <div class="absolute" style="bottom:36px;left:32px;right:60px;">
+        <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.20em;text-transform:uppercase;color:#A78BFA;">One Session · Two Devices</div>
+        <div style="font-family:'Playfair Display',serif;font-size:26px;font-weight:700;color:#FFFFFF;line-height:1.18;letter-spacing:-0.01em;margin-top:6px;">Audio on phone.<br>Video on screen.</div>
+        <div style="font-family:'Inter',sans-serif;font-size:12.5px;font-weight:500;color:rgba(255,255,255,0.78);line-height:1.4;margin-top:8px;">Privacy, intelligibility, and firewall traversal — solved in a single architecture.</div>
+      </div>
+    </div>
+
+    <!-- Right content -->
+    <div class="absolute" style="top:64px;left:512px;right:64px;">
+
+      <!-- Eyebrow + headline -->
+      <div class="eyebrow"><span class="material-icons" style="font-size:13px;">device_hub</span>Chapter 02 — How It Works</div>
+      <h1 style="font-family:'Inter',sans-serif;font-size:28px;font-weight:800;color:var(--ink);letter-spacing:-0.015em;line-height:1.18;margin-top:10px;">The SPLIT Architecture — One Session, Two Devices</h1>
+      <div class="accent-rule" style="margin-top:10px;"></div>
+
+      <!-- Inline diagram -->
+      <div style="margin-top:14px;display:flex;align-items:stretch;gap:0;">
+
+        <div class="device-card" style="background:#EDE9FE;border:1px solid #C4B5FD;">
+          <span class="material-icons" style="color:#6D28D9;">tv</span>
+          <div class="label-top" style="color:#6D28D9;">Kiosk / Screen</div>
+          <div class="label-bot" style="color:#4C1D95;">HD Video · RTP</div>
+        </div>
+
+        <div class="split-arrow">
+          <div class="split-pill">SPLIT</div>
+          <span class="material-icons arrow-icon">sync_alt</span>
+        </div>
+
+        <div class="device-card" style="background:#DCFCE7;border:1px solid #86EFAC;">
+          <span class="material-icons" style="color:#047857;">smartphone</span>
+          <div class="label-top" style="color:#047857;">Customer Phone</div>
+          <div class="label-bot" style="color:#065F46;">Audio · RTC · Data</div>
+        </div>
+
+        <div class="split-arrow">
+          <div class="split-pill" style="background:#1A0B2E;">JOIN</div>
+          <span class="material-icons arrow-icon">arrow_forward</span>
+        </div>
+
+        <div class="session-card">
+          <span class="material-icons" style="font-size:22px;color:#A78BFA;">hub</span>
+          <div style="font-family:'Inter',sans-serif;font-size:9.5px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:#A78BFA;margin-top:4px;">One Logical Session</div>
+          <div style="font-family:'Inter',sans-serif;font-size:11px;font-weight:600;color:#FFFFFF;margin-top:2px;line-height:1.3;">ACD · Advisors · Contact Centre</div>
+        </div>
+
+      </div>
+
+      <!-- 3 info rows -->
+      <div style="margin-top:14px;display:flex;flex-direction:column;gap:8px;">
+
+        <div class="info-row">
+          <div class="row-icon"><span class="material-icons">tv</span></div>
+          <div>
+            <div class="row-title">Physical point (kiosk / screen / tablet)</div>
+            <div class="row-desc">Receives life-size HD video of the advisor, shared document screen, and the RTP media stream.</div>
+          </div>
+        </div>
+
+        <div class="info-row" style="border-left-color:#10B981;">
+          <div class="row-icon" style="background:#ECFDF5;color:#10B981;"><span class="material-icons">smartphone</span></div>
+          <div>
+            <div class="row-title">Customer's device (their own smartphone)</div>
+            <div class="row-desc">Handles private two-way audio, signalling and session control (RTC), and data capture / service selection.</div>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="row-icon"><span class="material-icons">hub</span></div>
+          <div>
+            <div class="row-title">One logical session</div>
+            <div class="row-desc">The contact centre, ACD, and browser-based advisors receive both streams as a single interaction. Passes through corporate firewalls and NAT. Works over WiFi, 5G, or LTE. PWA mode allows reconnection. No VPN, no app, no installation.</div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom callout: 3 feature pills + 3 no-pills -->
+      <div style="margin-top:12px;display:flex;gap:8px;align-items:center;">
+        <div style="flex:1;background:var(--primary-50);border:1px solid var(--primary-100);border-radius:8px;padding:7px 10px;display:flex;align-items:center;gap:6px;">
+          <span class="material-icons" style="font-size:14px;color:var(--primary);">shield</span>
+          <span style="font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;color:var(--primary-dark);letter-spacing:0.02em;">Firewalls / NAT</span>
+        </div>
+        <div style="flex:1;background:var(--primary-50);border:1px solid var(--primary-100);border-radius:8px;padding:7px 10px;display:flex;align-items:center;gap:6px;">
+          <span class="material-icons" style="font-size:14px;color:var(--primary);">network_cell</span>
+          <span style="font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;color:var(--primary-dark);letter-spacing:0.02em;">WiFi / 5G / LTE</span>
+        </div>
+        <div style="flex:1;background:var(--primary-50);border:1px solid var(--primary-100);border-radius:8px;padding:7px 10px;display:flex;align-items:center;gap:6px;">
+          <span class="material-icons" style="font-size:14px;color:var(--primary);">restart_alt</span>
+          <span style="font-family:'Inter',sans-serif;font-size:10.5px;font-weight:700;color:var(--primary-dark);letter-spacing:0.02em;">PWA Reconnect</span>
+        </div>
+      </div>
+
+      <!-- Three No's callout -->
+      <div style="margin-top:8px;background:linear-gradient(90deg, #2A1450 0%, #4C1D95 100%);border-radius:8px;padding:9px 14px;display:flex;gap:14px;align-items:center;justify-content:center;">
+        <div class="no-pill-bot"><span class="material-icons">block</span>No VPN</div>
+        <div style="width:1px;height:14px;background:rgba(255,255,255,0.25);"></div>
+        <div class="no-pill-bot"><span class="material-icons">block</span>No App</div>
+        <div style="width:1px;height:14px;background:rgba(255,255,255,0.25);"></div>
+        <div class="no-pill-bot"><span class="material-icons">block</span>No Installation</div>
+      </div>
+
+    </div>
+
+    <!-- Page footer -->
+    <div class="page-footer">
+      <span>MassaPro IVR — Sales Deck</span>
+      <span>Confidential</span>
+      <span>Slide 8 / 24</span>
+    </div>
+
+  </div>
+
+  <aside data-notes class="hidden">This is the technical heart of the product. Slow down here. The SPLIT architecture is what makes MassaPro IVR deployable in enterprise environments that would reject a standard video conferencing tool. It solves three problems at once: privacy (audio never goes through shared hardware), intelligibility (the customer's phone mic is closer to their mouth than any kiosk mic could be), and firewall traversal (the session passes through corporate NAT and firewalls without IT involvement). If there are CTOs or enterprise architects in the room, they will lean in here. Be ready for detailed questions about RTC protocols, NAT traversal (STUN/TURN), codec selection, and bandwidth requirements. The short answer is: it works on standard corporate networks with standard browser technology, and we have deployed it in banks, hospitals, and government agencies with strict network policies. The longer answer is in the technical manual.</aside>
+</body>
+</html>

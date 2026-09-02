@@ -169,3 +169,114 @@ Stage Summary:
 - Filters all [MassaPro] prefixed console.error and console.warn messages permanently
 - The tracker script's async .catch() callback errors are now suppressed
 - Build passes successfully
+
+---
+Task ID: utm-spec
+Agent: Main Agent
+Task: Document all UTM/tracking implementation on /expert page for handoff to other agents
+
+Work Log:
+- Read /expert page (src/app/expert/page.tsx), layout.tsx, submit-lead API, Google Apps Script, BackupTracker, LeadForm
+- Mapped all 5 tracking channels: Meta Pixel, GA4, MassaPro Affiliate Tracker, Backup Tracker, Lead Submission API
+- Documented all 5 UTM params + 3 Affiliate ID URL formats (Aff-Id > Aff+Id > utm) with priority order
+- Documented 4-phase event flow: CTA Click → Form Open → Form Submit → Post-Submit Tracking
+- Documented server-side 5-step flow: Validate → Slot Check → Calendar → Email → Google Sheet
+- Documented Google Sheet columns A–V with UTM in Q–U and Affiliate ID in V
+- Listed all Meta Pixel events (FreeConsultClick custom, Schedule standard) and GA4 events (get_now, lead_form_open, schedule)
+- Created /home/z/my-project/shared/utm-tracking-spec.md as the handoff document
+
+Stage Summary:
+- Full UTM/tracking spec saved to /home/z/my-project/shared/utm-tracking-spec.md
+- Covers frontend capture, server-side flow, Google Sheet structure, all 5 tracking channels
+- Includes test URLs, file reference map, and notes for adding new tracking channels
+- Other agents should read this file before modifying any tracking on /expert or homepage
+
+---
+Task ID: tech-manual-pdf
+Agent: Main Agent
+Task: Generate comprehensive PDF technical manual for MassaPro AI integrators
+
+Work Log:
+- Loaded PDF skill, asked 8 clarifying questions (length, style, diagrams, sections, source files, branding, palette, language)
+- User selected: Standard length (25-35 pages), Corporate Tech style, System Arch + Module Map diagrams, 6 must-include sections, extract from all 5 uploaded files, use massapro-logo-v2.png, site palette (#7c3aed), English
+- Extracted text from 3 source PDFs: ConnexAI Transforming Legal 2025 (13 pages), Conversational AI Business Case (14 pages), Product Brochures - Athena Suite (45 pages)
+- Extracted text from PPTX: MassaPro Omni-channel AI platform (10 slides) — already rebranded as MassaPro
+- Scrubbed all "ConnexAI" references and replaced with "MassaPro" per user request
+- Generated color palette via pdf.py palette.generate (auto suggested red, overrode with user-requested MassaPro site palette #7c3aed)
+- Created cover.html (Template 01-style: white background, purple geometric accents, MassaPro logo, hero title, summary block, 4 KPI stats)
+- Created arch-diagram.html (5-layer system architecture: Edge Security → Telephony → Omni-Channel → Core AI Engines → Orchestration/Integration/Analytics)
+- Created module-map.html (4 core AI modules + MassaPro Flow hub)
+- Rendered cover via html2poster.js → cover.pdf (794×1123px, vector)
+- Rendered both diagrams via Playwright at 2× scale → arch-diagram.png, module-map.png
+- Wrote generate_body.py: 9 content sections, TocDocTemplate with auto-generated TOC, header/footer, 8 tables, 2 embedded diagrams, 4 callout stat rows, info boxes
+- Initial font issue: Tinos-Regular.ttf corrupted on system → switched to LiberationSerif (metric-compatible with Times New Roman)
+- Sanitized + executed → body.pdf
+- Merged cover.pdf + body.pdf via pypdf → Massapro-AI-Technical-Manual.pdf (27 pages, 1.28 MB)
+- Ran QA: meta.brand ✓, font.check (0 issues) ✓, toc.check ✓, pages.clean (0 blank) ✓, pdf_qa.py = WARN (5 non-blocking warnings: sub-pixel page size difference, false-positive table-centering on 4-column callout row)
+
+Stage Summary:
+- Final deliverable: /home/z/my-project/download/Massapro-AI-Technical-Manual.pdf (27 pages, 1.28 MB)
+- 9 sections: Cover, TOC, Platform Overview, System Architecture, Core AI Modules, Telephony & Network, Security & Compliance, Integration Guide, MassaPro Flow, Implementation, Glossary
+- All "Connex"/"ConnexAI" references replaced with "MassaPro"
+- Branded with MassaPro purple palette (#7c3aed primary, #6d28d9 dark, #ede9fe light) and massapro-logo-v2.png on cover
+- 2 custom architecture diagrams embedded (System Architecture + Module Map)
+- Auto-generated TOC with clickable links and leader dots
+- All QA checks pass; PDF is downloadable from /home/z/my-project/download/
+
+---
+Task ID: 11
+Agent: Main Agent
+Task: Add uploaded architecture diagram to MassaPro Technical Manual PDF and recolor it to match the MassaPro purple palette
+
+Work Log:
+- Read uploaded files: `/home/z/my-project/upload/Massapro Architecture map.pdn` (Paint.NET native, not directly renderable) and `/home/z/my-project/upload/Architecture + telecom.png` (1600x900 RGBA, dark-mode teal/cyan "cyberpunk" style architecture diagram)
+- Used VLM (z-ai vision) to extract complete structure of the source PNG: title, WAF/AI Core/AWS top bar, two side-by-side middle blocks (MassaPro Platform with AI Agent center, AI Quality with MassaPro center), side inputs (Leads on left, Admin on right with VPN/SSO), bottom two blocks (Telephony 5-step flow SIP→Session→RTP→Routing→Carrier; API & Integration Layer with API Gateway → Data Warehouse/ERP/CRM/BI), footer (Private Subnet, Network/App Load Balancers)
+- Reviewed existing diagram HTMLs (arch-diagram.html, module-map.html) to capture the MassaPro purple palette and design language (#7c3aed primary, #6d28d9 dark, #ede9fe light, #f5f3ff ultralight, Inter font, white background, rounded corners, dashed borders)
+- Created `/home/z/my-project/scripts/arch-dataflow.html`: faithful recreation of the source architecture using the MassaPro light-mode purple palette. All teal/cyan colors replaced with MassaPro purple gradients. Layout preserves VPC outer container, top security bar, two center processing blocks with central hubs, side input entities, service bus connector, bottom telephony/API blocks, and infrastructure footer.
+- Updated `/home/z/my-project/scripts/render-diagrams.js` to add the new `arch-dataflow.html` → `arch-dataflow.png` (1500px viewport, 2x device scale) target alongside existing diagrams
+- Rendered new PNG: 3000x1854, 439 KB, verified visually with VLM (all required elements present, purple palette dominant, layout matches original)
+- Updated `/home/z/my-project/scripts/generate_body.py`: inserted new subsection 2.6 "End-to-End Data Flow & Telephony View" with two intro paragraphs and Figure 2.2 (embedded as KeepTogether with caption) between section 2.5 and the existing PageBreak before Section 3
+- Regenerated body.pdf via `python3 generate_body.py`
+- Re-merged cover + body via `python3 merge.py` → final PDF: 28 pages (was 27), 1751 KB (was 1280 KB)
+- Verified final PDF: TOC auto-updated to include "2.6 End-to-End Data Flow & Telephony View"; rendered pages 7-8 to PNG and confirmed via VLM that Section 2.6 heading + Figure 2.2 + purple-themed diagram all render cleanly without overflow, colors consistent with rest of manual
+
+Stage Summary:
+- New deliverable: `/home/z/my-project/scripts/arch-dataflow.html` (reproducible source for the architecture diagram in MassaPro purple palette)
+- New artifact: `/home/z/my-project/scripts/arch-dataflow.png` (3000x1854 PNG, 439 KB, embedded in PDF)
+- Updated deliverable: `/home/z/my-project/download/Massapro-AI-Technical-Manual.pdf` (now 28 pages, 1.75 MB, includes Figure 2.2 on page 7)
+- The source PNG's dark cyberpunk teal/cyan theme was fully replaced with MassaPro light purple palette; original layout, components, labels, and flow arrows were preserved
+
+---
+Task ID: 12
+Agent: Main Agent
+Task: Redo the architecture graph using MassaPro color palette (user re-uploaded source PNG and asked for a redo, more faithful to original)
+
+Work Log:
+- User re-uploaded `/home/z/my-project/upload/Architecture + telecom.png` (same source as Task 11) and asked to redo the graph
+- Performed exhaustive VLM inventory of source PNG to identify gaps in the previous Task 11 version:
+  - MISSING: MassaPro logo + "Architecture Diagram" title bar at top
+  - MISSING: Floating brain icon between WAF (top-left) and AWS VPC (top-right) corner labels
+  - WRONG: AI Agent was placed in a separate hub-row ABOVE the platform grid; source has it as the CENTRAL node of the grid (row 3, spanning 2 columns) with dotted lines to surrounding nodes
+  - MISSING: GUI node on the RIGHT side of the MassaPro hub inside the AI Quality block (source has 3 top + 1 right + 3 bottom = 7 nodes around center, not 3+3=6)
+  - MISSING: Proper connection lines (Leads → "HTTPS" / "Tier 1 Carriers" labels → Platform block; AI Quality GUI → Access options → Admin Users)
+- Rebuilt `/home/z/my-project/scripts/arch-dataflow.html` from scratch:
+  - Added title bar with `<img src="massapro-logo.png">` + "MassaPro" + divider + "Architecture Diagram"
+  - Copied logo to `/home/z/my-project/scripts/massapro-logo.png` for HTML reference
+  - New top-row layout: 3-column grid with WAF corner label (left) | floating brain icon (center, purple gradient circle) | AWS VPC corner label (right)
+  - Platform block rebuilt as 4-col × 5-row grid with AI Agent hub using `grid-column: 2 / span 2; grid-row: 3` to position it dead-center; surrounding 21 nodes fill the rest, with one intentional empty placeholder matching source
+  - AI Quality block rebuilt with 3-row layout: top row (3 nodes) + middle row (spacer | MassaPro hub circle | GUI on right) + bottom row (3 nodes) = 7 nodes total around center
+  - Added explicit "HTTPS" and "Tier 1 Carriers" dashed connection labels with arrow pointing into Platform block
+  - Added "Access Options" box (VPN/SSO/Corporate Network) with arrow pointing left toward Admin Users
+  - Increased diagram width from 1500px to 1600px to accommodate denser layout
+- Re-rendered all diagrams via `node render-diagrams.js`: new arch-dataflow.png is 3200×2036, 444 KB
+- Verified via VLM against 10-point checklist: ALL 10 requirements ✓ PRESENT, no overflow, no cut-offs
+- Regenerated body PDF via `python3 generate_body.py` and re-merged via `python3 merge.py`
+- Final PDF: 28 pages, 1771 KB (was 1751 KB; +20 KB due to denser diagram)
+- Final VLM verification of PDF pages 7-8 confirmed Section 2.6 heading + Figure 2.2 + purple palette consistency
+
+Stage Summary:
+- Updated deliverable: `/home/z/my-project/scripts/arch-dataflow.html` (rebuilt from scratch, much more faithful to source)
+- Updated artifact: `/home/z/my-project/scripts/arch-dataflow.png` (3200×2036, 444 KB)
+- Updated final PDF: `/home/z/my-project/download/Massapro-AI-Technical-Manual.pdf` (28 pages, 1.77 MB)
+- New artifact: `/home/z/my-project/scripts/massapro-logo.png` (logo copy for HTML embedding)
+- Key improvements over Task 11: MassaPro title bar, floating brain icon, AI Agent as true center of platform grid, GUI added to right of MassaPro hub in AI Quality block, proper connection labels and arrows

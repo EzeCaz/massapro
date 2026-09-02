@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Slide 7 — How It Works</title>
+  <link rel="stylesheet" href="global.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .step-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 18px 18px 16px 18px;
+      position: relative;
+      box-shadow: 0 2px 6px rgba(124,58,237,0.05);
+      display: flex;
+      flex-direction: column;
+      height: 280px;
+    }
+    .step-circle-lg {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #FFFFFF;
+      font-family: 'Inter', sans-serif;
+      font-weight: 800;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: -0.01em;
+      box-shadow: 0 4px 12px rgba(124,58,237,0.30);
+    }
+    .step-icon-row {
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      background: var(--primary-50);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .step-icon-row .material-icons { font-size: 22px; }
+    .step-name {
+      font-family: 'Inter', sans-serif;
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--primary-dark);
+      letter-spacing: -0.01em;
+      line-height: 1.2;
+    }
+    .step-desc {
+      font-family: 'Inter', sans-serif;
+      font-size: 12.5px;
+      font-weight: 400;
+      color: var(--ink-soft);
+      line-height: 1.5;
+    }
+    .step-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      color: var(--primary);
+    }
+    .step-arrow .material-icons {
+      font-size: 24px;
+    }
+    .stopwatch-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%);
+      color: #FFFFFF;
+      padding: 8px 14px;
+      border-radius: 999px;
+      font-family: 'Inter', sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.02em;
+      box-shadow: 0 6px 16px rgba(124,58,237,0.30);
+    }
+    .stopwatch-badge .material-icons {
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="slide slide-light relative">
+
+    <!-- Brand bar -->
+    <div class="brand-bar">
+      <img src="massapro-logo.png" alt="MassaPro">
+      <span class="brand-name">MassaPro IVR</span>
+    </div>
+
+    <!-- Top-right stopwatch badge + circular image inset -->
+    <div class="absolute" style="top:24px;right:64px;display:flex;align-items:center;gap:14px;">
+      <div style="position:relative;">
+        <img src="human-beauty-reception.png" alt="Customer at a service point" style="width:64px;height:64px;border-radius:50%;object-fit:cover;border:3px solid var(--primary);box-shadow:0 4px 12px rgba(124,58,237,0.25);">
+        <div style="position:absolute;bottom:-2px;right:-2px;width:22px;height:22px;border-radius:50%;background:#10B981;border:2px solid #FFFFFF;display:flex;align-items:center;justify-content:center;">
+          <span class="material-icons" style="font-size:12px;color:#FFFFFF;">videocam</span>
+        </div>
+      </div>
+      <div class="stopwatch-badge">
+        <span class="material-icons">timer</span>
+        &lt; 30 seconds
+      </div>
+    </div>
+
+    <!-- Header -->
+    <div class="absolute" style="top:80px;left:64px;width:760px;">
+      <div class="eyebrow"><span class="material-icons" style="font-size:13px;">route</span>Chapter 02 — How It Works</div>
+      <h1 style="font-family:'Inter',sans-serif;font-size:32px;font-weight:800;color:var(--ink);letter-spacing:-0.015em;line-height:1.18;margin-top:12px;">How It Works — Four Steps, Under 30 Seconds</h1>
+      <div class="accent-rule" style="margin-top:12px;"></div>
+    </div>
+
+    <!-- 4-step horizontal timeline -->
+    <div class="absolute" style="top:228px;left:64px;right:64px;display:grid;grid-template-columns:1fr 24px 1fr 24px 1fr 24px 1fr;gap:0;align-items:stretch;">
+
+      <!-- Step 1 -->
+      <div class="step-card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="step-circle-lg">1</div>
+          <div class="step-icon-row"><span class="material-icons">qr_code_scanner</span></div>
+        </div>
+        <div class="step-name">Scan</div>
+        <div class="step-desc mt-2">The customer scans the QR code on the video kiosk, tablet, or sticker with their own mobile phone. Standard camera app. No download.</div>
+      </div>
+
+      <div class="step-arrow"><span class="material-icons">chevron_right</span></div>
+
+      <!-- Step 2 -->
+      <div class="step-card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="step-circle-lg">2</div>
+          <div class="step-icon-row"><span class="material-icons">badge</span></div>
+        </div>
+        <div class="step-name">Identify</div>
+        <div class="step-desc mt-2">They enter the minimum service details on their phone: name, contact info, reason for the visit, ID number, or promo code. This metadata is sent to the advisor before the session begins.</div>
+      </div>
+
+      <div class="step-arrow"><span class="material-icons">chevron_right</span></div>
+
+      <!-- Step 3 -->
+      <div class="step-card">
+        <div class="flex items-center justify-between mb-3">
+          <div class="step-circle-lg">3</div>
+          <div class="step-icon-row"><span class="material-icons">sync</span></div>
+        </div>
+        <div class="step-name">Connect</div>
+        <div class="step-desc mt-2">They enter a sync PIN. The system routes the session to the first available qualified advisor through your existing ACD. The advisor opens the session with the case already identified.</div>
+      </div>
+
+      <div class="step-arrow"><span class="material-icons">chevron_right</span></div>
+
+      <!-- Step 4 -->
+      <div class="step-card" style="background:linear-gradient(180deg, #F5F3FF 0%, #FFFFFF 100%);border:1px solid var(--primary-100);">
+        <div class="flex items-center justify-between mb-3">
+          <div class="step-circle-lg" style="background:linear-gradient(135deg, #7C3AED 0%, #5B21B6 100%);">4</div>
+          <div class="step-icon-row" style="background:var(--primary);color:#FFFFFF;"><span class="material-icons">videocam</span></div>
+        </div>
+        <div class="step-name">Talk</div>
+        <div class="step-desc mt-2">Audio runs through the customer's phone for total privacy; HD video runs on the service point's screen. The advisor can share documents, verify identity, and complete transactions in real time.</div>
+      </div>
+
+    </div>
+
+    <!-- Bottom metadata flow strip -->
+    <div class="absolute" style="bottom:60px;left:64px;right:64px;background:var(--primary-50);border:1px solid var(--primary-100);border-radius:10px;padding:10px 18px;display:flex;align-items:center;gap:14px;">
+      <span class="material-icons" style="font-size:18px;color:var(--primary);">data_object</span>
+      <span style="font-family:'Inter',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--primary-dark);">Metadata flow</span>
+      <div style="flex:1;display:flex;align-items:center;gap:8px;">
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-soft);">Phone capture</span>
+        <span class="material-icons" style="font-size:14px;color:var(--primary);">arrow_forward</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-soft);">Sync PIN</span>
+        <span class="material-icons" style="font-size:14px;color:var(--primary);">arrow_forward</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;color:var(--ink-soft);">ACD routing</span>
+        <span class="material-icons" style="font-size:14px;color:var(--primary);">arrow_forward</span>
+        <span style="font-family:'Inter',sans-serif;font-size:12px;font-weight:700;color:var(--primary-dark);">Advisor console — case pre-identified</span>
+      </div>
+    </div>
+
+    <!-- Page footer -->
+    <div class="page-footer">
+      <span>MassaPro IVR — Sales Deck</span>
+      <span>Confidential</span>
+      <span>Slide 7 / 24</span>
+    </div>
+
+  </div>
+
+  <aside data-notes class="hidden">Walk the audience through the four steps as if they were the customer. Make it visceral. The point is that the entire flow takes less time than standing in a queue, and the customer is in control the whole time — they are using their own phone, they are entering their own data, they can end the session whenever they want. The metadata capture in step 2 is more important than it looks. Because the customer enters their details before connecting, the advisor opens the session with the case already in context. This is what enables "customers never repeat themselves" on slide 13. It is also what enables the MassaPro Flow orchestration — the metadata can be used to route the session by skill, language, or service type before the advisor even picks up.</aside>
+</body>
+</html>
