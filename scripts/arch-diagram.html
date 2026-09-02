@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MassaPro System Architecture</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-accent: #7c3aed;
+    --c-accent-dark: #6d28d9;
+    --c-accent-light: #ede9fe;
+    --c-accent-ultralight: #f5f3ff;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-bg: #ffffff;
+    --c-border: #e5e7eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--c-bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--c-text);
+  }
+  .diagram {
+    width: 1400px;
+    padding: 50px 60px;
+    background: var(--c-bg);
+  }
+  .title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: var(--c-muted);
+    margin-bottom: 40px;
+    letter-spacing: 0.3px;
+  }
+
+  .layer {
+    background: var(--c-accent-ultralight);
+    border: 1.5px solid var(--c-accent-light);
+    border-radius: 12px;
+    padding: 18px 24px 22px;
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .layer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .layer-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--c-accent-dark);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+  }
+  .layer-tag {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--c-accent);
+    background: white;
+    padding: 3px 10px;
+    border-radius: 100px;
+    border: 1px solid var(--c-accent-light);
+    letter-spacing: 0.4px;
+  }
+  .components {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .components.cols-5 { grid-template-columns: repeat(5, 1fr); }
+  .components.cols-3 { grid-template-columns: repeat(3, 1fr); }
+  .comp {
+    background: white;
+    border: 1px solid var(--c-border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: left;
+  }
+  .comp .name {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-text);
+    margin-bottom: 3px;
+  }
+  .comp .desc {
+    font-size: 10px;
+    color: var(--c-muted);
+    line-height: 1.4;
+  }
+
+  .arrow {
+    text-align: center;
+    color: var(--c-accent);
+    font-size: 18px;
+    margin: 2px 0 2px;
+    line-height: 1;
+  }
+
+  .legend {
+    margin-top: 28px;
+    padding-top: 18px;
+    border-top: 1px solid var(--c-border);
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 11px;
+    color: var(--c-muted);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot {
+    width: 12px; height: 12px;
+    border-radius: 3px;
+    background: var(--c-accent-ultralight);
+    border: 1.5px solid var(--c-accent-light);
+  }
+  .legend-dot.dark { background: var(--c-accent); border-color: var(--c-accent-dark); }
+</style>
+</head>
+<body>
+<div class="diagram">
+  <div class="title">MassaPro AI Platform &mdash; System Architecture</div>
+  <div class="subtitle">Modular cloud framework hosted on AWS dedicated private tenant (VPC) with five functional layers</div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-name">Layer 1 &middot; Edge Security</span>
+      <span class="layer-tag">Perimeter Defense</span>
+    </div>
+    <div class="components">
+      <div class="comp"><div class="name">Web Application Firewall</div><div class="desc">L7 filtering, DDoS protection, OWASP rules</div></div>
+      <div class="comp"><div class="name">Network Load Balancer</div><div class="desc">L4 TCP/UDP traffic distribution</div></div>
+      <div class="comp"><div class="name">Application Load Balancer</div><div class="desc">L7 HTTP/HTTPS routing, TLS termination</div></div>
+      <div class="comp"><div class="name">DDoS Shield</div><div class="desc">Volumetric &amp; protocol attack mitigation</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">&darr;</div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-name">Layer 2 &middot; Telephony &amp; Carrier</span>
+      <span class="layer-tag">Voice Ingress / Egress</span>
+    </div>
+    <div class="components">
+      <div class="comp"><div class="name">SIP Signaling</div><div class="desc">TCP Port 5060 &middot; session setup</div></div>
+      <div class="comp"><div class="name">RTP Media Transport</div><div class="desc">UDP 10000-20000 &middot; audio streams</div></div>
+      <div class="comp"><div class="name">Tier-1 Global Carriers</div><div class="desc">Direct MNO &amp; fixed-line interconnects</div></div>
+      <div class="comp"><div class="name">Dynamic Intelligent Routing</div><div class="desc">Real-time path optimization, jitter &amp; latency minimization</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">&darr;</div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-name">Layer 3 &middot; Omni-Channel Ingestion</span>
+      <span class="layer-tag">Entry Points</span>
+    </div>
+    <div class="components cols-5">
+      <div class="comp"><div class="name">Voice</div><div class="desc">Inbound / outbound calls</div></div>
+      <div class="comp"><div class="name">SMS &amp; Email</div><div class="desc">Text channels, two-way</div></div>
+      <div class="comp"><div class="name">Live Chat</div><div class="desc">Web &amp; in-app messaging</div></div>
+      <div class="comp"><div class="name">Social Media</div><div class="desc">WhatsApp, FB, IG, X, Apple BC</div></div>
+      <div class="comp"><div class="name">PCI DSS Payments</div><div class="desc">Secure transaction flow</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">&darr;</div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-name">Layer 4 &middot; Core AI Engines</span>
+      <span class="layer-tag">Intelligence Layer</span>
+    </div>
+    <div class="components">
+      <div class="comp"><div class="name">ASR &amp; Voice</div><div class="desc">&lt;300ms latency &middot; TTS / STT &middot; 100+ languages</div></div>
+      <div class="comp"><div class="name">AI Agent</div><div class="desc">Autonomous LLM &middot; 24/7 &middot; deterministic guardrails</div></div>
+      <div class="comp"><div class="name">AI Guru</div><div class="desc">RAG co-pilot &middot; real-time coaching</div></div>
+      <div class="comp"><div class="name">AI Analytics</div><div class="desc">Sentiment, keyphrase, entity, PII redaction</div></div>
+    </div>
+  </div>
+
+  <div class="arrow">&darr;</div>
+
+  <div class="layer">
+    <div class="layer-header">
+      <span class="layer-name">Layer 5 &middot; Orchestration, Integration &amp; Analytics</span>
+      <span class="layer-tag">Output / Sync</span>
+    </div>
+    <div class="components cols-3">
+      <div class="comp"><div class="name">MassaPro Flow</div><div class="desc">Drag-and-drop workflow builder &middot; intelligent routing &middot; sales funnel automation</div></div>
+      <div class="comp"><div class="name">API Gateway</div><div class="desc">REST APIs &middot; Webhooks &middot; WebSockets &middot; 100+ marketplace connectors (CRM/ERP/BI)</div></div>
+      <div class="comp"><div class="name">Real-Time Analytics &amp; Storage</div><div class="desc">Stream processing &middot; AES-256 at rest &middot; topic modeling &middot; interaction summaries</div></div>
+    </div>
+  </div>
+
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot"></span> Functional Layer (VPC-isolated)</div>
+    <div class="legend-item"><span class="legend-dot dark"></span> Component Module</div>
+    <div class="legend-item">All traffic: TLS 1.3 in transit &middot; AES-256 at rest &middot; SOC 2 Type II / GDPR / HIPAA / ISO</div>
+  </div>
+</div>
+</body>
+</html>

@@ -2,36 +2,52 @@
 
 const FILES = [
   {
+    name: "Massapro-IVR-Sales-Pitch-Deck.pptx",
+    size: "41 MB",
+    title: "MassaPro IVR Sales Pitch Deck — PPTX",
+    description:
+      "24 slides, 16:9 widescreen. The original MassaPro IVR sales pitch deck with full purple brand system, MassaPro logo on every slide, real human images of receptionists/concierges/video advisors on each slide, diversified layouts (cover → bento grids → split text/image → timeline → stats → comparison → closing), and full ~80-150 word speaker notes embedded as hidden notes on each slide.",
+    kind: "PPTX" as const,
+  },
+  {
     name: "Massapro-Enterprise-Brochure-Rebranded.pdf",
-    size: "5.3 MB",
+    size: "7.1 MB",
     title: "MassaPro Enterprise Brochure — PDF",
     description:
-      "30 slides, 16:9. Rebranded from the ConnexAI Enterprise Product Brochure (2026). Best for previewing in browser — no PowerPoint required.",
+      "30 slides, 16:9. Rebranded from the ConnexAI Enterprise Product Brochure (2026) with full MassaPro purple brand book. Best for previewing in browser.",
     kind: "PDF" as const,
   },
   {
     name: "Massapro-Enterprise-Brochure-Rebranded-Compact.pptx",
-    size: "4.2 MB",
+    size: "4.7 MB",
     title: "MassaPro Enterprise Brochure — Compact PPTX",
     description:
-      "30 slides, 16:9. Optimized images (~80% smaller than full). Best for editing in PowerPoint — opens reliably without size-cap errors.",
+      "30 slides, 16:9. Optimized images. Best for editing in PowerPoint — opens reliably without size-cap errors.",
     kind: "PPTX" as const,
   },
   {
     name: "Massapro-Enterprise-Brochure-Rebranded.pptx",
-    size: "4.2 MB",
+    size: "31 MB",
     title: "MassaPro Enterprise Brochure — Full PPTX",
     description:
-      "30 slides, 16:9. Same content as Compact, available as a separate download for redundancy.",
+      "30 slides, 16:9. Full-resolution version of the rebranded Enterprise brochure.",
     kind: "PPTX" as const,
   },
   {
     name: "Massapro-IVR-Rebranded-Dec.pdf",
-    size: "20 MB",
+    size: "5.6 MB",
     title: "MassaPro IVR Rebranded — PDF",
     description:
       "30-page Telepresencia_Hibrida deck rebranded with MassaPro purple palette. Original images preserved verbatim.",
     kind: "PDF" as const,
+  },
+  {
+    name: "Massapro-IVR-Rebranded-Dec-Compact.pptx",
+    size: "2.0 MB",
+    title: "MassaPro IVR Rebranded — Compact PPTX",
+    description:
+      "Editable PPTX of the IVR rebranded deck. Optimized to 2 MB for reliable download.",
+    kind: "PPTX" as const,
   },
 ];
 

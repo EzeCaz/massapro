@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MassaPro Architecture Diagram</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-accent: #7c3aed;
+    --c-accent-dark: #6d28d9;
+    --c-accent-darker: #5b21b6;
+    --c-accent-light: #ede9fe;
+    --c-accent-ultralight: #f5f3ff;
+    --c-text: #1f2937;
+    --c-text-soft: #4b5563;
+    --c-muted: #6b7280;
+    --c-bg: #ffffff;
+    --c-border: #e5e7eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--c-bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--c-text);
+  }
+  .diagram {
+    width: 1600px;
+    padding: 28px 36px 28px;
+    background: var(--c-bg);
+  }
+
+  /* ─── Top title bar ─── */
+  .titlebar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 8px 0 18px;
+    border-bottom: 1px solid var(--c-accent-light);
+    margin-bottom: 22px;
+  }
+  .titlebar .logo {
+    width: 38px; height: 38px;
+    border-radius: 8px;
+    object-fit: contain;
+  }
+  .titlebar .brand {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--c-accent-dark);
+    letter-spacing: -0.4px;
+  }
+  .titlebar .divider {
+    width: 1px; height: 28px;
+    background: var(--c-accent-light);
+  }
+  .titlebar .title-text {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--c-text-soft);
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── VPC outer container ─── */
+  .vpc {
+    border: 2px dashed var(--c-accent);
+    border-radius: 14px;
+    padding: 22px 26px 22px;
+    background: var(--c-accent-ultralight);
+    position: relative;
+  }
+  .vpc-label {
+    position: absolute;
+    top: -11px;
+    left: 30px;
+    background: var(--c-bg);
+    padding: 0 10px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--c-accent-dark);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+
+  /* ─── Top corner labels + brain ─── */
+  .top-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    margin-bottom: 18px;
+    gap: 14px;
+  }
+  .corner-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-dark);
+  }
+  .corner-label.right { justify-content: flex-end; text-align: right; }
+  .corner-label .ico-box {
+    width: 30px; height: 30px;
+    background: var(--c-bg);
+    border: 1.5px solid var(--c-accent-light);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--c-accent);
+    font-size: 15px;
+  }
+  .brain-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .brain-icon {
+    width: 60px; height: 60px;
+    background: linear-gradient(135deg, var(--c-accent) 0%, var(--c-accent-dark) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 28px;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+  }
+
+  /* ─── Middle row: Leads | Two blocks | Admin ─── */
+  .middle-row {
+    display: grid;
+    grid-template-columns: 170px 1fr 170px;
+    gap: 12px;
+    align-items: stretch;
+    margin-bottom: 16px;
+  }
+  .side-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding-top: 40px;
+  }
+  .entity {
+    background: var(--c-bg);
+    border: 1.5px solid var(--c-accent);
+    border-radius: 10px;
+    padding: 14px 8px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(124, 58, 237, 0.10);
+  }
+  .entity .ico-circle {
+    width: 44px; height: 44px;
+    margin: 0 auto 8px;
+    background: var(--c-accent-ultralight);
+    border: 1.5px solid var(--c-accent-light);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--c-accent-dark);
+    font-size: 22px;
+  }
+  .entity .label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--c-accent-dark);
+    line-height: 1.3;
+  }
+  .conn-labels {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  .conn-label {
+    background: var(--c-bg);
+    border: 1px dashed var(--c-accent);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--c-accent-dark);
+    text-align: center;
+    position: relative;
+  }
+  .conn-arrow {
+    color: var(--c-accent);
+    font-size: 14px;
+    font-weight: 700;
+    text-align: center;
+    margin: -3px 0;
+  }
+  .admin-access {
+    background: var(--c-bg);
+    border: 1px solid var(--c-accent-light);
+    border-radius: 8px;
+    padding: 10px 8px;
+    text-align: center;
+    margin-top: 10px;
+  }
+  .admin-access .title-s {
+    font-size: 9.5px;
+    font-weight: 800;
+    color: var(--c-accent-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .admin-access .body-s {
+    font-size: 10px;
+    color: var(--c-text);
+    line-height: 1.5;
+  }
+
+  /* ─── Center: two blocks side by side ─── */
+  .center-col {
+    display: grid;
+    grid-template-columns: 1.55fr 1fr;
+    gap: 14px;
+  }
+  .block {
+    background: var(--c-bg);
+    border: 1.5px solid var(--c-accent-light);
+    border-radius: 12px;
+    padding: 14px 16px 16px;
+    position: relative;
+  }
+  .block-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1.5px solid var(--c-accent-light);
+  }
+  .block-header .ico {
+    width: 28px; height: 28px;
+    border-radius: 7px;
+    background: var(--c-accent);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+  }
+  .block-header .name {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--c-accent-dark);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+  }
+  .block-header .tag {
+    margin-left: auto;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--c-accent);
+    background: var(--c-accent-ultralight);
+    padding: 3px 8px;
+    border-radius: 100px;
+    border: 1px solid var(--c-accent-light);
+    letter-spacing: 0.3px;
+  }
+
+  /* ─── Platform grid: 4 cols x 5 rows with AI Agent center ─── */
+  .platform-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    gap: 6px;
+    position: relative;
+  }
+  .node {
+    background: var(--c-accent-ultralight);
+    border: 1px solid var(--c-accent-light);
+    border-radius: 7px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--c-text);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    min-height: 42px;
+  }
+  .node .n-ico {
+    color: var(--c-accent-dark);
+    font-size: 13px;
+    line-height: 1;
+  }
+  .node.empty {
+    background: transparent;
+    border: 1px dashed var(--c-border);
+    color: var(--c-muted);
+    font-style: italic;
+  }
+  /* AI Agent hub — center of platform grid (row 3, col 2-3 span) */
+  .node.hub {
+    grid-column: 2 / span 2;
+    grid-row: 3 / span 1;
+    background: linear-gradient(135deg, var(--c-accent) 0%, var(--c-accent-dark) 100%);
+    color: white;
+    border-color: var(--c-accent-dark);
+    box-shadow: 0 4px 14px rgba(124, 58, 237, 0.30);
+    flex-direction: row;
+    gap: 8px;
+    padding: 10px 8px;
+    min-height: 50px;
+  }
+  .node.hub .n-ico { color: white; font-size: 18px; }
+  .node.hub .hub-name { font-size: 13px; font-weight: 800; letter-spacing: 0.3px; }
+  .node.hub .hub-sub { font-size: 8.5px; opacity: 0.9; }
+
+  /* ─── AI Quality block — radial 3+1+3 ─── */
+  .quality-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .quality-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+  }
+  .quality-middle {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 6px;
+    align-items: center;
+  }
+  .quality-spacer { background: transparent; }
+  .quality-hub {
+    background: linear-gradient(135deg, var(--c-accent) 0%, var(--c-accent-dark) 100%);
+    color: white;
+    border-radius: 50%;
+    width: 90px; height: 90px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(124, 58, 237, 0.35);
+    text-align: center;
+  }
+  .quality-hub .hub-name { font-size: 12px; font-weight: 800; line-height: 1.1; }
+  .quality-hub .hub-sub { font-size: 8.5px; opacity: 0.9; margin-top: 2px; }
+
+  /* ─── Bus connector ─── */
+  .bus {
+    height: 28px;
+    position: relative;
+    margin: 4px 0 12px;
+  }
+  .bus-line {
+    position: absolute;
+    top: 50%;
+    left: 0; right: 0;
+    height: 1.5px;
+    background: var(--c-accent);
+    transform: translateY(-50%);
+  }
+  .bus-dot {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px; height: 14px;
+    background: var(--c-accent);
+    border: 2.5px solid white;
+    box-shadow: 0 0 0 2px var(--c-accent);
+    border-radius: 50%;
+  }
+  .bus-label {
+    position: absolute;
+    top: -2px; left: 50%;
+    transform: translateX(-50%);
+    background: var(--c-bg);
+    padding: 0 8px;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--c-accent-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  /* ─── Bottom row: Telephony + API ─── */
+  .bottom-row {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+  .telephony-flow {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 4px;
+    align-items: stretch;
+  }
+  .step {
+    background: var(--c-accent-ultralight);
+    border: 1px solid var(--c-accent-light);
+    border-radius: 8px;
+    padding: 10px 6px;
+    text-align: center;
+    position: relative;
+  }
+  .step .step-name {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--c-accent-dark);
+    margin-bottom: 4px;
+    line-height: 1.2;
+  }
+  .step .step-detail {
+    font-size: 8.5px;
+    color: var(--c-muted);
+    line-height: 1.4;
+  }
+  .step::after {
+    content: "▶";
+    position: absolute;
+    right: -7px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--c-accent);
+    font-size: 9px;
+    z-index: 2;
+    background: var(--c-bg);
+    padding: 0 1px;
+  }
+  .step:last-child::after { content: ""; }
+  .step.carrier {
+    background: linear-gradient(135deg, var(--c-accent) 0%, var(--c-accent-dark) 100%);
+    color: white;
+    border-color: var(--c-accent-dark);
+  }
+  .step.carrier .step-name { color: white; }
+  .step.carrier .step-detail { color: rgba(255,255,255,0.85); }
+
+  .api-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .api-gateway {
+    background: linear-gradient(135deg, var(--c-accent) 0%, var(--c-accent-dark) 100%);
+    color: white;
+    border-radius: 8px;
+    padding: 10px 14px;
+    text-align: center;
+    font-size: 12.5px;
+    font-weight: 800;
+    letter-spacing: 0.3px;
+    box-shadow: 0 3px 10px rgba(124, 58, 237, 0.22);
+  }
+  .api-arrow {
+    text-align: center;
+    color: var(--c-accent);
+    font-size: 13px;
+    font-weight: 700;
+    margin: -3px 0;
+  }
+  .ext-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+  }
+  .ext {
+    background: var(--c-accent-ultralight);
+    border: 1px solid var(--c-accent-light);
+    border-radius: 6px;
+    padding: 9px 4px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--c-text);
+  }
+  .ext .ext-ico {
+    display: block;
+    color: var(--c-accent-dark);
+    font-size: 15px;
+    margin-bottom: 3px;
+  }
+  .ext-label {
+    text-align: center;
+    font-size: 9.5px;
+    color: var(--c-muted);
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  /* ─── Footer chips ─── */
+  .footer-chips {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--c-accent-light);
+    margin-top: 6px;
+  }
+  .f-chip {
+    background: var(--c-bg);
+    border: 1px solid var(--c-accent-light);
+    border-radius: 6px;
+    padding: 7px 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 10.5px;
+    font-weight: 700;
+    color: var(--c-accent-dark);
+  }
+  .f-chip .ico-box {
+    width: 22px; height: 22px;
+    background: var(--c-accent-ultralight);
+    border: 1px solid var(--c-accent-light);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--c-accent);
+    font-size: 12px;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+  <!-- Title bar with MassaPro logo + Architecture Diagram -->
+  <div class="titlebar">
+    <img src="massapro-logo.png" class="logo" alt="MassaPro">
+    <span class="brand">MassaPro</span>
+    <span class="divider"></span>
+    <span class="title-text">Architecture Diagram</span>
+  </div>
+
+  <div class="vpc">
+    <div class="vpc-label">Dedicated Private Tenant &middot; Virtual Private Cloud (AWS)</div>
+
+    <!-- Top row: WAF (left) | Brain (center) | AWS VPC (right) -->
+    <div class="top-row">
+      <div class="corner-label">
+        <span class="ico-box">🛡</span>
+        <span>Web Application Firewall</span>
+      </div>
+      <div class="brain-center">
+        <div class="brain-icon">🧠</div>
+      </div>
+      <div class="corner-label right">
+        <span>Dedicated Private Tenant in VPC hosted in AWS</span>
+        <span class="ico-box">☁</span>
+      </div>
+    </div>
+
+    <!-- Middle: Leads (left) | Two blocks (center) | Admin (right) -->
+    <div class="middle-row">
+      <!-- Left: Leads + connection labels -->
+      <div class="side-col">
+        <div class="entity">
+          <div class="ico-circle">👥</div>
+          <div class="label">Your Leads and<br>Customers</div>
+        </div>
+        <div class="conn-labels">
+          <div class="conn-label">HTTPS</div>
+          <div class="conn-label">Tier 1 Carriers</div>
+        </div>
+        <div class="conn-arrow">▶</div>
+      </div>
+
+      <!-- Center: Platform + AI Quality blocks -->
+      <div class="center-col">
+        <!-- MassaPro Platform -->
+        <div class="block">
+          <div class="block-header">
+            <span class="ico">⚙</span>
+            <span class="name">MassaPro Platform</span>
+            <span class="tag">Input / Processing</span>
+          </div>
+          <div class="platform-grid">
+            <!-- Row 1: 4 nodes -->
+            <div class="node"><span class="n-ico">📞</span>Voice</div>
+            <div class="node"><span class="n-ico">💬</span>Live Chat</div>
+            <div class="node"><span class="n-ico">✉</span>Email</div>
+            <div class="node"><span class="n-ico">🧬</span>LLM</div>
+            <!-- Row 2: 4 nodes -->
+            <div class="node"><span class="n-ico">📊</span>AI Analytics</div>
+            <div class="node"><span class="n-ico">🔊</span>AI Voice</div>
+            <div class="node"><span class="n-ico">🖥</span>GUI</div>
+            <div class="node"><span class="n-ico">✓</span>Tasks</div>
+            <!-- Row 3: AI Agent hub (spans 2 cols) + 2 nodes -->
+            <div class="node"><span class="n-ico">🟢</span>WhatsApp</div>
+            <div class="node hub">
+              <span class="n-ico">🤖</span>
+              <div>
+                <div class="hub-name">AI Agent</div>
+                <div class="hub-sub">Central LLM Orchestrator</div>
+              </div>
+            </div>
+            <div class="node"><span class="n-ico">📷</span>Instagram</div>
+            <!-- Row 4: 4 nodes -->
+            <div class="node"><span class="n-ico">f</span>Facebook</div>
+            <div class="node"><span class="n-ico">🎫</span>Tickets</div>
+            <div class="node"><span class="n-ico">⏺</span>Call Rec.</div>
+            <div class="node"><span class="n-ico">𝕏</span>X / Twitter</div>
+            <!-- Row 5: 4 nodes -->
+            <div class="node"><span class="n-ico"></span>Apple BC</div>
+            <div class="node"><span class="n-ico">📱</span>SMS</div>
+            <div class="node"><span class="n-ico">🎙</span>Speech Rec.</div>
+            <div class="node"><span class="n-ico">📚</span>AI Knowledge</div>
+          </div>
+          <!-- Extra row for remaining 2 nodes -->
+          <div class="platform-grid" style="grid-template-rows: 1fr; margin-top: 6px;">
+            <div class="node"><span class="n-ico">🎓</span>Training Centre</div>
+            <div class="node"><span class="n-ico">📞↗</span>Outbound Dialler</div>
+            <div class="node"><span class="n-ico">📣</span>Campaign Mgmt</div>
+            <div class="node empty">—</div>
+          </div>
+        </div>
+
+        <!-- AI Quality -->
+        <div class="block">
+          <div class="block-header">
+            <span class="ico">🎯</span>
+            <span class="name">AI Quality</span>
+            <span class="tag">Analysis</span>
+          </div>
+          <div class="quality-wrap">
+            <!-- Top row: 3 nodes -->
+            <div class="quality-row">
+              <div class="node"><span class="n-ico">🧬</span>LLM</div>
+              <div class="node"><span class="n-ico">🏷</span>Entity Recog.</div>
+              <div class="node"><span class="n-ico">📈</span>Scorecards</div>
+            </div>
+            <!-- Middle row: spacer | MassaPro hub | GUI (right) -->
+            <div class="quality-middle">
+              <div class="quality-spacer"></div>
+              <div class="quality-hub">
+                <div class="hub-name">MassaPro</div>
+                <div class="hub-sub">AI Brain</div>
+              </div>
+              <div class="node" style="height: 90px;"><span class="n-ico">🖥</span>GUI</div>
+            </div>
+            <!-- Bottom row: 3 nodes -->
+            <div class="quality-row">
+              <div class="node"><span class="n-ico">📝</span>Call Trans.</div>
+              <div class="node"><span class="n-ico">🔑</span>Keyphrase</div>
+              <div class="node"><span class="n-ico">😊</span>Sentiment</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Admin + Access options -->
+      <div class="side-col">
+        <div class="entity">
+          <div class="ico-circle">🛡</div>
+          <div class="label">Admin Users</div>
+        </div>
+        <div class="admin-access">
+          <div class="title-s">Access Options</div>
+          <div class="body-s">VPN Endpoint<br>Single Sign-On<br>Corporate Network</div>
+        </div>
+        <div class="conn-arrow">◀</div>
+      </div>
+    </div>
+
+    <!-- Bus connector -->
+    <div class="bus">
+      <div class="bus-line"></div>
+      <div class="bus-dot"></div>
+      <div class="bus-label">Service Bus</div>
+    </div>
+
+    <!-- Bottom: Telephony + API -->
+    <div class="bottom-row">
+      <!-- Telephony block -->
+      <div class="block">
+        <div class="block-header">
+          <span class="ico">☎</span>
+          <span class="name">Telephony &amp; Carrier / Network Layer</span>
+          <span class="tag">Voice Egress</span>
+        </div>
+        <div class="telephony-flow">
+          <div class="step">
+            <div class="step-name">SIP Signalling</div>
+            <div class="step-detail">SIP over TCP<br>Port 5060</div>
+          </div>
+          <div class="step">
+            <div class="step-name">Session Establishment</div>
+            <div class="step-detail">SIP Handshake<br>&amp; Call Setup</div>
+          </div>
+          <div class="step">
+            <div class="step-name">Media Transport (RTP)</div>
+            <div class="step-detail">RTP over UDP<br>Ports 10000–20000<br>Dynamic Allocation</div>
+          </div>
+          <div class="step">
+            <div class="step-name">Dynamic Routing</div>
+            <div class="step-detail">Intelligent routing across multiple in-region &amp; global Tier-1 carriers</div>
+          </div>
+          <div class="step carrier">
+            <div class="step-name">Carrier Network</div>
+            <div class="step-detail">MNOs &amp; Fixed-line Providers</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- API & Integration block -->
+      <div class="block">
+        <div class="block-header">
+          <span class="ico">🔗</span>
+          <span class="name">API &amp; Integration Layer</span>
+          <span class="tag">Data Egress</span>
+        </div>
+        <div class="api-stack">
+          <div class="api-gateway">API Gateway</div>
+          <div class="api-arrow">▼</div>
+          <div class="ext-grid">
+            <div class="ext"><span class="ext-ico">🗄</span>Data Wh.</div>
+            <div class="ext"><span class="ext-ico">🛒</span>ERP</div>
+            <div class="ext"><span class="ext-ico">👥</span>CRM</div>
+            <div class="ext"><span class="ext-ico">📈</span>BI Tools</div>
+          </div>
+          <div class="ext-label">External Systems</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer chips -->
+    <div class="footer-chips">
+      <div class="f-chip"><span class="ico-box">🔒</span>Private Subnet</div>
+      <div class="f-chip">Network &amp; Application Load Balancers <span class="ico-box">🖥</span></div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

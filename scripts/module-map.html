@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MassaPro Core AI Modules Map</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c-accent: #7c3aed;
+    --c-accent-dark: #6d28d9;
+    --c-accent-light: #ede9fe;
+    --c-accent-ultralight: #f5f3ff;
+    --c-text: #1f2937;
+    --c-muted: #6b7280;
+    --c-bg: #ffffff;
+    --c-border: #e5e7eb;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body {
+    background: var(--c-bg);
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--c-text);
+  }
+  .diagram {
+    width: 1400px;
+    padding: 50px 60px;
+    background: var(--c-bg);
+  }
+  .title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--c-text);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .subtitle {
+    text-align: center;
+    font-size: 13px;
+    color: var(--c-muted);
+    margin-bottom: 50px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    margin-bottom: 32px;
+  }
+  .module {
+    background: var(--c-accent-ultralight);
+    border: 1.5px solid var(--c-accent-light);
+    border-radius: 14px;
+    padding: 24px 26px;
+    position: relative;
+  }
+  .module-num {
+    position: absolute;
+    top: -14px;
+    left: 24px;
+    background: var(--c-accent);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 800;
+  }
+  .module-name {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--c-accent-dark);
+    margin-bottom: 4px;
+    letter-spacing: -0.3px;
+  }
+  .module-tag {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--c-accent);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .module-desc {
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--c-text);
+    margin-bottom: 14px;
+  }
+  .module-specs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    font-size: 11px;
+  }
+  .spec {
+    background: white;
+    padding: 8px 10px;
+    border-radius: 6px;
+    border: 1px solid var(--c-border);
+  }
+  .spec .lbl {
+    color: var(--c-muted);
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+  .spec .val {
+    color: var(--c-text);
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .center-hub {
+    background: linear-gradient(135deg, var(--c-accent) 0%, var(--c-accent-dark) 100%);
+    border-radius: 14px;
+    padding: 22px 28px;
+    color: white;
+    text-align: center;
+    margin: 0 auto 32px;
+    max-width: 720px;
+  }
+  .center-hub .hub-title {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 4px;
+    letter-spacing: 0.3px;
+  }
+  .center-hub .hub-desc {
+    font-size: 12px;
+    opacity: 0.92;
+    line-height: 1.5;
+  }
+
+  .flow-label {
+    text-align: center;
+    color: var(--c-accent);
+    font-size: 16px;
+    margin: 4px 0;
+    font-weight: 600;
+  }
+
+  .footer-note {
+    margin-top: 32px;
+    padding-top: 18px;
+    border-top: 1px solid var(--c-border);
+    text-align: center;
+    font-size: 11px;
+    color: var(--c-muted);
+    line-height: 1.6;
+  }
+</style>
+</head>
+<body>
+<div class="diagram">
+  <div class="title">MassaPro Core AI Modules &mdash; Functional Map</div>
+  <div class="subtitle">Four primary engines orchestrated via MassaPro Flow, sharing the in-house LLM and knowledge base</div>
+
+  <div class="grid">
+    <div class="module">
+      <div class="module-num">1</div>
+      <div class="module-name">ASR &amp; Voice</div>
+      <div class="module-tag">Speech &harr; Text Engine</div>
+      <div class="module-desc">Converts spoken language into actionable data and vice versa. Adaptive noise filtering and custom acoustic models ensure high-fidelity capture across telephony and digital voice channels. Configurable TTS tone, formality, and language complexity.</div>
+      <div class="module-specs">
+        <div class="spec"><div class="lbl">Latency</div><div class="val">&lt;300ms roundtrip</div></div>
+        <div class="spec"><div class="lbl">Accuracy</div><div class="val">99% ASR</div></div>
+        <div class="spec"><div class="lbl">Languages</div><div class="val">100+</div></div>
+        <div class="spec"><div class="lbl">TTS Control</div><div class="val">Tone / Formality / Complexity</div></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="module-num">2</div>
+      <div class="module-name">AI Agent</div>
+      <div class="module-tag">Autonomous Conversational LLM</div>
+      <div class="module-desc">Fine-tuned Large Language Model with deterministic guardrails. Handles 24/7 multi-language support and complex transactions including automated payment processing, appointment booking, invoice extraction, and lead qualification.</div>
+      <div class="module-specs">
+        <div class="spec"><div class="lbl">Capacity</div><div class="val">50x human queues</div></div>
+        <div class="spec"><div class="lbl">Handle Time</div><div class="val">&minus;70%</div></div>
+        <div class="spec"><div class="lbl">Availability</div><div class="val">24/7/365</div></div>
+        <div class="spec"><div class="lbl">Self-Learning</div><div class="val">Intent confidence boosting</div></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="module-num">3</div>
+      <div class="module-name">AI Guru</div>
+      <div class="module-tag">RAG Co-Pilot for Human Agents</div>
+      <div class="module-desc">Retrieval-Augmented Generation engine that powers an intelligent in-house LLM. Instantly retrieves procedural knowledge from PDFs, images, web-scraped content, and third-party data. Provides real-time coaching prompts and CSAT recommendations during live calls.</div>
+      <div class="module-specs">
+        <div class="spec"><div class="lbl">Architecture</div><div class="val">RAG + LLM</div></div>
+        <div class="spec"><div class="lbl">Sources</div><div class="val">PDF / Image / Web / KB</div></div>
+        <div class="spec"><div class="lbl">Coaching</div><div class="val">Real-time prompts</div></div>
+        <div class="spec"><div class="lbl">ROI</div><div class="val">Faster onboarding</div></div>
+      </div>
+    </div>
+
+    <div class="module">
+      <div class="module-num">4</div>
+      <div class="module-name">AI Analytics</div>
+      <div class="module-tag">Real-Time Stream Processing</div>
+      <div class="module-desc">Transforms raw conversational data into business intelligence. Tracks sentiment (positive/neutral/negative), keyphrase frequency, entity recognition, and topic-based modeling. Automatically redacts PII from transcripts and reports for compliance.</div>
+      <div class="module-specs">
+        <div class="spec"><div class="lbl">Sentiment</div><div class="val">3-tone detection</div></div>
+        <div class="spec"><div class="lbl">Entity Recognition</div><div class="val">Auto classification</div></div>
+        <div class="spec"><div class="lbl">PII Redaction</div><div class="val">Automatic masking</div></div>
+        <div class="spec"><div class="lbl">Output</div><div class="val">Summaries + trends</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="flow-label">&darr; &nbsp; All four modules are orchestrated and interconnected through &nbsp; &darr;</div>
+
+  <div class="center-hub">
+    <div class="hub-title">MassaPro Flow &mdash; Orchestration Layer</div>
+    <div class="hub-desc">Drag-and-drop workflow builder embedding AI Agent and ASR features into custom journeys. Intelligent routing by skill set, language, topic expertise. Automated lead qualification, instant engagement, smart call routing, and AI-driven follow-ups.</div>
+  </div>
+
+  <div class="footer-note">
+    All modules share the proprietary MassaPro Large Language Model and a centralized knowledge base &middot; Updates circulate instantly across the ecosystem &middot; Content gaps auto-generate new KB articles
+  </div>
+</div>
+</body>
+</html>
