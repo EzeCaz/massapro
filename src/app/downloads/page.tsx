@@ -2,11 +2,11 @@
 
 const FILES = [
   {
-    name: "Massapro-IVR-Sales-Pitch-Deck.pptx",
-    size: "41 MB",
+    name: "Massapro-IVR-Sales-Pitch-Deck-Compact.pptx",
+    size: "2.4 MB",
     title: "MassaPro IVR Sales Pitch Deck — PPTX",
     description:
-      "24 slides, 16:9 widescreen. The original MassaPro IVR sales pitch deck with full purple brand system, MassaPro logo on every slide, real human images of receptionists/concierges/video advisors on each slide, diversified layouts (cover → bento grids → split text/image → timeline → stats → comparison → closing), and full ~80-150 word speaker notes embedded as hidden notes on each slide.",
+      "24 slides, 16:9 widescreen. The original MassaPro IVR sales pitch deck with full purple brand system, MassaPro logo on every slide, real human images of receptionists/concierges/video advisors on each slide, diversified layouts (cover, bento grids, split text/image, timeline, stats, comparison, closing), and full ~80-150 word speaker notes embedded as hidden notes on each slide. Compact version (images optimized to fit Vercel's 25 MB static asset limit).",
     kind: "PPTX" as const,
   },
   {
